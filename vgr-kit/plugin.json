@@ -1,0 +1,30 @@
+{
+  "name": "vgr-kit",
+  "description": "VGR project kit: harness-kit's TDD/DDD orchestration engine merged with engine-kit's git hygiene and decision-tracking skills, for greenfield mobile app development",
+  "version": "0.1.0",
+  "author": {
+    "name": "Valdo Souza"
+  },
+  "license": "MIT",
+  "keywords": [
+    "tdd",
+    "testing",
+    "debugging",
+    "harness",
+    "automation",
+    "code-review",
+    "scope-refinement",
+    "ddd",
+    "git-hygiene",
+    "decision-records"
+  ],
+  "agents": "agents/",
+  "skills": [
+    "skills/"
+  ],
+  "homepage": "https://github.com/romabeckman/harness-kit",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romabeckman/harness-kit.git"
+  }
+}

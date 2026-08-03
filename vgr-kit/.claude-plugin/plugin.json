@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+    "name": "vgr-kit",
+    "version": "0.1.0",
+    "description": "VGR project kit — merged from harness-kit (autonomous TDD/DDD orchestration engine, phase-isolated agents, adversarial QA, critical code review, persistent project memory) plus engine-kit's process disciplines (git hygiene, numbered decision rounds, knowledge retention). Built for greenfield mobile app development on the VGR (Vigilância e Recompensa) project.",
+    "author": {
+        "name": "Valdo Souza"
+    },
+    "basedOn": [
+        { "name": "harness-kit", "version": "1.3.2", "url": "https://github.com/romabeckman/harness-kit" },
+        { "name": "engine-kit", "version": "0.3.0" }
+    ],
+    "license": "MIT",
+    "keywords": [
+        "agents",
+        "tdd",
+        "ddd",
+        "code-review",
+        "software-engineering",
+        "harness",
+        "ai-workflow",
+        "claude",
+        "skills",
+        "autonomous",
+        "orchestrator",
+        "git-hygiene",
+        "decision-records",
+        "vgr"
+    ]
+}
