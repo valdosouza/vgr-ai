@@ -1914,6 +1914,30 @@ das fases S1–S6 da segurança (ou junto, quando tocarem os mesmos arquivos).
    **decisão 124**: min 12 igual painel, TOTP opcional da conta; sem
    colisão com social (conta social não tem senha local).
 
+## ⚠️ Pendências (rodada 6 — provedores de autenticação do app)
+
+Nasceram ao implementar as decisões 119–124. Nenhuma bloqueia o que já
+está construído (senha, sessão, vínculo, gate de verificação): o serviço
+aceita uma identidade **já verificada**, então plugar verificador é
+aditivo. O que falta é escolha de fornecedor, não desenho.
+
+1. ⚠️ **Qual provedor de envio para o OTP de telefone/WhatsApp**
+   (decisão 120). Mesma natureza da pendência do PSP (decisão 59): é
+   escolha comercial, não técnica. Enquanto não houver, o método OTP não
+   existe na prática — os outros quatro funcionam. Critérios a levar:
+   custo por mensagem, entrega em WhatsApp além de SMS, presença no
+   Brasil, e API de verificação (ou só envio, com o código sendo nosso).
+2. **Verificação de e-mail: usar o mailer que já existe?** O painel já tem
+   `shared/mailer` com código de 6 dígitos (decisão 113). Recomendado:
+   **reaproveitar**, com TTL e contador próprios do app — evita segunda
+   implementação da mesma coisa. Alternativa: serviço transacional
+   dedicado, que só se justifica com volume.
+3. **Adapters de provedor social — construir agora ou junto da primeira
+   tela de login do app?** Recomendado: **junto da tela**, porque só ali
+   se descobre o formato real do token que o SDK cliente devolve.
+   Google/Apple são OIDC (verificação por JWKS); Facebook usa
+   `debug_token` da Graph API — dois adapters, não um.
+
 ## Fora de escopo para esta fase
 
 - Previsão de trajetória por modelo de velocidade + notificação push
