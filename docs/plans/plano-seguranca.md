@@ -138,14 +138,21 @@ Registradas aqui para o dia da infra; nada disso é código:
 Ordenadas por dano-evitado ÷ esforço. Cada fase termina com `tsc` limpo e
 suíte verde; nenhuma depende da seguinte.
 
-| Fase | Conteúdo | Decisões | Esforço |
+| Fase | Conteúdo | Decisões | Status |
 |---|---|---|---|
-| **S1 — borda e política** | helmet + CORS estrito com fail-fast + trust proxy; senha min 12 + lista de proibidas nos DTOs; `engines` no package.json; checklist de release com `npm audit` | 115, 114(senha), 118 | ~1 sessão |
-| **S2 — sessão revogável** | migração 023 (`session_version`, contadores de falha); TTL 15m; verificação de versão no authMiddleware via cache do privilege-store; atraso progressivo no login; código de recovery invalidado na 5ª falha; app renovando silenciosamente | 112, 113 | 1-2 sessões |
-| **S3 — criptografia em repouso** | `shared/crypto/envelope.ts` (AES-256-GCM, DEK por registro, `LEGAL_KEK` com fail-fast); migração 024 (colunas cifradas no accountability log); escrita cifrada; decifra SÓ pelo fluxo dual-control | 111, 44, 45 | 1-2 sessões |
-| **S4 — auditoria administrativa** | migração 025 (`tb_admin_audit`); helper fire-and-forget em `shared/`; chamadas nos 6 services de CRUD | 116 | ~1 sessão |
-| **S5 — 2FA TOTP** | tabela de segredo + códigos de recuperação; enrolamento obrigatório no 1º login; verificação no login; destrave por dual-control; telas no app | 114(2FA) | fase própria, 2-3 sessões |
-| **S6 — app** | `flutter_secure_storage` no mobile; tela do 451 com motivo tipificado | 117 | ~1 sessão |
+| **S1 — borda e política** | helmet + CORS estrito com fail-fast + trust proxy; senha min 12 + lista de proibidas nos DTOs; `engines`; `docs/RELEASE.md` com npm audit | 115, 114(senha), 118 | ✅ 2026-08-03 (commit 8835308) |
+| **S2 — sessão revogável** | migração 023; TTL 15m + claim `sv` conferido por cache 60s; renovação deslizante `POST /api/auth/renew`; atraso progressivo; recovery invalidado na 5ª falha | 112, 113 | ✅ 2026-08-03 (1970eff) |
+| **S3 — criptografia em repouso** | `shared/crypto/envelope.ts`; migração 024; accountability log cifrado na escrita; `LEGAL_KEK` obrigatória em produção | 111, 44, 45 | ✅ 2026-08-03 (ddc461a) |
+| **S4 — auditoria administrativa** | migração 025 (`tb_admin_audit`); `shared/audit/`; todos os CRUDs + kill switch auditados | 116 | ✅ 2026-08-03 (71f30f5) |
+| **S5 — 2FA TOTP (API)** | RFC 6238 próprio; migração 026 (segredo cifrado + recovery codes hasheados); login em duas etapas com enrolamento obrigatório; reset por dual-control | 114(2FA) | ✅ 2026-08-03 (2d84a53) — **lado app pendente** |
+| **S6 — app** | Login do painel com etapa TOTP + telas de enrolamento/recovery; renovação silenciosa (15min!); tratamento do 451; traduções TWO_FACTOR_REQUIRED/LEGAL_BLOCKED; secure storage no core para o mobile futuro | 114, 117 | ⏳ próxima sessão — ver ⚠️ abaixo |
+
+⚠️ **Estado transitório deliberado**: com S2+S5 na API, o painel Flutter atual
+**não consegue mais logar** contra uma API migrada — o login devolve
+`twoFactorSetupRequired` (shape novo) e o token dura 15 min sem renovação
+automática. Sem impacto imediato porque nada está em produção; a S6 é a
+primeira coisa da próxima sessão de app, e API+app devem ser implantados
+juntos. 33 suítes / 189 testes verdes na API.
 
 ## 7. Referências
 
