@@ -1733,6 +1733,106 @@ abaixo. **Esta frente revisa a decisão 24.**
      ocasião) e o RiskTier (o profissional não muda as regras das
      categorias críticas da decisão 40).
 
+## Imagens (fecha a rodada 7, exceto o provedor pago)
+
+126. **Storage de imagens em degraus — MVP sem custo, provedor pago só
+     quando houver volume real.** Fecha parcialmente o item 1 da rodada 7.
+     A trajetória é: **filesystem adapter** em dev/test (zero infra) →
+     **MinIO self-hosted** no MVP (mesmo servidor da API; zero custo de
+     licença, o custo é o disco que já existe) → **provedor S3-compatible
+     pago** quando o produto estiver efetivamente rodando e gerando
+     receita/volume. O MinIO no MVP é deliberado: expõe a mesma API S3 do
+     degrau final, então o adapter que vai à produção é exercitado desde o
+     primeiro dia — migrar é copiar objetos e trocar config, nunca
+     reescrever (regra 2 do `plano-imagens.md`).
+
+     **A escolha do provedor pago continua aberta** (é comercial, padrão
+     das decisões 59/rodada 6). Finalistas e critérios registrados no §3
+     do plano: custo por GB armazenado E trafegado (toda visualização
+     passa pela API — egress pesa), jurisdição do byte, presença no
+     Brasil. Nota que reequilibra a comparação: como `evidence` é
+     ciphertext (cifra envelope, chave nunca sai da API), o risco
+     jurisdicional do storage é reduzido — o provedor guarda ruído.
+
+127. **Avatar adiado — fora do MVP.** Fecha o item 2. A classe `avatar`
+     fica especificada no plano e **desligada por config**; ligar depois é
+     aditivo. A regra 2 da decisão 119 (foto de perfil social nunca entra
+     no banco) permanece intocada. Cadastro no MVP não tem imagem nenhuma.
+
+128. **Blur-por-default no feed para categorias críticas.** Fecha o item 3.
+     Nas categorias da decisão 40, a miniatura aparece borrada e o usuário
+     toca para revelar. O borrão é gerado no ingest como derivado próprio
+     (o thumbnail nítido nunca chega ao cliente para "desborrar").
+
+129. **Limites de upload.** Fecha o item 4 com os números recomendados:
+     **10 imagens por denúncia, 10 MB por arquivo** antes da normalização;
+     entrada aceita jpeg/png/webp/heic (validados por magic bytes), saída
+     normalizada em formato único. Números vivem em config, não em código.
+
+130. **Metadados da foto (EXIF) são escolha do denunciante na captura,
+     por foto — default é descartar.** Fecha o item 5, revisando a
+     recomendação original (descarte sempre): no momento de anexar, o app
+     oferece a opção **"manter dados probatórios da foto"**, com aviso
+     claro do que esses dados revelam (onde a foto foi tirada, quando e
+     com qual aparelho). Regras fixadas:
+     - **Default = descartar.** Silêncio protege; manter é ato explícito.
+     - Escolha é **por foto**, registrada com a versão do texto de aviso
+       exibido (padrão da decisão 86).
+     - Se mantiver: o **original é preservado cifrado** como evidência,
+       junto do normalizado. O que circula no app/feed é **sempre** o
+       normalizado sem EXIF — o original só é acessível pelo painel com
+       privilégio e leitura auditada (decisão 116), para uso probatório.
+     - Em denúncia **anônima**, o aviso é reforçado: os dados da foto
+       podem revelar onde o denunciante estava (conflita com o anonimato
+       que ele próprio escolheu — decisão 32). A opção continua existindo;
+       a decisão é dele, informada.
+
+131. **Retenção de evidência: 90 dias após a resolução como régua geral;
+     caso escalado a autoridade congela.** Fecha o item 6. Estende a
+     mesma janela da decisão 25 (menores) para toda evidência de caso
+     resolvido, e amarra no mecanismo de dado congelado do Legal Gate
+     (item 6 da rodada 2): caso nas mãos de autoridade não expira até
+     desfecho. Apagamento é crypto-shredding (§7 do plano) — vale
+     inclusive para backups.
+
+132. **Vídeo e áudio ficam fora até decisão própria.** Fecha o item 7,
+     confirmando a recomendação (padrão das decisões 11/12/43): mudam
+     ordem de grandeza de custo, pipeline (transcoding) e risco de
+     moderação. O port `BlobStore` os recebe no futuro sem retrabalho.
+
+## Design system do app
+
+133. **Nenhum widget do Flutter é usado diretamente numa tela — tudo é
+     encapsulado em widget da casa com prefixo `Vgr`, em
+     `packages/vgr_widgets`.** Mesma regra do setes-app (decisão 11 dele,
+     prefixo `Setes`), trazida para este projeto. Objetivo: **trocar um
+     widget obsoleto ou sem manutenção sem alterar o sistema inteiro** —
+     muda uma implementação num arquivo, e as centenas de chamadas ficam
+     onde estão.
+
+     **Widget × componente**: no Flutter são o mesmo conceito; "componente"
+     é o termo genérico, "widget" é a materialização. Termo oficial aqui:
+     **widget** (mesma convenção da decisão 8 do setes).
+
+     **Escopo**: telas e código de apresentação de `apps/*/lib` e
+     `packages/core/lib`. Isento: o próprio `vgr_widgets` (encapsular é a
+     função dele) e os testes. Peças estruturais que não são widget visual
+     — `MaterialApp`, `Navigator`, `Theme`, `BlocBuilder` — ficam fora.
+
+     **A regra é verificada por teste**, não por combinação:
+     `apps/admin/test/design_system_guard_test.dart` falha o build listando
+     arquivo e linha de cada violação. Isso não é zelo excessivo: a regra
+     já estava escrita no `pubspec.yaml` do `vgr_widgets` desde o primeiro
+     dia e mesmo assim havia **~350 usos diretos** de widget cru, porque
+     nada conferia. Regra sem verificação vira sugestão.
+
+     **Consequência nos testes**: teste afirma sobre o widget da casa
+     (`tester.widget<VgrIconButton>`), nunca sobre o interno do Flutter —
+     senão quebraria a cada troca de implementação, que é exatamente o
+     acoplamento que esta decisão remove.
+
+     Padrão documentado em `app/docs/adr/DESIGN-SYSTEM.md`.
+
 ## ⚠️ Pendências (rodada 1 — controles administrativos)
 
 Nenhuma. Itens 1–4 → decisões 72–75; item 5 → decisão 80; item 3 (erro por
@@ -1937,6 +2037,18 @@ aditivo. O que falta é escolha de fornecedor, não desenho.
    se descobre o formato real do token que o SDK cliente devolve.
    Google/Apple são OIDC (verificação por JWKS); Facebook usa
    `debug_token` da Graph API — dois adapters, não um.
+
+## ⚠️ Pendências (rodada 7 — imagens)
+
+Itens 2–7 → decisões 127–132. Item 1 parcialmente fechado pela decisão 126
+(degraus: filesystem → MinIO self-host no MVP → provedor pago). **Resta um
+único aberto**:
+
+1. ⚠️ **Qual provedor S3-compatible pago no degrau final** (decisão 126) —
+   escolha comercial que só precisa acontecer quando o produto estiver
+   rodando com volume real; até lá o MinIO cobre tudo. Finalistas com
+   preços de referência e critérios no §3 do `plano-imagens.md`
+   (verificar preços na contratação).
 
 ## Fora de escopo para esta fase
 
