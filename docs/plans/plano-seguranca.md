@@ -145,14 +145,23 @@ suíte verde; nenhuma depende da seguinte.
 | **S3 — criptografia em repouso** | `shared/crypto/envelope.ts`; migração 024; accountability log cifrado na escrita; `LEGAL_KEK` obrigatória em produção | 111, 44, 45 | ✅ 2026-08-03 (ddc461a) |
 | **S4 — auditoria administrativa** | migração 025 (`tb_admin_audit`); `shared/audit/`; todos os CRUDs + kill switch auditados | 116 | ✅ 2026-08-03 (71f30f5) |
 | **S5 — 2FA TOTP (API)** | RFC 6238 próprio; migração 026 (segredo cifrado + recovery codes hasheados); login em duas etapas com enrolamento obrigatório; reset por dual-control | 114(2FA) | ✅ 2026-08-03 (2d84a53) — **lado app pendente** |
-| **S6 — app** | Login do painel com etapa TOTP + telas de enrolamento/recovery; renovação silenciosa (15min!); tratamento do 451; traduções TWO_FACTOR_REQUIRED/LEGAL_BLOCKED; secure storage no core para o mobile futuro | 114, 117 | ⏳ próxima sessão — ver ⚠️ abaixo |
+| **S6 — app** | `LoginResult` selado; etapa TOTP no login; telas de enrolamento (com códigos de recuperação exibidos uma vez) e de recovery; renovação silenciosa no ApiClient; `LegalBlockedView` para o 451; traduções en-US/pt-BR; `SecureTokenStore` | 112, 114, 117 | ✅ 2026-08-03 (0f88cdc) |
 
-⚠️ **Estado transitório deliberado**: com S2+S5 na API, o painel Flutter atual
-**não consegue mais logar** contra uma API migrada — o login devolve
-`twoFactorSetupRequired` (shape novo) e o token dura 15 min sem renovação
-automática. Sem impacto imediato porque nada está em produção; a S6 é a
-primeira coisa da próxima sessão de app, e API+app devem ser implantados
-juntos. 33 suítes / 189 testes verdes na API.
+**Rodada 4 executada de ponta a ponta.** API e app estão de novo em contrato:
+API 33 suítes / 189 testes; app 23 (core) + 78 (admin) testes. O estado
+transitório entre S5 e S6 foi fechado — o painel loga, enrola 2FA e renova
+sessão contra a API migrada.
+
+⚠️ **Implantar API e app juntos**: as migrações 023–026 e o contrato novo de
+login não são compatíveis com a versão anterior do painel.
+
+ℹ️ Achado colateral corrigido na S6: `admin_session_guard_test` estava
+quebrado desde antes (faltavam binds do Modular), então o guarda de sessão
+não tinha cobertura real — corrigido e ampliado para o caso do token
+expirado. Fora do escopo, mas teste quebrado mascara regressão.
+ℹ️ Pendência não relacionada: `apps/mobile/lib/main.dart` tem 2 erros de
+`dot-shorthands` (recurso de linguagem não habilitado), anteriores a esta
+rodada e sem relação com segurança.
 
 ## 7. Referências
 
