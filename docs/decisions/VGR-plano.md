@@ -2050,6 +2050,190 @@ Itens 2–7 → decisões 127–132. Item 1 parcialmente fechado pela decisão 1
    preços de referência e critérios no §3 do `plano-imagens.md`
    (verificar preços na contratação).
 
+## Denúncia (rodada 8 — primeira leva)
+
+134. **Anexo anônimo de mídia: o `publicId` é o segredo portador.** Fecha o
+     item 2 da rodada 8. UUID v4 (122 bits de aleatoriedade) é
+     inadivinhável na prática; quem o apresenta pode anexá-lo a uma
+     denúncia — uma única vez (o attach consome o estado pending). Mídia
+     enviada por conta autenticada só anexa pela mesma conta; todo attach
+     anônimo registra no accountability log (decisão 23).
+
+135. **O feed público serve localização DEGRADADA por tier — a posição
+     exata nunca sai da API.** Fecha o item 3. Em violência doméstica a
+     posição exata da denúncia é a casa da vítima. Feed anônimo/público:
+     posição arredondada (tier baixo ~rua; alto/crítico ~bairro),
+     distância aproximada, categoria e tempo relativo; nunca reporterId,
+     nunca contagem/timestamps de ofertas em tier alto (decisões 40/41/60).
+     A posição exata existe só para participantes conforme visibilidade
+     (50) e para autoridade via fluxos auditados.
+
+136. **Mídia órfã expira em 48h.** Fecha o item 4. Pending nunca anexada
+     entra no job de expiração existente (decisão 131) e é
+     crypto-shredded. Config, não constante.
+
+137. **Idempotência do submit: UUID gerado no app, um por denúncia.**
+     Fecha o item 6. Coluna única em tb_report; replay da fila offline
+     (decisão 28) devolve o MESMO reportId com 200 — nunca duplica, nunca
+     409. É o que torna a decisão 123 segura na prática.
+
+138. **`report.media` é capacidade do Legal Gate.** Fecha o item 7. Nasce
+     em PENDING_WIRING e é cabeada no R4 (a partição do catálogo obriga a
+     remoção na hora certa).
+
+139. **Texto do aviso EXIF v1 aprovado.** Fecha o item 8. O rascunho do §5
+     do plano-denuncia.md vira `exif-warning/v1` (com a variante reforçada
+     do fluxo anônimo), gravado por foto no padrão da decisão 86.
+
+140. **Taxonomia: dois eixos, ambos OBRIGATÓRIOS, semente livre, lista em
+     código.** Fecha o item 1 da rodada 8 (executa a decisão 3 no modelo
+     de dados):
+     - (a) O MVP tem categoria × objeto/sujeito.
+     - (b) **Objeto/sujeito é obrigatório** (o dono contrariou a
+       recomendação de opcional). Guarda da decisão 123 incorporada: a
+       lista de objetos inclui uma opção genérica ("other") de um toque —
+       campo obrigatório nunca pode travar a denúncia de segundos do
+       "apito na praia".
+     - (c) **Os ícones herdados são só ponto de partida e referência** —
+       a semente canônica é definida na implementação com liberdade
+       (nomes em inglês, decisão 17; rótulos traduzidos no app; ícones
+       aproveitados onde couberem). Tag livre da decisão 9 continua por
+       cima para categoria.
+     - (d) As listas vivem em CÓDIGO (value objects) no MVP; registro
+       administrável por tela é evolução futura — mesma trajetória do
+       risk-config.
+
+141. **Congelamento: humano congela, humano descongela, caso inteiro —
+     "não podemos destruir provas".** Fecha o item 5:
+     - (a) Congelar é ação humana no painel (recurso kind 'R' próprio),
+       com motivo obrigatório (ex. nº do ofício/processo) e auditoria.
+       Nunca automático no MVP.
+     - (b) Escopo: **o caso inteiro** — report + timeline + todas as
+       mídias, num ato só.
+     - (c) Princípio declarado pelo dono: destruição de prova é
+       inaceitável — caso escalado a autoridade DEVE estar congelado
+       antes de qualquer expiração.
+     - (d) Descongelar também é humano pelo painel. Acessórios da
+       recomendação incorporados por coerência com (c): descongelamento
+       por **dual-control** (2 aprovadores distintos, padrão da 107 —
+       descongelar é o ato que reabilita a destruição) e o prazo de
+       retenção **recomeça** no descongelamento (90 dias contados dali).
+
+142. **Painel nesta frente: só a tela mínima do congelamento.** Fecha o
+     item 9 pela alternativa (c): busca administrativa completa, fila de
+     moderação e estatísticas viram **frente própria depois do A3**, tendo
+     como semente a única tela que entra agora — buscar caso por id +
+     congelar/descongelar com motivo (consequência operacional da 141a/d).
+
+     **Rodada 8 ZERADA** (decisões 134-142).
+
+## ⚠️ Pendências (rodada 8 — denúncia)
+
+Abertas em 2026-08-03 junto com o `plano-denuncia.md` (abertura da frente
+central: Report + feed + HelpOffer + ciclo de vida + M2 de imagens; emendas
+E1-E8 propostas à tactical design, que é anterior ao Legal Gate, aos dois
+planos de auth, à mídia e à decisão 123). Nada codado.
+
+**RODADA ZERADA em 2026-08-03**: itens 2/3/4/6/7/8 → decisões 134-139;
+itens 1/5/9 (respondidos por sub-item após explicação ampliada) → decisões
+140-142. O texto ampliado dos itens 1/5/9 abaixo fica como registro do
+raciocínio apresentado.
+
+1. ⚠️ **Taxonomia — o que está em jogo.** A decisão 3 classifica a
+   denúncia por DOIS eixos: **categoria** (o que aconteceu: assalto,
+   agressão, desaparecimento...) × **objeto/sujeito** (sobre quem/o quê:
+   criança, adulto, animal, veículo, arma...). Os ícones herdados do app
+   antigo existem para os dois eixos (`AI/docs/categoria` e
+   `AI/docs/Objetos`). A spec, porém, só implementou o primeiro eixo
+   (`category | freeTag`) — o objeto aparece de contrabando, como
+   "SubjectTag=Child" na regra de retenção da decisão 25.
+
+   **Por que decidir agora e não depois**: (a) a retenção de menores (25)
+   precisa saber que o sujeito é criança — sem o eixo, vira interpretação
+   de tag livre, frágil demais para uma regra legal; (b) risco e raio
+   podem variar pela combinação (criança desaparecida ≠ adulto
+   desaparecido); (c) acrescentar o eixo depois exige migração e
+   reclassificação de denúncias reais já registradas.
+
+   **Sub-decisões** (recomendação entre parênteses):
+   a) O MVP tem os dois eixos? (**sim**)
+   b) Objeto/sujeito é obrigatório? (**opcional** — o formulário da
+      categoria (47) pode exigi-lo onde fizer sentido, ex. desaparecido)
+   c) Semente das listas? (**união spec + ícones** para categoria — inclui
+      "kidnapping" dos ícones e mantém "traffic"/"vandalism" da spec;
+      objetos = lista de `AI/docs/Objetos`; nomes canônicos em inglês,
+      decisão 17; rótulos traduzidos no app)
+   d) Lista curada vive em código (VO, como a spec) ou em tela
+      administrável? (**código no MVP**; tela admin é evolução natural,
+      mesma trajetória do risk-config)
+   e) Tag livre continua por cima para o que não se encaixa (decisão 9 —
+      sem mudança).
+2. **Anexo anônimo de mídia: o `publicId` vale como segredo portador?**
+   Denunciante anônimo não tem conta para provar posse. Recomendação:
+   aceitar — UUID v4 (122 bits) é inadivinhável; regras: anexo consome o
+   pending (um attach só), mídia de conta só anexa pela mesma conta, e
+   attach registra no accountability log (23).
+3. **O que o feed público expõe — e com que precisão de localização?** O
+   feed é visível sem conta (2/7/32); em violência doméstica a posição
+   exata da denúncia é a casa da vítima. Recomendação: posição **exata
+   nunca sai da API** — feed serve posição degradada por tier (baixo:
+   ~rua; alto/crítico: ~bairro + raio), distância aproximada, categoria,
+   tempo relativo; nunca reporterId, nunca contagem de ofertas em tier
+   alto (41/60).
+4. **TTL de mídia órfã**: pending nunca anexada expira e vira
+   crypto-shredding no job existente. Recomendação: **48h**.
+5. **Congelamento — o que está em jogo.** Quando um caso escala para
+   autoridade (polícia investigando, ofício, intimação), os dados dele
+   NÃO podem mais expirar: apagar prova em investigação é gravíssimo. Mas
+   a retenção (131) apaga tudo 90 dias após a resolução. Sem um mecanismo
+   de congelamento, ou o job destrói prova no dia 91, ou alguém desliga a
+   retenção inteira "por precaução" — e a promessa de minimização (110)
+   morre. A coluna `frozen` já existe na mídia e o job já a respeita; o
+   que não existe é **quem liga e desliga** essa chave. (Conversa com o
+   item 6 da rodada 2 do Legal Gate — "dado congelado quando capacidade
+   fecha" — mesmo mecanismo, outro gatilho.)
+
+   **Sub-decisões** (recomendação entre parênteses):
+   a) Quem congela? (**humano no painel**, recurso kind 'R' próprio, com
+      motivo obrigatório — ex. número do ofício/processo — e auditoria;
+      nunca automático no MVP, não há integração com autoridade)
+   b) Escopo? (**o caso inteiro**: report + timeline + todas as mídias —
+      congelar só a mídia deixaria o texto da denúncia expirar)
+   c) Descongelar exige mais que congelar? (**sim — dual-control**:
+      congela com 1, descongela com 2, análogo ao kill switch da 107;
+      descongelar é o ato que destrói prova)
+   d) Efeito ao descongelar? (**o prazo recomeça**: 90 dias contados do
+      descongelamento, nunca "expirou ontem enquanto estava congelado")
+6. **Idempotência da fila offline (28/123)**: o app reenvia quando a rede
+   volta; sem chave, retry = denúncia duplicada. Recomendação: UUID
+   gerado no app por denúncia, coluna única em tb_report; replay devolve
+   o mesmo reportId (200, não 409).
+7. **`report.media` entra como capacidade do Legal Gate?** Anexar imagem
+   tem risco jurídico que varia por país e o mecanismo já existe.
+   Recomendação: sim — nasce em PENDING_WIRING e é cabeada no R4.
+8. **Texto v1 do aviso EXIF (130)**: o mecanismo exige a versão do texto;
+   o texto é de produto/jurídico e ainda não existe. Sem ele a opção
+   "manter dados probatórios" não aparece no app (A1). Proposta de
+   rascunho no plano para você aprovar/editar.
+9. **Painel — o que está em jogo.** A frente da denúncia poderia puxar
+   para o painel: busca de denúncias, visualização completa, moderação
+   (bloquear mídia/denúncia), congelamento, estatísticas. Cada tela
+   dessas custa caro (grid + i18n + privilégios + testes — a frente de
+   controles administrativos provou), e moderação já é frente própria
+   declarada. Se tudo entrar, a frente central dobra de tamanho **antes
+   de o app denunciar existir** — e o app é o produto.
+
+   **Sub-decisões** (recomendação entre parênteses):
+   a) Telas novas de painel nesta frente? (**nenhuma por padrão** — o
+      operacional mínimo já existe: leitura auditada de mídia (M3) e
+      Legal Gate)
+   b) Exceção: se o item 5 fechar como "congela pelo painel", entra UMA
+      tela mínima — buscar caso por id + congelar/descongelar com motivo.
+      (**sim, só essa** — sem ela o congelamento não é acionável)
+   c) Busca administrativa completa, fila de moderação, estatísticas?
+      (**frente própria depois do A3** — a tela mínima do congelamento é
+      a semente natural dela)
+
 ## Fora de escopo para esta fase
 
 - Previsão de trajetória por modelo de velocidade + notificação push

@@ -202,9 +202,22 @@ denúncia é bug de produto, não só de rede.
   licenciamento de patente); o servidor aceita jpeg/png/webp.
 - **M2 — integração com denúncia**: quando o módulo report nascer, anexo é
   aditivo (o report referencia `tb_media`, não o contrário) + evento de
-  timeline + upload em background no app (fila da decisão 28).
-- **M3 — retenção**: job de expiração + crypto-shredding + auditoria de
-  leitura no painel.
+  timeline + upload em background no app (fila da decisão 28) + carimbar
+  `expires_at` na resolução (90 dias, decisão 131) + limite
+  MEDIA_MAX_PER_REPORT (decisão 129).
+- **M3 — retenção e painel — EXECUTADA em 2026-08-03** (mesma liberação):
+  `gateway/scheduler.ts` (**primeiro trabalho agendado da API** — executa o
+  mecanismo da decisão 90: node-cron, nunca em teste, só após migrações,
+  instância única via GET_LOCK em conexão dedicada); job horário de
+  expiração com **shred primeiro** (DEK zerada = fronteira de segurança) e
+  delete de objetos como higiene; migração 029 com DOIS recursos kind 'R'
+  (mecanismo da 93): `media_evidence` (derivados, bootstrap para admins de
+  fato) e `media_original` (o original com EXIF — **sem bootstrap: ninguém
+  vê até concessão humana explícita**, minimização da 110);
+  `GET /api/media/...` com guardas empilhados e **toda leitura servida
+  auditada** (ação `read` na tb_admin_audit, decisão 116 estendida a
+  leitura; `no-store` no painel — view cacheada seria view não auditada).
+  45 suítes / 267 testes.
 
-Ordem deliberada: M1 não depende do módulo report existir — nasce como
+Ordem deliberada: M1/M3 não dependem do módulo report existir — nascem como
 `shared`/módulo próprio, igual o Legal Gate nasceu antes dos consumidores.
