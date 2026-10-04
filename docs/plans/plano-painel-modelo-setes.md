@@ -429,7 +429,9 @@ PS4 que NÃO são documentação e ficam para decisão de Valdo:
    painel não tinha sessão (fase 1); hoje há login com JWT. Correção
    sugerida: aprovador = usuário da sessão (`req.user`) na API, e o campo
    some da tela. Exige rodada própria (mexe em contrato e em decisão de
-   segurança).
+   segurança). → **Rodada 18 (223–229)**, [plano-dual-control.md](plano-dual-control.md):
+   DC1 API executada em 2026-10-04 (api `ea3184f`); DC2 painel aguarda
+   "pode seguir".
 2. **`locale` apagado no update de usuário pela API** (achado da PS2): o
    `userUpdateDto` não distingue campo ausente de `null` e grava `null`. O
    painel já reenvia o valor atual; falta decidir se a API passa a

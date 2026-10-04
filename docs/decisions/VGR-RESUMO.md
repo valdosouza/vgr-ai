@@ -89,6 +89,7 @@ Estes são os invariantes — violar qualquer um exige decisão nova registrada:
 | Validadores compartilhados do app (`vgr_validators`) | 153–157 | **Entregue em 2026-09-02** (rodada 10 fechada e executada no mesmo dia): API com dígito verificador de CPF/CNPJ (`d593fd0`), pacote real + `VgrTextField.mask` + onboarding migrado (app); guard de validação inline adiado (156) | [plano-validadores.md](../plans/plano-validadores.md), [validators.md](../../app/docs/feature/validators.md) |
 | Oferta de ajuda com vários tipos | 208–214 | **Rodada 16 fechada em 2026-09-11**; **HT1 API executada em 2026-09-11** (migração 049: tabela filha `tb_help_offer_type`, coluna antiga removida; `helpTypes: []` no POST e nas visões; `PUT /app-help-offers/:id/types` para o helper trocar o conjunto em denúncia aberta); **HT2 mobile executada em 2026-09-19** (bloc com conjunto, checkboxes múltiplos, "Alterar tipos de ajuda" no detalhe do participante; adendo HT1 na API: facet `myOffer` na visão de participante); **HT3 painel executada em 2026-09-19** (entidade e linha da oferta com `helpTypes`); **FRENTE COMPLETA** | [plano-oferta-multitipo.md](../plans/plano-oferta-multitipo.md) |
 | Painel admin no modelo setes (shell, fábrica CRUD, paginação) | 215–222 | **Rodada 17 fechada em 2026-09-21**; **PS1 shell executada em 2026-09-21** (HomeModule com RouterOutlet, duas colunas, drawer, Sair, `VgrPage`); **PS0 API executada em 2026-09-21** (api `cecc1e0`: paginação opcional e compatível nas listas que crescem); **PS2 fábrica executada em 2026-10-04** (app `f7ebbd7`: `RegisterBloc<T, D>` genérico + `RegisterScreen`, ponte de feedback guardada por teste, `PagedResult` no core, piloto `privileges` + `users`; corrigido de passagem o `locale` apagado ao editar usuário); **PS3 migração executada em 2026-10-04** (app `80cf51d`…`86fe644`: todas as telas na fábrica ou na ponte, Legal Gate e respondedores paginados, um pager só, guarda da 221 estrita; achados e corrigidos 4 telas que caíam em erro ao recusar uma ação e o dual-control que perdia a solicitação em andamento); **PS4 docs executada em 2026-10-04** (app `1314904`: checklist `ADMIN-SCREENS.md`, `ARCHITECTURE.md` § ADMIN PANEL, inventário em `admin-panel.md`); **FRENTE COMPLETA** — 2 pendências de decisão no §9 do plano (⚠️ dual-control com aprovador digitado; `locale` na API) | [plano-painel-modelo-setes.md](../plans/plano-painel-modelo-setes.md), [ADMIN-SCREENS.md](../../app/docs/adr/ADMIN-SCREENS.md) |
+| Duplo controle de verdade (corrige a implementação da 45) | 223–229 | **Rodada 18 fechada em 2026-10-04**; **DC1 API executada em 2026-10-04** (api `ea3184f`: migração 050 — solicitante e aprovador da sessão, pedido + 1 aprovação de OUTRA pessoa, CHECK de duas pessoas no banco, solicitações antigas anuladas `void`, auditoria, 404 na entrada inexistente, lista paginada com nomes; validada em MySQL 8.0 e MariaDB 10.11); **DC2 painel aguarda "pode seguir"** — até lá a tela antiga não lê as linhas novas. Revelação (decifrar) fora: rodada própria após revisão jurídica (228) | [plano-dual-control.md](../plans/plano-dual-control.md), [dual-control-access.md (API)](../../api/docs/feature/dual-control-access.md) |
 | Denúncia (Report) | 134–142 | **Entregue** (R1–R4 na API + A1–A3 no mobile + P1 no painel); busca/moderação/estatísticas do painel = frente própria (142) | [plano-denuncia.md](../plans/plano-denuncia.md), [handoff-A1-app-denunciar.md](../plans/handoff-A1-app-denunciar.md) |
 
 Especificação DDD vinculante: `api/docs/specs/vgr/` (tactical design + cenários
@@ -142,13 +143,19 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     varrendo worktrees em `.claude/`. Receita e achados: memória
     `vgr-teste-manual-web`. Fluxos identificados (helper com conta, painel)
     dependem de login manual de Valdo.
-5d. ⚠️ **Dual-control com aprovador digitado (achado em 2026-10-04, PS4)**: a
-    API aceita o `approverId` no corpo, então um admin com os dois grants
-    aprova duas vezes e libera sozinho a decifragem (fere a 45). Correção na
-    API (aprovador = sessão); precisa de rodada. Detalhe:
-    [plano-painel-modelo-setes.md](../plans/plano-painel-modelo-setes.md) §9.
+5d. **Dual-control com aprovador digitado (achado em 2026-10-04, PS4)** —
+    rodada 18 (223–229); **corrigido na API pela DC1** (api `ea3184f`). Falta
+    a **DC2 painel** (aguarda "pode seguir"): a tela atual ainda fala o
+    contrato antigo e não lê as linhas novas. Detalhe:
+    [plano-dual-control.md](../plans/plano-dual-control.md).
 5e. **`locale` no update de usuário (API)**: ausente vira `null`; o painel
     já contorna reenviando — decidir se a API preserva.
+5f. **Migração 049 só roda em MariaDB (achado em 2026-10-04, DC1)**:
+    `DROP CONSTRAINT IF EXISTS` / `DROP COLUMN IF EXISTS` não existem no
+    MySQL 8.0 — lá a 049 falha e trava as seguintes. O dev é MariaDB (a
+    cadeia 001–050 roda inteira em MariaDB 10.11), mas a stack diz "MySQL".
+    Decidir o motor de produção; se for MySQL, a 049 precisa de forma
+    portável (sem `IF EXISTS`).
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa

@@ -2,8 +2,9 @@
 
 > **Rodada 18 — FECHADA em 2026-10-04** (aberta e zerada no mesmo dia;
 > recomendações aceitas nas 4 perguntas). Decisões **223–229** no
-> [VGR-plano.md](../decisions/VGR-plano.md). **DC1 API aguarda "pode
-> seguir".** Pedido de Valdo: "vamos corrigir aprovador dual-control" — o
+> [VGR-plano.md](../decisions/VGR-plano.md). **DC1 API executada em
+> 2026-10-04** (api `ea3184f`, §6). **DC2 painel aguarda "pode seguir".**
+> Pedido de Valdo: "vamos corrigir aprovador dual-control" — o
 > achado da PS4 do painel
 > ([plano-painel-modelo-setes.md](plano-painel-modelo-setes.md) §9 item 1,
 > VGR-RESUMO §6 item 5d). Plano antes de codar; execução fase a fase (38).
@@ -89,6 +90,42 @@ DC1 API (C1–C5 + decisões da rodada, migração, testes, docs) → DC2 painel
 
 | Fase | Conteúdo | Depende de | Estado |
 |---|---|---|---|
-| **DC1 API** | migração (requested_by, approved_by/at, status `void`, legacy_approver_ids, anulação das existentes); ator da sessão; regra 224; auditoria; 404 na entrada inexistente; lista paginada com nomes; testes; docs da API | rodada 18 | aguarda "pode seguir" |
-| **DC2 painel** | tela lista + formulário + aprovar na linha (227), sem campo de aprovador; testes; docs do app | DC1 | — |
+| **DC1 API** | migração (requested_by, approved_by/at, status `void`, legacy_approver_ids, anulação das existentes); ator da sessão; regra 224; auditoria; 404 na entrada inexistente; lista paginada com nomes; testes; docs da API | rodada 18 | **executada em 2026-10-04** (api `ea3184f`) |
+| **DC2 painel** | tela lista + formulário + aprovar na linha (227), sem campo de aprovador; testes; docs do app | DC1 | aguarda "pode seguir" |
+
+## 6. Execução
+
+### DC1 API — 2026-10-04 (api `ea3184f`, liberada com "pode seguir")
+
+- **Migração 050** (`050_dual_control_session.sql`): `requested_by`,
+  `approved_by`, `approved_at` (FK `tb_user`), status `void`,
+  `approver_ids` → `legacy_approver_ids`; todas as solicitações existentes
+  anuladas (225). Dois CHECKs: solicitação viva sempre tem solicitante;
+  `granted` exige aprovador ≠ solicitante — nem um bug no service grava
+  liberação de uma pessoa só.
+- **Contrato**: `POST /` registra o solicitante da sessão (404 `NOT_FOUND`
+  se a entrada do log não existe); `POST /:id/approvals` não tem corpo — o
+  aprovador é a sessão; o próprio solicitante recebe 422 `BUSINESS_RULE`;
+  pedido não pendente (liberado, anulado ou perdedor de aprovação
+  simultânea) recebe 409 `BUSINESS_RULE`, o mesmo código do Legal Gate para
+  "não aguarda aprovação". `GET /` paginado sob demanda (220), filtro na
+  base legal, mais recentes primeiro, linha com `requestedByName` /
+  `approvedByName` (nunca e-mail). Abrir e aprovar gravam `tb_admin_audit`
+  (`state_change`, entidade `dual_control_access`).
+- **Verificação**: suíte da API 121/121 suítes, 1221 testes; `tsc` limpo.
+  Migração e SQL exercitados em **MySQL 8.0 e MariaDB 10.11**: anulação
+  das linhas antigas com o JSON preservado, CHECKs recusando auto-aprovação
+  e pedido sem solicitante, e duas aprovações simultâneas reais — uma vence,
+  a outra recebe 409.
+- **Junto, em commit separado** (api `76327dd`): `help-offers.routes.spec`
+  não definia o `JWT_SECRET` que usa e só passava quando outra suíte o
+  definia antes — 4 testes falhavam rodando sozinhos/na ordem do CI.
+- **Achado fora do escopo** (não corrigido): a migração **049** usa
+  `DROP CONSTRAINT IF EXISTS` / `DROP COLUMN IF EXISTS`, sintaxe só do
+  MariaDB — em MySQL 8.0 ela falha. A cadeia 001–050 roda inteira em
+  MariaDB (o dev é MariaDB, por isso a 049 passou em 2026-09-11); a doc diz
+  "MySQL". Pendência no VGR-RESUMO §6 (5f).
+- **Entre DC1 e DC2** a tela antiga do painel fala o contrato velho
+  (`approverIds`, campo de aprovador): não lê as linhas novas. A DC2 a
+  substitui.
 
