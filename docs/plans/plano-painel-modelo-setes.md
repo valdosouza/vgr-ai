@@ -430,8 +430,8 @@ PS4 que NÃO são documentação e ficam para decisão de Valdo:
    sugerida: aprovador = usuário da sessão (`req.user`) na API, e o campo
    some da tela. Exige rodada própria (mexe em contrato e em decisão de
    segurança). → **Rodada 18 (223–229)**, [plano-dual-control.md](plano-dual-control.md):
-   DC1 API executada em 2026-10-04 (api `ea3184f`); DC2 painel aguarda
-   "pode seguir".
+   DC1 API (api `ea3184f`) e DC2 painel (app `eb9d8f1`) executadas em
+   2026-10-04 — resolvido.
 2. **`locale` apagado no update de usuário pela API** (achado da PS2): o
    `userUpdateDto` não distingue campo ausente de `null` e grava `null`. O
    painel já reenvia o valor atual; falta decidir se a API passa a

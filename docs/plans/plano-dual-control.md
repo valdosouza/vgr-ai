@@ -3,7 +3,8 @@
 > **Rodada 18 — FECHADA em 2026-10-04** (aberta e zerada no mesmo dia;
 > recomendações aceitas nas 4 perguntas). Decisões **223–229** no
 > [VGR-plano.md](../decisions/VGR-plano.md). **DC1 API executada em
-> 2026-10-04** (api `ea3184f`, §6). **DC2 painel aguarda "pode seguir".**
+> 2026-10-04** (api `ea3184f`) e **DC2 painel executada em 2026-10-04**
+> (app `eb9d8f1`) — **FRENTE COMPLETA** (§6). Revelação fora (228).
 > Pedido de Valdo: "vamos corrigir aprovador dual-control" — o
 > achado da PS4 do painel
 > ([plano-painel-modelo-setes.md](plano-painel-modelo-setes.md) §9 item 1,
@@ -91,7 +92,7 @@ DC1 API (C1–C5 + decisões da rodada, migração, testes, docs) → DC2 painel
 | Fase | Conteúdo | Depende de | Estado |
 |---|---|---|---|
 | **DC1 API** | migração (requested_by, approved_by/at, status `void`, legacy_approver_ids, anulação das existentes); ator da sessão; regra 224; auditoria; 404 na entrada inexistente; lista paginada com nomes; testes; docs da API | rodada 18 | **executada em 2026-10-04** (api `ea3184f`) |
-| **DC2 painel** | tela lista + formulário + aprovar na linha (227), sem campo de aprovador; testes; docs do app | DC1 | aguarda "pode seguir" |
+| **DC2 painel** | tela lista + formulário + aprovar na linha (227), sem campo de aprovador; testes; docs do app | DC1 | **executada em 2026-10-04** (app `eb9d8f1`) |
 
 ## 6. Execução
 
@@ -128,4 +129,31 @@ DC1 API (C1–C5 + decisões da rodada, migração, testes, docs) → DC2 painel
 - **Entre DC1 e DC2** a tela antiga do painel fala o contrato velho
   (`approverIds`, campo de aprovador): não lê as linhas novas. A DC2 a
   substitui.
+
+### DC2 painel — 2026-10-04 (app `eb9d8f1`, liberada com "pode seguir")
+
+- **Tela** `DualControlAccessPage` na fábrica de cadastro, desenho das
+  regras do Legal Gate: `RegisterScreen(openRows: false)` + `DualControlBloc`
+  (subclasse do `RegisterBloc`, aprovar pelo `act()`). Lista paginada, mais
+  recentes primeiro, filtro na base legal; linha com status (aguardando /
+  liberada / anulada), base legal, "Pedida por {nome} em …" e "Aprovada por
+  {nome} em …" — nome, nunca e-mail; sem nome vira "—".
+- **Formulário** espelha o DTO: id da entrada do log
+  (`VgrValidators.positiveInteger`, espelho novo de
+  `z.number().int().positive()`, decisão 154) e base legal (obrigatória,
+  até 500). Nenhum campo de aprovador.
+- **Aprovar** só em linha pendente, exige UPDATE da tela + recurso
+  `dual_control_approval`, e fica **desabilitado no pedido que você abriu**
+  ("outra pessoa precisa aprová-la"). Quem é "você": o `userId` do próprio
+  token que a API julga (`sessionUserIdOf` no core) — sem chamada extra;
+  só UX, a API continua recusando o solicitante. A aprovação vai com corpo
+  vazio; resultado pela ponte e a lista recarrega com a resposta do
+  servidor.
+- **Verificação**: admin 389 testes, core 61, validadores 102, mobile 428;
+  `flutter analyze` limpo. Docs do app: feature doc reescrita, inventário,
+  checklist, ARCHITECTURE, README, specs 003/004 do admin emendadas.
+- **Observação do painel inteiro** (não é desta frente, não mexido): as
+  datas aparecem no horário UTC que a API devolve, sem conversão nem
+  rótulo — mesma convenção de 7 telas (auditoria, denúncias,
+  estatísticas, congelamento, mediação). Registrado no VGR-RESUMO §6 (5g).
 
