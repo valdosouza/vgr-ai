@@ -17,8 +17,28 @@
 > `pageSize`/`filter` opcionais em privilégios, interfaces, módulos,
 > usuários, Legal Gate e fila de respondedores; sem `page` a resposta é
 > idêntica à anterior; helper único `shared/http/paged-query.ts`; 1204
-> testes verdes). **PS2 fábrica aguarda "pode seguir".** Execução fase a
-> fase (38).
+> testes verdes). **PS2 liberada em 2026-10-04** ("pode seguir").
+> **PS2 fábrica EXECUTADA em 2026-10-04** (app `f7ebbd7`: `PagedResult`/
+> `PagedQuery` no core; `VgrFormShell`/`VgrPagingBar`/`VgrSearchBar`/
+> `VgrEmptyState` + `showVgrAlert`/`showVgrChoice`; `shared/register`
+> com `RegisterBloc<T, D>` genérico, `shared/feedback` e
+> `shared/session/current_interface.dart`; piloto `privileges` + `users`;
+> guarda da 221 com `interfaces`/`system-modules` na lista de pendência
+> da PS3; admin 359 testes verdes — notas de execução no §7). **PS3
+> liberada em 2026-10-04** ("pode seguir"). **PS3 migração EXECUTADA em
+> 2026-10-04** (app `80cf51d`…`86fe644`, um commit por grupo de módulos:
+> extensão da fábrica com a metade "lista paginada" para fluxos;
+> `interfaces`/`system-modules` na fábrica; Legal Gate e fila de
+> respondedores paginados; catálogos fixos, fluxos, detalhe/fila de
+> moderação na ponte; um `PagedResult` e um `VgrPagingBar` para tudo;
+> guarda da 221 estrita, sem lista de pendência; admin 387 testes verdes —
+> notas no §8). **PS4 liberada em 2026-10-04** ("pode seguir"). **PS4
+> docs EXECUTADA em 2026-10-04** (app `1314904`: checklist novo
+> `docs/adr/ADMIN-SCREENS.md`; `ARCHITECTURE.md` com a seção ADMIN PANEL
+> única e os desvios assumidos; `TESTS.md`/`DESIGN-SYSTEM.md` revistos;
+> `admin-panel.md` reescrito como inventário das 18 telas; varredura dos
+> feature docs; `risk-config.md` criado; índice completo). **FRENTE
+> COMPLETA** — duas pendências de decisão ficam no §9.
 
 ---
 
@@ -247,9 +267,9 @@ frente.
 |---|---|---|
 | **PS0 API** | paginação nas listas do painel (compatível), spec 004 | rodada 17 | ✅ 2026-09-21 (`cecc1e0`) |
 | **PS1 shell** | HomeModule shell + RouterOutlet + colunas + drawer + Sair + `VgrPage` em todas as páginas + MenuBloc com seleção + testes | rodada 17 | ✅ 2026-09-21 |
-| **PS2 fábrica** | `PagedResult`, `VgrFormShell`/`VgrPagingBar`/`VgrSearchBar`/`VgrEmptyState`, `shared/register`, `shared/feedback`, `shared/session`; piloto `privileges` + `users` | PS0, PS1 |
-| **PS3 migração** | demais módulos na fábrica/ponte, dedupe de paginação | PS2 |
-| **PS4 docs** | ADRs, feature doc, checklist, resumo | PS3 |
+| **PS2 fábrica** | `PagedResult`, `VgrFormShell`/`VgrPagingBar`/`VgrSearchBar`/`VgrEmptyState`, `shared/register`, `shared/feedback`, `shared/session`; piloto `privileges` + `users` | PS0, PS1 | ✅ 2026-10-04 (`f7ebbd7`) |
+| **PS3 migração** | demais módulos na fábrica/ponte, dedupe de paginação | PS2 | ✅ 2026-10-04 (`80cf51d`…`86fe644`) |
+| **PS4 docs** | ADRs, feature doc, checklist, resumo | PS3 | ✅ 2026-10-04 (`1314904`) |
 
 PS0 e PS1 são independentes e podem correr em paralelo (sessões
 distintas, claim na memória). PS1 é a maior entrega visível: ~20 páginas
@@ -294,6 +314,131 @@ trocam `VgrScaffold` por `VgrPage`.
    em tela, como a 133 proíbe widget cru)? *Recomendação*: sim.
 8. **Ordem**: PS0 (API) e PS1 (shell) em paralelo, PS2 depois de ambas?
    *Recomendação*: sim.
+
+## 7. Notas de execução da PS2 (2026-10-04)
+
+Escolhas de implementação dentro das decisões 215–222 — nenhuma decisão
+nova; registradas para a PS3/PS4 não as redescobrirem.
+
+1. **Bloc genérico em vez de um bloc à mão por módulo.** `RegisterBloc<T, D>`
+   (entidade, rascunho) faz o ciclo lista ↔ formulário da 217 uma vez; o
+   módulo declara o seu como alias (`typedef PrivilegeBloc =
+   RegisterBloc<PrivilegeEntity, PrivilegeDraft>`) e implementa
+   `RegisterRepository<T, D>` (lista paginada + criar/alterar/excluir). A
+   tela é `RegisterScreen<T, D>` + configuração. Setes tem um bloc por
+   módulo; aqui a PS3 migra ~6 CRUDs sem repetir os estados.
+2. **`CurrentInterface` por chave, não global.** No setes a navegação
+   grava a interface corrente num global; no VGR o `MenuBloc` do shell já
+   guarda a seleção (PS1) e um global ficaria velho num F5 ou deep link.
+   Cada tela passa a sua `i18n_key`; a resposta vem do `SessionAccess`.
+3. **Título NÃO viaja como `arguments`** (§3.1 previa): cada página
+   mantém a sua chave de tradução — mesma informação, sem depender de ter
+   chegado pelo menu.
+4. **Severidade da ponte (221)**: sem status (sem resposta) ou 5xx →
+   dialog; 4xx → mensagem transitória, sempre traduzida por código. A API
+   não devolve código de suporte (`supportRef`), então o dialog técnico
+   mostra só o texto traduzido.
+5. **Guarda da 221 com catraca**: `interfaces` e `system-modules` (as duas
+   telas que ainda chamam `showVgr*`) ficam numa lista de pendência que
+   só encolhe — um segundo teste falha se um arquivo listado deixar de
+   ofender. A PS3 esvazia a lista; `change_password_page` e
+   `user_privileges_page` já passaram para a ponte nesta fase.
+6. **Exclusão mora no formulário** (como `SetesFormShell`), não mais num
+   ícone por linha; sem UPDATE a linha abre o formulário só leitura, para
+   o registro continuar consultável.
+7. **Validadores novos** (espelhos da 154): `upperSnakeCase`
+   (`privilegeSaveDto`), `newPassword` (só o comprimento de
+   `newPasswordSchema`, sem trim; o refine "senha previsível" fica só na
+   API e volta como 422 no campo `password`, ancorado pelo formulário) e
+   `optional(rule)`.
+8. **Achado — `locale` apagado ao editar usuário**: a API grava `locale`
+   em todo `PUT /api/users/:id` e trata ausente como `null`; o painel
+   nunca enviava, então editar o nome de alguém zerava o idioma salvo.
+   Corrigido no app (o update reenvia o `locale` atual). **Pendente de
+   decisão de Valdo**: se a API deve passar a preservar o valor quando o
+   campo não vem (hoje o DTO não distingue ausente de `null`).
+9. **Tamanho de página não é persistido** (o setes persiste): vale durante
+   a vida da tela. Entra se fizer falta no uso.
+
+## 8. Notas de execução da PS3 (2026-10-04)
+
+Dentro das decisões 215–222; nenhuma decisão nova. Onde a execução se
+afastou do §3.4, o motivo está aqui.
+
+1. **Legal Gate e fila de respondedores não são CRUDs** (o §3.4 os punha
+   na fábrica): kill switch, regra versionada com aprovação por outra
+   pessoa, aprovar/negar fila. Ganharam só a METADE LISTA da fábrica —
+   `PagedListBloc<T>` (consulta, última página, recarga silenciosa e
+   `act()`: ação de linha → sinal para a ponte → recarga silenciosa, o
+   servidor dá a palavra final) + `PagedListScreen`. `RegisterBloc` passou
+   a estender `PagedListBloc` (sem mudança de comportamento).
+2. **Regras do Legal Gate**: fábrica com formulário só de PROPOSTA (regra
+   é versionada — mudança é proposta nova, 107), linhas que não abrem,
+   aprovar/rejeitar na linha. O motivo aparece e vira obrigatório só para
+   status diferente de `allowed` (78) e **não vem pré-selecionado** (antes
+   vinha `no_control`) — obrigar a escolha explícita. Os dois filtros
+   exatos (capacidade, jurisdição) viraram o filtro de texto da API
+   (capacidade / código / base legal).
+3. **Capacidades**: a jurisdição continua sendo digitada no cabeçalho;
+   nada é buscado antes dela (o vazio diz o que falta).
+4. **Campos novos na fábrica**: escolha (dropdown), checklist (com
+   `ordered` = ordem do clique, usado na ordem do menu dos módulos) e
+   `visibleWhen`; catálogos pequenos de opções carregam uma vez ao lado da
+   lista (`RegisterLookupCubit`, forma sem paginação da API, que a 220
+   mantém para isso).
+5. **Telas de fluxo** (dual-control, case-freeze, reward-mediation,
+   detalhe do caso, fila de moderação) e **catálogos fixos** mantêm blocs
+   próprios; o resultado das ações passa pela ponte a partir de um
+   listener. Erros de busca/carga continuam como estado da tela.
+6. **Paginação deduplicada**: `ReportPageEntity`, `QueuePageEntity` e
+   `AuditPageEntity` (três cópias do mesmo envelope) viraram aliases de
+   `PagedResult<T>`; os três pagers feitos à mão viraram `VgrPagingBar`.
+7. **Defeitos achados e corrigidos de passagem** (todos com teste):
+   - fila de respondedores, risk-config, category-forms e monetization:
+     uma ação recusada trocava a tela inteira por erro, com o texto cru da
+     API em inglês (contra 80/83) — agora a lista fica e a recusa vai
+     traduzida pela ponte;
+   - dual-control: uma aprovação recusada voltava ao formulário inicial e
+     a solicitação em andamento sumia da vista — agora a tela fica no passo
+     em que estava;
+   - entradas obrigatórias ignoradas em silêncio (percentual de taxa fora
+     de 0..100, base legal/ID do log no dual-control, versão/texto dos
+     critérios de mediação) — agora viram a pendência do formulário;
+   - tooltips de aprovar/negar respondedor diziam "Salvar"/"Cancelar".
+8. **Mensagens de sucesso** novas onde antes não havia retorno nenhum
+   (salvar tier, campo de categoria, regra de taxa, resolver respondedor).
+9. **Catálogos de tradução**: 19 chaves por idioma sem uso removidas.
+10. **Para a PS4**: além do previsto no §3.5, varrer os feature docs do
+    app (`legal-policy.md`, `panic-responders.md`, `monetization-config.md`,
+    `dual-control-access.md`, `case-freeze.md`, `admin-audit.md`) — ainda
+    descrevem erros inline e filtros antigos; `report-moderation.md`,
+    `ARCHITECTURE.md`, `TESTS.md` e `admin-panel.md` já foram ajustados.
+
+## 9. Fechamento da frente e pendências (2026-10-04)
+
+PS0–PS4 executadas; critérios de sucesso do §5 atendidos (1–7). Achados da
+PS4 que NÃO são documentação e ficam para decisão de Valdo:
+
+1. ⚠️ **Dual-control com aprovador digitado** (risco à decisão 45): a API
+   (`api/src/modules/admin-access/dual-control.dto.ts`) recebe o
+   `approverId` no CORPO da requisição, e o painel o pede num campo de
+   texto. Um único admin com os dois grants (`dual_control_access` UPDATE +
+   `dual_control_approval` UPDATE) pode registrar duas aprovações com ids
+   digitados diferentes e atingir sozinho o limiar de 2 aprovadores
+   distintos — o duplo controle vira controle simples. Vem de quando o
+   painel não tinha sessão (fase 1); hoje há login com JWT. Correção
+   sugerida: aprovador = usuário da sessão (`req.user`) na API, e o campo
+   some da tela. Exige rodada própria (mexe em contrato e em decisão de
+   segurança). → **Rodada 18 (223–229)**, [plano-dual-control.md](plano-dual-control.md):
+   DC1 API (api `ea3184f`) e DC2 painel (app `eb9d8f1`) executadas em
+   2026-10-04 — resolvido.
+2. **`locale` apagado no update de usuário pela API** (achado da PS2): o
+   `userUpdateDto` não distingue campo ausente de `null` e grava `null`. O
+   painel já reenvia o valor atual; falta decidir se a API passa a
+   preservar quando o campo não vem.
+3. Desvio documentado, não pendência: o painel não tem camada de usecase
+   (blocs falam com o contrato do repositório; o mobile tem). Registrado em
+   `ARCHITECTURE.md` como a forma do painel.
 
 ## Fora de escopo (registrado, não some)
 - Convite de equipe por e-mail (75), refresh token do painel (73).

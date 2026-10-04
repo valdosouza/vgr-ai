@@ -3069,6 +3069,58 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
 
      **Rodada 17 ZERADA** (decisões 215–222).
 
+## Duplo controle de verdade (rodada 18 — corrige a implementação da decisão 45)
+
+> Aberta e fechada em 2026-10-04, a pedido de Valdo ("vamos corrigir
+> aprovador dual-control"), a partir do achado da PS4 do painel. Plano:
+> [plano-dual-control.md](../plans/plano-dual-control.md). Evidência: o
+> aprovador vinha do corpo da requisição (texto livre), então um admin com
+> os dois grants aprovava duas vezes e liberava sozinho — a 45 não estava
+> sendo cumprida. Nada consome o status liberado hoje (não existe rota de
+> revelação), então o risco era latente, não explorado.
+
+223. **Solicitante e aprovador vêm da SESSÃO, nunca do corpo.** O ator é
+     `req.user` (JWT do painel, 67/112/114); o `approverId` some do contrato
+     da API e o campo de texto some da tela. A solicitação passa a registrar
+     quem a abriu (`requested_by`).
+
+224. **Regra do portão: padrão da casa (107, 141d) — o pedido é a primeira
+     autorização; UMA aprovação de OUTRA pessoa libera.** Mínimo de 2 pessoas
+     distintas, como o descongelamento de caso. O solicitante tentando
+     aprovar a própria solicitação é recusado (422 `BUSINESS_RULE`). A
+     aprovação é uma escrita condicional (`… WHERE status = 'pending'`):
+     duas aprovações simultâneas não se sobrescrevem — a segunda recebe 409.
+     Colunas `approved_by` / `approved_at` na própria solicitação (uma
+     aprovação basta; a tabela filha pensada no plano deixa de ser
+     necessária).
+
+225. **Solicitações existentes são ANULADAS e mantidas como histórico**:
+     status novo `void`, nunca valem como liberadas; os aprovadores digitados
+     ficam preservados em `legacy_approver_ids` só para registro.
+
+226. **Correções objetivas aplicadas junto** (aplicam 45(c) e 116, não são
+     escolha): abrir e aprovar entram na trilha `tb_admin_audit`; pedido para
+     entrada inexistente do log de responsabilização é recusado (404
+     `NOT_FOUND`); o comentário que dizia "não há criptografia" é corrigido
+     (o log é cifrado desde a migração 024, 44/111).
+
+227. **Tela do painel: lista paginada + formulário de pedido + aprovar na
+     linha** (desenho das regras do Legal Gate). A lista segue a 220
+     (`page`/`pageSize`/`filter` na base legal, mais recentes primeiro);
+     "Nova solicitação" pelo formulário da fábrica (INSERT); "Aprovar" na
+     linha exige UPDATE + `dual_control_approval` e fica desabilitado para
+     o próprio solicitante e para o que não está pendente. A linha mostra
+     quem pediu e quem aprovou pelo NOME (equipe do painel, como a trilha de
+     auditoria — nunca e-mail).
+
+228. **A revelação (decifrar a entrada liberada) fica FORA desta rodada.**
+     Terá rodada própria depois da revisão jurídica que a própria 45 pede
+     (⚠️ advogado): cada tentativa logada, uso único, prazo de validade.
+
+229. **Fatiamento: DC1 API → DC2 painel**, cada fase por "pode seguir" (38).
+
+     **Rodada 18 ZERADA** (decisões 223–229).
+
 ## Critérios de sucesso
 
 1. Usuário consegue registrar uma denúncia escolhendo categoria + objeto/
