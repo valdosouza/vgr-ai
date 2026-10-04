@@ -32,8 +32,13 @@
 > respondedores paginados; catálogos fixos, fluxos, detalhe/fila de
 > moderação na ponte; um `PagedResult` e um `VgrPagingBar` para tudo;
 > guarda da 221 estrita, sem lista de pendência; admin 387 testes verdes —
-> notas no §8). **PS4 docs aguarda "pode seguir".** Execução fase a fase
-> (38).
+> notas no §8). **PS4 liberada em 2026-10-04** ("pode seguir"). **PS4
+> docs EXECUTADA em 2026-10-04** (app `1314904`: checklist novo
+> `docs/adr/ADMIN-SCREENS.md`; `ARCHITECTURE.md` com a seção ADMIN PANEL
+> única e os desvios assumidos; `TESTS.md`/`DESIGN-SYSTEM.md` revistos;
+> `admin-panel.md` reescrito como inventário das 18 telas; varredura dos
+> feature docs; `risk-config.md` criado; índice completo). **FRENTE
+> COMPLETA** — duas pendências de decisão ficam no §9.
 
 ---
 
@@ -264,7 +269,7 @@ frente.
 | **PS1 shell** | HomeModule shell + RouterOutlet + colunas + drawer + Sair + `VgrPage` em todas as páginas + MenuBloc com seleção + testes | rodada 17 | ✅ 2026-09-21 |
 | **PS2 fábrica** | `PagedResult`, `VgrFormShell`/`VgrPagingBar`/`VgrSearchBar`/`VgrEmptyState`, `shared/register`, `shared/feedback`, `shared/session`; piloto `privileges` + `users` | PS0, PS1 | ✅ 2026-10-04 (`f7ebbd7`) |
 | **PS3 migração** | demais módulos na fábrica/ponte, dedupe de paginação | PS2 | ✅ 2026-10-04 (`80cf51d`…`86fe644`) |
-| **PS4 docs** | ADRs, feature doc, checklist, resumo | PS3 |
+| **PS4 docs** | ADRs, feature doc, checklist, resumo | PS3 | ✅ 2026-10-04 (`1314904`) |
 
 PS0 e PS1 são independentes e podem correr em paralelo (sessões
 distintas, claim na memória). PS1 é a maior entrega visível: ~20 páginas
@@ -408,6 +413,30 @@ afastou do §3.4, o motivo está aqui.
     `dual-control-access.md`, `case-freeze.md`, `admin-audit.md`) — ainda
     descrevem erros inline e filtros antigos; `report-moderation.md`,
     `ARCHITECTURE.md`, `TESTS.md` e `admin-panel.md` já foram ajustados.
+
+## 9. Fechamento da frente e pendências (2026-10-04)
+
+PS0–PS4 executadas; critérios de sucesso do §5 atendidos (1–7). Achados da
+PS4 que NÃO são documentação e ficam para decisão de Valdo:
+
+1. ⚠️ **Dual-control com aprovador digitado** (risco à decisão 45): a API
+   (`api/src/modules/admin-access/dual-control.dto.ts`) recebe o
+   `approverId` no CORPO da requisição, e o painel o pede num campo de
+   texto. Um único admin com os dois grants (`dual_control_access` UPDATE +
+   `dual_control_approval` UPDATE) pode registrar duas aprovações com ids
+   digitados diferentes e atingir sozinho o limiar de 2 aprovadores
+   distintos — o duplo controle vira controle simples. Vem de quando o
+   painel não tinha sessão (fase 1); hoje há login com JWT. Correção
+   sugerida: aprovador = usuário da sessão (`req.user`) na API, e o campo
+   some da tela. Exige rodada própria (mexe em contrato e em decisão de
+   segurança).
+2. **`locale` apagado no update de usuário pela API** (achado da PS2): o
+   `userUpdateDto` não distingue campo ausente de `null` e grava `null`. O
+   painel já reenvia o valor atual; falta decidir se a API passa a
+   preservar quando o campo não vem.
+3. Desvio documentado, não pendência: o painel não tem camada de usecase
+   (blocs falam com o contrato do repositório; o mobile tem). Registrado em
+   `ARCHITECTURE.md` como a forma do painel.
 
 ## Fora de escopo (registrado, não some)
 - Convite de equipe por e-mail (75), refresh token do painel (73).
