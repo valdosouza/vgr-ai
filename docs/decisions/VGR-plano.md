@@ -3121,6 +3121,34 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
 
      **Rodada 18 ZERADA** (decisões 223–229).
 
+## Pendências do painel: edição de usuário, motor do banco, datas (rodada 19)
+
+> Aberta e fechada em 2026-10-04, a partir das pendências 5e/5f/5g do
+> VGR-RESUMO §6 (respostas de Valdo: "5e - sim | 5f - MariaDb | 5g - ok",
+> com o 5g e dois pontos vizinhos esclarecidos na mesma rodada).
+> Plano: [plano-rodada-19-pendencias.md](../plans/plano-rodada-19-pendencias.md).
+
+230. **Na edição de usuário, campo ausente MANTÉM o valor salvo** (5e) —
+     vale para `locale` e também para `active` (ausente virava `'S'` e
+     reativaria um usuário desativado). `locale: null` explícito limpa. A
+     criação não muda (`active` padrão `'S'`, `locale` nulo). O reenvio que
+     o painel fazia como contorno deixa de ser necessário.
+
+231. **O banco de produção é MariaDB** (5f). A migração 049 fica como está
+     (sintaxe `… IF EXISTS` do MariaDB é permitida); compatibilidade com
+     MySQL deixa de ser requisito; as migrações são validadas em MariaDB
+     (10.11 usado na DC1). A documentação da stack passa a dizer MariaDB.
+
+232. **Datas: a API continua entregando UTC; painel E app mobile mostram no
+     fuso local** do navegador/aparelho (5g), por UM formatador
+     compartilhado no `core` que substitui as cópias por tela (9 no painel,
+     4 no mobile).
+
+233. **Fatiamento: R1 API (230 + docs da 231) → R2 app (232)**, liberadas
+     juntas por Valdo ("pode seguir R1 e R2").
+
+     **Rodada 19 ZERADA** (decisões 230–233).
+
 ## Critérios de sucesso
 
 1. Usuário consegue registrar uma denúncia escolhendo categoria + objeto/
