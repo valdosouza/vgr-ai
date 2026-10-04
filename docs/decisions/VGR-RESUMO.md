@@ -165,7 +165,9 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     é recurso kind 'R' (migração 035), fora do menu, e nenhuma tela linka
     para ela; (b) os filtros de data (auditoria, busca de denúncias) vão
     como dia UTC, enquanto as datas na tela são locais desde a 232 — perto
-    da meia-noite uma linha pode cair fora do dia digitado.
+    da meia-noite uma linha pode cair fora do dia digitado. → **Decididos na
+    rodada 20 (234–236)**: mediação entra no menu; o painel converte o dia
+    local para UTC — [plano-rodada-20-painel.md](../plans/plano-rodada-20-painel.md).
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa

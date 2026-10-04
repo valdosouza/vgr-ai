@@ -3149,6 +3149,32 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
 
      **Rodada 19 ZERADA** (decisões 230–233).
 
+## Teste do painel no navegador: mediação no menu e filtros de data (rodada 20)
+
+> Aberta e fechada em 2026-10-04, a partir dos dois pontos que o teste do
+> painel no navegador deixou para decisão (VGR-RESUMO §6, 5h). Respostas de
+> Valdo: "(a) Mediação precisa entrar no menu do painel admin... (b) sim".
+> Plano: [plano-rodada-20-painel.md](../plans/plano-rodada-20-painel.md).
+
+234. **A mediação de recompensa entra no menu do painel.** `reward_mediation`
+     deixa de ser recurso kind 'R' (migração 035) e vira tela kind 'T', no
+     grupo Operações, logo depois de Configuração de Monetização. O guard da
+     API não muda (`reward_mediation` UPDATE nas rotas de mediação); quem
+     tem VIEW passa a ver o item no menu.
+
+235. **Filtros de data do painel: o dia digitado é o dia LOCAL de quem
+     opera**, convertido para instantes UTC antes de ir à API — início = 00:00
+     local, fim = 23:59:59.999 local (a API já aceita instante ISO e trata o
+     `to` com hora como inclusivo; nada muda nela). Vale para a trilha de
+     auditoria e a busca de denúncias. As estatísticas ficam fora: os baldes
+     de dia/semana/mês são cortados em UTC pela própria API, e converter só o
+     intervalo cortaria o primeiro e o último balde — ponto registrado à parte.
+
+236. **Fatiamento: M1 API (migração 051 + docs) → M2 painel (conversão das
+     datas + testes + docs)**, cada fase por "pode seguir" (38).
+
+     **Rodada 20 ZERADA** (decisões 234–236).
+
 ## Critérios de sucesso
 
 1. Usuário consegue registrar uma denúncia escolhendo categoria + objeto/
