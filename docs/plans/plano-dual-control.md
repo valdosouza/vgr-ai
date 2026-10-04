@@ -1,0 +1,94 @@
+# Plano — Duplo controle de verdade (decisão 45)
+
+> **Rodada 18 — FECHADA em 2026-10-04** (aberta e zerada no mesmo dia;
+> recomendações aceitas nas 4 perguntas). Decisões **223–229** no
+> [VGR-plano.md](../decisions/VGR-plano.md). **DC1 API aguarda "pode
+> seguir".** Pedido de Valdo: "vamos corrigir aprovador dual-control" — o
+> achado da PS4 do painel
+> ([plano-painel-modelo-setes.md](plano-painel-modelo-setes.md) §9 item 1,
+> VGR-RESUMO §6 item 5d). Plano antes de codar; execução fase a fase (38).
+
+---
+
+## 1. Contexto
+
+A decisão 45 diz: nenhum administrador isolado decripta dado de
+responsabilização — exige (a) base legal documentada ou emergência
+justificada, (b) autorização de pelo menos 2 pessoas distintas e (c) toda
+tentativa registrada permanentemente.
+
+O portão foi construído na fase 1 do painel (tarefa 06, API task 31), quando
+o painel ainda não tinha sessão: o "aprovador" era um texto qualquer. O
+painel tem login com JWT desde as decisões 67/112/114, mas o portão nunca foi
+revisto.
+
+## 2. O que está errado hoje (evidência)
+
+| # | Problema | Evidência |
+|---|---|---|
+| E1 | **O aprovador é o que o corpo da requisição disser.** Um admin com os dois grants posta duas aprovações com ids digitados diferentes e chega sozinho a "2 aprovadores distintos" — o duplo controle vira controle simples. | `api/src/modules/admin-access/dual-control.dto.ts` (`approverId: z.string()` no corpo); `dual-control.controller.ts` (`service.addApproval(id, body.approverId)`); campo `approver-id-field` na tela |
+| E2 | Quem ABRIU a solicitação não é registrado. | `tb_dual_control_access_request` (migração 016) não tem `requested_by`; `createRequest` não recebe ator |
+| E3 | Nada vai para a trilha administrativa — fere 45(c) e a 116. | o controller não chama `auditFromRequest` (o case-freeze, mesmo padrão de duplo controle, chama) |
+| E4 | O id do log de responsabilização não é validado: pede-se acesso a uma entrada que não existe. | `accountability_log_entry_id INT NOT NULL`, sem FK nem checagem |
+| E5 | Duas aprovações simultâneas se sobrescrevem (lê o JSON, acrescenta, regrava). | `addApproval` → `findRequestById` + `persistApproval` sem trava |
+| E6 | A tela não permite o segundo admin aprovar pela própria sessão: é um fluxo de uma solicitação só, que vive na memória do bloc de quem a criou. | `dual_control_request_page.dart` (`_requestId` no bloc) |
+| E7 | Comentário desatualizado: diz que "não existe criptografia" — o log é cifrado em repouso desde a migração 024 (44/111). | `dual-control.interface.ts` |
+
+Contexto que limita o risco HOJE: **nada consome o status `granted`** —
+não existe rota que decifre uma entrada do log (o log só é escrito,
+`shared/audit/accountability.ts`). O portão protege uma revelação que ainda
+não foi construída. Corrigir agora garante que a revelação, quando vier,
+encaixe num portão íntegro.
+
+## 3. Correções objetivas (não são escolha — aplicam a 45 e a 116)
+
+- **C1** — Aprovador e solicitante vêm da SESSÃO (`req.user`), nunca do
+  corpo; o campo de texto sai da tela (corrige E1, E2).
+- **C2** — Abrir e aprovar entram em `tb_admin_audit` (`auditFromRequest`,
+  ação `state_change`, entidade `dual_control_access`) — corrige E3.
+- **C3** — Solicitação para entrada inexistente do log é recusada (404
+  `NOT_FOUND`) — corrige E4.
+- **C4** — Corrida (E5) resolvida por escrita condicional (`UPDATE …
+  WHERE status = 'pending'`; nenhuma linha afetada = 409). Com a resposta
+  1(A) uma aprovação basta, então `approved_by`/`approved_at` na própria
+  solicitação substituem a tabela filha pensada aqui (decisão 224); o JSON
+  `approver_ids` vira `legacy_approver_ids` (225).
+- **C5** — Comentário do E7 corrigido.
+
+## 4. Perguntas da rodada 18 — RESPONDIDAS em 2026-10-04 (decisões 223–229; recomendações aceitas)
+
+1. **Quantas pessoas e quem conta?**
+   - (A) Padrão da casa (107, 141d): **quem abre a solicitação já é a
+     primeira autorização; UMA aprovação de outra pessoa libera.** Mínimo de
+     2 pessoas, mesmo desenho do descongelamento de caso. *(Recomendado)*
+   - (B) Duas aprovações de 2 pessoas distintas, podendo o solicitante ser
+     uma delas (mínimo 2 pessoas, um clique a mais — o limiar atual).
+   - (C) Duas aprovações de 2 pessoas distintas, NENHUMA o solicitante
+     (mínimo 3 pessoas).
+2. **Solicitações existentes** (aprovadores digitados — não confiáveis):
+   - (A) Ficam como histórico com um status novo `void` (anulada: aprovação
+     pré-correção), nunca valem como liberadas. *(Recomendado)*
+   - (B) Apagadas na migração (dado só de desenvolvimento).
+3. **Tela do painel:**
+   - (A) Lista paginada das solicitações (mais recentes primeiro, filtro
+     por base legal), "Nova solicitação" pelo formulário da fábrica, e
+     "Aprovar" na linha — desabilitado para quem já autorizou; mostra quem
+     pediu e quem aprovou pelo nome (equipe identificada, nunca e-mail —
+     160). Mesmo desenho das regras do Legal Gate. *(Recomendado)*
+   - (B) Mantém a tela de uma solicitação só, com busca por id para o
+     segundo admin aprovar.
+4. **A revelação (decifrar a entrada liberada):**
+   - (A) Fica fora desta rodada — o portão fica íntegro agora; a revelação
+     espera a revisão jurídica pedida na própria 45 (⚠️ advogado) e terá
+     rodada própria (toda tentativa logada, uso único, prazo). *(Recomendado)*
+   - (B) Construir a revelação nesta rodada.
+
+## 5. Fatiamento proposto
+DC1 API (C1–C5 + decisões da rodada, migração, testes, docs) → DC2 painel
+(tela nova, testes, docs). Cada fase por "pode seguir" (38).
+
+| Fase | Conteúdo | Depende de | Estado |
+|---|---|---|---|
+| **DC1 API** | migração (requested_by, approved_by/at, status `void`, legacy_approver_ids, anulação das existentes); ator da sessão; regra 224; auditoria; 404 na entrada inexistente; lista paginada com nomes; testes; docs da API | rodada 18 | aguarda "pode seguir" |
+| **DC2 painel** | tela lista + formulário + aprovar na linha (227), sem campo de aprovador; testes; docs do app | DC1 | — |
+
