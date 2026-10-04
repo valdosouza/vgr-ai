@@ -25,7 +25,15 @@
 > `shared/session/current_interface.dart`; piloto `privileges` + `users`;
 > guarda da 221 com `interfaces`/`system-modules` na lista de pendência
 > da PS3; admin 359 testes verdes — notas de execução no §7). **PS3
-> migração aguarda "pode seguir".** Execução fase a fase (38).
+> liberada em 2026-10-04** ("pode seguir"). **PS3 migração EXECUTADA em
+> 2026-10-04** (app `80cf51d`…`86fe644`, um commit por grupo de módulos:
+> extensão da fábrica com a metade "lista paginada" para fluxos;
+> `interfaces`/`system-modules` na fábrica; Legal Gate e fila de
+> respondedores paginados; catálogos fixos, fluxos, detalhe/fila de
+> moderação na ponte; um `PagedResult` e um `VgrPagingBar` para tudo;
+> guarda da 221 estrita, sem lista de pendência; admin 387 testes verdes —
+> notas no §8). **PS4 docs aguarda "pode seguir".** Execução fase a fase
+> (38).
 
 ---
 
@@ -255,7 +263,7 @@ frente.
 | **PS0 API** | paginação nas listas do painel (compatível), spec 004 | rodada 17 | ✅ 2026-09-21 (`cecc1e0`) |
 | **PS1 shell** | HomeModule shell + RouterOutlet + colunas + drawer + Sair + `VgrPage` em todas as páginas + MenuBloc com seleção + testes | rodada 17 | ✅ 2026-09-21 |
 | **PS2 fábrica** | `PagedResult`, `VgrFormShell`/`VgrPagingBar`/`VgrSearchBar`/`VgrEmptyState`, `shared/register`, `shared/feedback`, `shared/session`; piloto `privileges` + `users` | PS0, PS1 | ✅ 2026-10-04 (`f7ebbd7`) |
-| **PS3 migração** | demais módulos na fábrica/ponte, dedupe de paginação | PS2 |
+| **PS3 migração** | demais módulos na fábrica/ponte, dedupe de paginação | PS2 | ✅ 2026-10-04 (`80cf51d`…`86fe644`) |
 | **PS4 docs** | ADRs, feature doc, checklist, resumo | PS3 |
 
 PS0 e PS1 são independentes e podem correr em paralelo (sessões
@@ -346,6 +354,60 @@ nova; registradas para a PS3/PS4 não as redescobrirem.
    campo não vem (hoje o DTO não distingue ausente de `null`).
 9. **Tamanho de página não é persistido** (o setes persiste): vale durante
    a vida da tela. Entra se fizer falta no uso.
+
+## 8. Notas de execução da PS3 (2026-10-04)
+
+Dentro das decisões 215–222; nenhuma decisão nova. Onde a execução se
+afastou do §3.4, o motivo está aqui.
+
+1. **Legal Gate e fila de respondedores não são CRUDs** (o §3.4 os punha
+   na fábrica): kill switch, regra versionada com aprovação por outra
+   pessoa, aprovar/negar fila. Ganharam só a METADE LISTA da fábrica —
+   `PagedListBloc<T>` (consulta, última página, recarga silenciosa e
+   `act()`: ação de linha → sinal para a ponte → recarga silenciosa, o
+   servidor dá a palavra final) + `PagedListScreen`. `RegisterBloc` passou
+   a estender `PagedListBloc` (sem mudança de comportamento).
+2. **Regras do Legal Gate**: fábrica com formulário só de PROPOSTA (regra
+   é versionada — mudança é proposta nova, 107), linhas que não abrem,
+   aprovar/rejeitar na linha. O motivo aparece e vira obrigatório só para
+   status diferente de `allowed` (78) e **não vem pré-selecionado** (antes
+   vinha `no_control`) — obrigar a escolha explícita. Os dois filtros
+   exatos (capacidade, jurisdição) viraram o filtro de texto da API
+   (capacidade / código / base legal).
+3. **Capacidades**: a jurisdição continua sendo digitada no cabeçalho;
+   nada é buscado antes dela (o vazio diz o que falta).
+4. **Campos novos na fábrica**: escolha (dropdown), checklist (com
+   `ordered` = ordem do clique, usado na ordem do menu dos módulos) e
+   `visibleWhen`; catálogos pequenos de opções carregam uma vez ao lado da
+   lista (`RegisterLookupCubit`, forma sem paginação da API, que a 220
+   mantém para isso).
+5. **Telas de fluxo** (dual-control, case-freeze, reward-mediation,
+   detalhe do caso, fila de moderação) e **catálogos fixos** mantêm blocs
+   próprios; o resultado das ações passa pela ponte a partir de um
+   listener. Erros de busca/carga continuam como estado da tela.
+6. **Paginação deduplicada**: `ReportPageEntity`, `QueuePageEntity` e
+   `AuditPageEntity` (três cópias do mesmo envelope) viraram aliases de
+   `PagedResult<T>`; os três pagers feitos à mão viraram `VgrPagingBar`.
+7. **Defeitos achados e corrigidos de passagem** (todos com teste):
+   - fila de respondedores, risk-config, category-forms e monetization:
+     uma ação recusada trocava a tela inteira por erro, com o texto cru da
+     API em inglês (contra 80/83) — agora a lista fica e a recusa vai
+     traduzida pela ponte;
+   - dual-control: uma aprovação recusada voltava ao formulário inicial e
+     a solicitação em andamento sumia da vista — agora a tela fica no passo
+     em que estava;
+   - entradas obrigatórias ignoradas em silêncio (percentual de taxa fora
+     de 0..100, base legal/ID do log no dual-control, versão/texto dos
+     critérios de mediação) — agora viram a pendência do formulário;
+   - tooltips de aprovar/negar respondedor diziam "Salvar"/"Cancelar".
+8. **Mensagens de sucesso** novas onde antes não havia retorno nenhum
+   (salvar tier, campo de categoria, regra de taxa, resolver respondedor).
+9. **Catálogos de tradução**: 19 chaves por idioma sem uso removidas.
+10. **Para a PS4**: além do previsto no §3.5, varrer os feature docs do
+    app (`legal-policy.md`, `panic-responders.md`, `monetization-config.md`,
+    `dual-control-access.md`, `case-freeze.md`, `admin-audit.md`) — ainda
+    descrevem erros inline e filtros antigos; `report-moderation.md`,
+    `ARCHITECTURE.md`, `TESTS.md` e `admin-panel.md` já foram ajustados.
 
 ## Fora de escopo (registrado, não some)
 - Convite de equipe por e-mail (75), refresh token do painel (73).
