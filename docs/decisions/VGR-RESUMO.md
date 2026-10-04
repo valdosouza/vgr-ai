@@ -153,6 +153,19 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     edição mantém `active`/`locale` ausentes; produção em MariaDB; datas no
     fuso local no painel e no mobile. Detalhe:
     [plano-rodada-19-pendencias.md](../plans/plano-rodada-19-pendencias.md).
+5h. **Teste do painel no navegador (2026-10-04)** — primeiro desde a frente
+    PS: Chromium no build web de release, MariaDB 10.11 + API, dois admins
+    com TOTP. Login/2FA, menu, cadastros com paginação e filtro, duplo
+    controle entre duas pessoas, trilha de auditoria, sair, drawer e idioma
+    funcionaram. Corrigidos no caminho (app `fdf8e34`, cada um com teste que
+    falha sem a correção): o menu inteiro sumia da árvore de acessibilidade
+    (leitor de tela não chegava nele); trocar o idioma não repintava a tela
+    aberta; o paginador dizia "1 registros". **Dois pontos pedem decisão**:
+    (a) a tela de mediação de recompensa só abre pela URL — `reward_mediation`
+    é recurso kind 'R' (migração 035), fora do menu, e nenhuma tela linka
+    para ela; (b) os filtros de data (auditoria, busca de denúncias) vão
+    como dia UTC, enquanto as datas na tela são locais desde a 232 — perto
+    da meia-noite uma linha pode cair fora do dia digitado.
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa
