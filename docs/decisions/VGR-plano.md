@@ -1845,11 +1845,9 @@ item 2 → **104**, item 3 → **105**, item 8 → **106** (escopo L0+L1),
 item 4 → **107**, item 5 → **108**, item 9 → **109**.
 
 **Código do Legal Gate (L0+L1) está DESBLOQUEADO** — todos os itens que o
-travavam foram decididos. Restam dois itens que não bloqueiam: 6 (dado
-congelado — comportamento de leitura, decide-se antes de existir a primeira
-regra de bloqueio real) e 7 (registro da avaliação de IA — pertence à L2), e o
-item 10 (controle de localização — pertence ao domínio de denúncia, não ao
-gate).
+travavam foram decididos. **Rodada 2 fechada por completo em 2026-08-20**
+(decisões 143–146); só resta a escolha comercial do provedor da L2 (item 7,
+mesmo formato de pendência do PSP e do OTP — não é arquitetura em aberto).
 
 1. ~~**Granularidade do gate.**~~ — RESOLVIDO pela **decisão 103**:
    capacidade, com convenção `domínio.ação[.qualificador]`, desconhecida
@@ -1864,32 +1862,26 @@ gate).
    religa com dois.
 5. ~~**Regras expiram?**~~ — RESOLVIDO pela **decisão 108**: sim, 180 dias
    por padrão, sem isenção para regra confirmada por advogado.
-6. **Dado já coletado quando uma capacidade passa a bloqueada.**
-   Recomendado: **congelar leitura** (dado permanece, fica inacessível pela
-   aplicação) — apagar pode conflitar com a retenção da decisão 25 e com
-   dever de guarda; manter acessível anula o bloqueio. A confirmar caso a
-   caso por capacidade.
+6. ~~**Dado já coletado quando uma capacidade passa a bloqueada.**~~ —
+   RESOLVIDO pela **decisão 145**: congela a leitura pela aplicação, nunca
+   apaga por causa do bloqueio; mecanismo distinto do `frozen` da 141;
+   sem onde se aplicar até o primeiro cabeamento real.
 7. **O que se registra de cada avaliação de IA.** Recomendado: **modelo,
    hash do prompt, veredito, confiança, dispositivos citados e perguntas em
    aberto**. O custo é uma tabela; o retorno é conseguir mostrar *como* se
-   chegou à conclusão. Alternativa: só o veredito.
+   chegou à conclusão. Alternativa: só o veredito. Critério de escolha do
+   provedor e desenho do port fechados pela **decisão 144**; falta só a
+   escolha comercial do provedor concreto.
 8. ~~**Escopo imediato.**~~ — RESOLVIDO pela **decisão 106**: L0+L1 juntas,
    migração 022.
 9. ~~**O que fazer quando a consulta ao gate falha?**~~ — RESOLVIDO pela
    **decisão 109**: último estado conhecido por janela limitada, kill
    switch fora da degradação.
-10. ⚠️ **NOVA — como se controla que o usuário está no país da instalação?**
-   Criada pela decisão 105, e dela depende todo o isolamento entre LGPD e
-   GDPR. O que a lei usa é *estar no território*, não nacionalidade, então o
-   sinal precisa ser de localização. Recomendado: **derivar da localização
-   que o produto já exige** (decisão 7 — raio dinâmico a partir da posição
-   atual), recusando registro de denúncia e oferta de ajuda fora do país da
-   instalação, sem coletar nada novo e sem rastreio contínuo (decisões 23,
-   32). Alternativas: DDI do telefone no OTP da decisão 31 (não cobre
-   anônimo e confunde nacionalidade com localização), região da loja de
-   aplicativos (fraco e contornável) ou declaração do usuário (não é
-   controle). ⚠️ Definir junto o que acontece com quem cruza a fronteira no
-   meio de uma denúncia ativa. **Não bloqueia a L0.**
+10. ~~**Como se controla que o usuário está no país da instalação?**~~ —
+    RESOLVIDO pela **decisão 146**: point-in-polygon local (dataset
+    estático de fronteiras, ex. Natural Earth), sem provedor externo —
+    coerente com a 135 (posição nunca sai da API). Fronteira cruzada não
+    invalida caso já em andamento, só afeta criação de ação nova.
 
 ## ⚠️ Pendências (rodada 3 — trilho de pagamento)
 
@@ -2027,16 +2019,13 @@ aditivo. O que falta é escolha de fornecedor, não desenho.
    existe na prática — os outros quatro funcionam. Critérios a levar:
    custo por mensagem, entrega em WhatsApp além de SMS, presença no
    Brasil, e API de verificação (ou só envio, com o código sendo nosso).
-2. **Verificação de e-mail: usar o mailer que já existe?** O painel já tem
-   `shared/mailer` com código de 6 dígitos (decisão 113). Recomendado:
-   **reaproveitar**, com TTL e contador próprios do app — evita segunda
-   implementação da mesma coisa. Alternativa: serviço transacional
-   dedicado, que só se justifica com volume.
-3. **Adapters de provedor social — construir agora ou junto da primeira
-   tela de login do app?** Recomendado: **junto da tela**, porque só ali
-   se descobre o formato real do token que o SDK cliente devolve.
-   Google/Apple são OIDC (verificação por JWKS); Facebook usa
-   `debug_token` da Graph API — dois adapters, não um.
+2. ~~**Verificação de e-mail: usar o mailer que já existe?**~~ —
+   RESOLVIDO pela **decisão 151**: reaproveita `shared/mailer`, TTL e
+   contador próprios do app.
+3. ~~**Adapters de provedor social — construir agora ou junto da
+   primeira tela de login do app?**~~ — RESOLVIDO pela **decisão 152**:
+   adiados até haver credencial OAuth real; o app ganha a tela de
+   e-mail+senha agora.
 
 ## ⚠️ Pendências (rodada 7 — imagens)
 
@@ -2234,6 +2223,132 @@ raciocínio apresentado.
       (**frente própria depois do A3** — a tela mínima do congelamento é
       a semente natural dela)
 
+## Encapsulamento de provedores externos (API) e provedor da L2
+
+143. **Nenhum SDK de provedor externo é chamado direto de dentro de um
+     módulo de domínio — sempre por um *port* (interface) em `shared/`,
+     com a implementação concreta trocável por configuração.** Formaliza
+     para a API o que já era prática (não regra escrita): `BlobStore`
+     (decisão 126, `shared/storage/blob-store.ts`, `fs`/`s3` por
+     `BLOB_STORE`) e `PaymentRail` (decisão 96) já seguem esta forma.
+     Mesmo motivo da decisão 133 no app (widget Flutter cru → `Vgr*`):
+     **trocar um provedor obsoleto, descontinuado ou substituído por um
+     melhor é mudança de config + uma classe nova, nunca reescrita
+     espalhada por módulos.**
+
+     **Escopo**: qualquer serviço externo com SDK/API próprio — storage
+     (já feito), pagamento, avaliação por IA (L2, decisão 144), envio de
+     OTP e verificação social (rodada 6, ainda bloqueada na escolha do
+     provedor), e-mail. Módulo de domínio importa a interface do port;
+     nunca o SDK do provedor, nunca um tipo do provedor (bucket, região,
+     nome de modelo, formato de payload) vazando para entidade/DTO/tabela
+     — mesma regra de isolamento que o `BlobStore` já documenta em
+     comentário.
+
+     **Consequência estrutural**: o port vive em `shared/legal/`,
+     `shared/storage/`, etc. (nunca dentro de um módulo — regra do
+     `ARCHITECTURE.md` que proíbe módulo importar módulo, já usada pelo
+     próprio Legal Gate); a implementação concreta é selecionada uma vez,
+     memoizada, com função de reset para teste — padrão de
+     `blobStore()`/`resetBlobStoreForTests()`.
+
+     **Não coberto por esta decisão**: widgets do app (já é a 133) e
+     bibliotecas puramente internas (dartz, bloc) — a regra é sobre
+     *provedor externo*, não sobre toda dependência.
+
+144. **Critério de escolha do provedor de IA da L2: grounding/citação
+     verificável pesa mais que preço bruto por token.** Fecha a pergunta
+     "qual o mais em conta" levantada para a L2 com a resposta errada
+     descartada antes de decidir o modelo. Preço por token varia ~50x no
+     mercado (de ~$0,15/$0,60 por milhão em modelos de extração em massa a
+     ~$3/$15 em modelos de uso geral, ago/2026), mas dois fatos tornam essa
+     variável irrelevante para a L2:
+
+     - **Volume é baixíssimo.** A avaliação roda por `capability ×
+       jurisdiction` (catálogo de dezenas de itens, plano-legal-gate.md
+       §5), em lote, reexecutada ocasionalmente — nunca por requisição de
+       usuário. O custo total de qualquer opção do mercado é irrisório
+       nesse volume; a diferença entre a mais barata e uma boa opção não
+       aparece na fatura.
+     - **O erro caro aqui não é custo, é citação inventada.** A avaliação
+       da IA não é parecer e não decide sozinha (§2 do plano) — mas
+       alimenta a promoção humana a regra ativa (decisão 103/L3). Um
+       modelo sem busca (grounding) cita dispositivo de lei "de memória",
+       e memória de modelo erra citação com frequência maior que o
+       aceitável quando a citação vai para uma tela que um gestor lê para
+       decidir. Modelos otimizados para extração em massa e preço mínimo
+       tipicamente não têm busca embutida.
+
+     **Critério fechado, nesta ordem**: (1) busca web nativa/grounding
+     disponível na chamada, para citar legislação vigente e não só
+     recordada do treino; (2) aderência confiável a schema JSON
+     estruturado (verdict, confidence, citations, open_questions — mesmo
+     shape de `tb_legal_assessment`, plano-legal-gate.md §6); (3) preço,
+     como critério de desempate entre opções que já passam em (1) e (2) —
+     nunca como critério principal. Provedor concreto (qual API, qual
+     modelo) não é decisão de arquitetura e fica em aberto para escolha
+     comercial quando a L2 entrar em execução — mesmo formato de pendência
+     do PSP (59) e do OTP (rodada 6): a arquitetura não espera a escolha.
+
+     **Consequência estrutural**: port `LegalAssessmentProvider` em
+     `shared/legal/`, seguindo a decisão 143 — método
+     `assess(capability, jurisdiction) → { verdict, confidence, citations,
+     openQuestions }`, sem nenhum tipo do provedor escolhido vazando para
+     `tb_legal_assessment` ou para o restante da L2. A implementação
+     concreta nasce quando o provedor for escolhido; até lá o port pode
+     existir vazio (mesma situação do `PaymentRail`, decisão 96 — a
+     interface não depende do fornecedor para ser definida).
+
+## Legal Gate — pendências 6 e 10 fechadas
+
+145. **Dado já coletado sob capacidade que passa a bloqueada: congela a
+     leitura pela aplicação, nunca apaga por causa do bloqueio.** Fecha o
+     item 6 da rodada 2. O gate já cobre a ponta de escrita — nenhuma ação
+     nova acontece sob capacidade `blocked`/`restricted` (decisão 104); a
+     pendência era só sobre o dado que já existia sob a regra anterior.
+     Apagar entraria em conflito com a retenção (decisão 25/131) e com
+     dever de guarda; manter 100% acessível anularia o efeito do bloqueio
+     na prática.
+
+     **Mecanismo distinto do `frozen` da decisão 141** — mesmo nome
+     tentador, gatilhos e efeitos diferentes: 141 é ato manual de admin
+     que **trava expiração** para preservar prova numa investigação; este
+     é efeito **automático** de leitura quando uma regra do Legal Gate
+     muda de estado, sem tocar no job de retenção. Nomear no código como
+     `legal-blocked`, não `frozen`, para não confundir os dois.
+
+     **Não tem onde se aplicar hoje** — nenhuma capacidade real está
+     cabeada (tudo em `PENDING_WIRING`, decisão 103). O comportamento
+     entra junto com o primeiro cabeamento real que expuser leitura de
+     dado sob capacidade bloqueável (ex. R4 da denúncia, decisão 138), não
+     antes.
+
+146. **Controle de "estar no país": point-in-polygon local, sem provedor
+     externo — a posição não sai da API para checar fronteira.** Fecha o
+     item 10 da rodada 2. Deriva da localização que o produto já exige
+     (decisão 7), sem coletar nada novo.
+
+     Geocodificação reversa por provedor externo (Google/Mapbox/etc.)
+     mandaria a posição exata para fora da API a cada checagem —
+     contradiz diretamente a decisão 135 ("posição exata nunca sai da
+     API") e criaria uma dependência de provedor comercial para uma
+     verificação que não precisa de rede. Decisão: **dataset estático de
+     fronteiras de país embarcado na API** (ex. Natural Earth, licença
+     livre), checado em memória por point-in-polygon — zero chamada
+     externa, zero custo por request, zero vazamento de posição. Caso raro
+     em que a decisão 143 (port por provedor) nem se aplica: não há
+     provedor a encapsular, é dado estático + função pura.
+
+     **Fronteira ativa não invalida caso em andamento**: uma denúncia já
+     criada continua valendo mesmo que o denunciante ou helper cruze a
+     fronteira depois — o vínculo se formou sob a jurisdição de origem.
+     Só a **criação de nova ação** (nova denúncia, nova oferta de ajuda)
+     checa o país atual a cada vez.
+
+     **Rodada 2 do Legal Gate FECHADA por completo** (decisões 103–109,
+     143–146) — restam só escolhas comerciais (provedor da L2, decisão
+     144), nunca arquitetura.
+
 ## Fora de escopo para esta fase
 
 - Previsão de trajetória por modelo de velocidade + notificação push
@@ -2255,6 +2370,704 @@ raciocínio apresentado.
 - **Moderação de conteúdo das denúncias** (Marco Civil art. 19 — remoção por
   ordem judicial) — frente separada; o gate bloqueia capacidade, não
   conteúdo.
+
+## Reward — recebedores fixados na reserva (achado ao abrir o domínio)
+
+147. **Os recebedores da recompensa são fixados no momento em que a reserva
+     é criada (`reserve`), não descobertos depois pela mediação.** Emenda
+     a decisão 100 item 2 (decisões 36/37 — spec vinculante, emenda antes
+     de divergir): ao tentar abrir o domínio Reward em cima do
+     `PaymentRail`, ficou claro que "pagar os helpers, no plural, decididos
+     pela mediação" era incompatível com dois fatos já fechados — a
+     decisão 95 tira o dinheiro da conta do denunciante **no momento da
+     oferta** (Pix, sem pré-autorização), e o Asaas (candidato de PSP,
+     decisão 144-style) fixa o split **na criação da cobrança**, não na
+     liberação. Não dá pra reter dinheiro para um recebedor que ainda não
+     existe.
+
+     **Consequência de fluxo**: a recompensa nasce **sem reserva**
+     (decisão 88, opção 1) desde a criação da denúncia — pode ficar assim
+     indefinidamente, decisão 30 continua obrigando o denunciante do mesmo
+     jeito. **Reservar via Pix é uma ação posterior**, disponível só
+     quando o denunciante já sabe a quem quer garantir o pagamento — ou
+     seja, contra help offers que já existem no momento da reserva. A
+     reserva referencia um conjunto fixo de `(helpOfferId, amountCents)`;
+     esse conjunto não muda depois.
+
+     **O que isso simplifica na mediação (decisão 98)**: mediar deixa de
+     ser "escolher quem recebe" e passa a ser **julgar se a condição foi
+     cumprida** para o conjunto já fixado — resultado binário por reserva:
+     `capture` (libera exatamente para quem foi fixado) ou `cancel`
+     (devolve ao denunciante). Decisão 30(c) (N helpers simultâneos)
+     continua valendo — o conjunto fixado pode ter mais de um — só deixa
+     de ser "descoberto depois".
+
+     **Não resolvido aqui, registrado como aberto**: reforçar/ampliar uma
+     reserva já criada (ex. mais um helper apareceu depois de reservado)
+     não tem mecanismo — hoje exigiria cancelar e criar reserva nova.
+     Fica para quando houver caso real que precise disso; não é MVP.
+
+     Destrava a abertura do domínio Reward (`api/docs/feature/reward.md`).
+
+148. **Toda resolução de mediação exige duas pessoas distintas — sem
+     limiar de valor.** Fecha o "candidato natural acima de um valor" da
+     decisão 98: o limiar não existe, o duplo controle é incondicional.
+     Toda resolução instrui movimento de dinheiro de terceiro; a fricção
+     de um segundo aprovador é pequena perto do risco, e a ausência de
+     limiar elimina uma configuração a manter e um vetor de erro (limiar
+     mal calibrado). Mecânica no padrão do descongelamento (141d):
+     mediador A **propõe** o desfecho (fulfilled/not_fulfilled, com
+     justificativa), mediador B — obrigatoriamente outra pessoa —
+     **aprova**. Se o volume um dia tornar isso caro, cria-se limiar por
+     decisão nova; começar permissivo e apertar depois é o sentido errado.
+
+149. **A contestação acontece ANTES da execução: janela entre a aprovação
+     e o capture/cancel.** Fecha a "via de contestação" da decisão 98.
+     Pix liberado não volta (decisão 92) e devolução consumada tampouco —
+     contestação pós-fato seria um formulário sem remédio. Logo: a
+     resolução aprovada **não executa na hora**; abre-se uma janela (dias
+     em config, `MEDIATION_CONTEST_WINDOW_DAYS`, default 7 — cabe dentro
+     do prazo de retenção do PSP) em que as **partes do caso** (o
+     denunciante pagador e os helpers do conjunto fixado pela 147) podem
+     registrar contestação. A execução no PSP é uma ação humana posterior
+     no painel — sem job agendado — permitida só com a janela vencida e
+     nenhuma contestação aberta. Contestação aberta trava a execução até
+     um mediador fechá-la com nota (registrada no log imutável) ou a
+     resolução ser cancelada e proposta de novo (novo ciclo da 148).
+     Enquanto não executada, a reserva segue viva no PSP — o selo da
+     decisão 85 continua verdadeiro durante a janela.
+
+150. **A versão dos critérios de mediação que governa um caso é a que
+     estava ativa quando a reserva foi criada — carimbada na oferta.**
+     Fecha o "critérios publicados antes do caso" da decisão 98 no mesmo
+     padrão do `no_return_notice_version` (decisões 86/92): publicar
+     critérios é criar **versão imutável** (append-only; corrigir =
+     publicar versão nova), a versão ativa no momento do `reserve` fica
+     gravada na oferta, e a mediação julga por ela — publicar versão nova
+     não muda a regra de casos já reservados. Consequência dura: **sem
+     critérios publicados, não há reserva** — o `reserve` falha com erro
+     tipado, porque garantia sob regra não declarada é exatamente o que a
+     98 chama de fachada. Os critérios são visíveis no app (regra do jogo
+     das partes), e o texto em si passa pelo advogado junto com os demais
+     textos jurídicos (pendência das decisões 25/30/45/57 — via Legal
+     Gate, não bloqueia o mecanismo).
+
+## Auth de usuários do app (rodada 9 — fecha os itens 2–3 da rodada 6)
+
+Decidido em 2026-08-22 via `AskUserQuestion` (Valdo escolheu a opção
+recomendada). Contexto: `plano-auth-usuarios.md` §"Pendências (rodada
+6)"; a API (`/app-auth`) tem senha/sessão/vínculo prontos desde
+2026-08-03 (decisão 119), mas o app não tinha nenhuma tela de login/
+cadastro até este momento.
+
+151. **Verificação de e-mail do app reaproveita o mailer do painel**
+     (`shared/mailer`, decisão 113), com TTL e contador PRÓPRIOS do app
+     — não o mesmo registro do painel. Fecha o item 2 da rodada 6.
+     Continua valendo a decisão 123: a verificação nunca bloqueia
+     denunciar, só ações consequentes (oferecer/reivindicar recompensa,
+     virar respondedor).
+
+152. **Adapters de provedor social (Google/Apple/Facebook) ficam
+     adiados até existir credencial OAuth real** (client id/secret nos
+     três consoles) — sem o SDK cliente configurado não há como
+     descobrir o formato real do token para verificar (mesma razão já
+     registrada na rodada 6, item 3). Fecha o item 3 SEM construir os
+     adapters agora: o app ganha cadastro/login por e-mail+senha
+     (método que já está pronto na API), social entra depois como
+     adição — `loginWithProvider` já aceita identidade pré-verificada,
+     então plugar um adapter não muda nenhuma regra existente. OTP
+     (item 1 da rodada 6) continua bloqueado na escolha comercial do
+     provedor de envio, mesma natureza da decisão 59.
+
+## Validadores compartilhados do app (rodada 10 — fecha o gap 4 da auditoria TDD)
+
+Decidido em 2026-09-02 (Valdo respondeu "1C, 2ii, 3ii, 4iii, 5i" às
+pendências de `plano-validadores.md` §7). Contexto: a auditoria TDD de
+2026-08-22 apontou `packages/vgr_validators` como boilerplate morto (só o
+`Calculator` do template, zero consumidores); ao levantar evidência, a
+hipótese de "validação duplicada espalhada" NÃO se confirmou — o app
+quase não valida formato no cliente (confia no 422 por `code`, decisão
+83), e o espelho `api/src/shared/validation` prometido no pubspec do
+pacote nunca existiu.
+
+153. **`vgr_validators` é construído no mínimo, sob demanda** — fecha o
+     item 1 (opção C). O `Calculator` sai; entram só as regras de formato
+     que um formulário existente já exige: CPF/CNPJ, telefone BR, CEP e
+     e-mail (hoje: onboarding do helper, decisão 143) + máscara de
+     digitação. Não se cria módulo de validação compartilhado na API
+     agora (isso seria a opção B, que fica como evolução natural quando
+     surgir o segundo formulário com campo de formato). Descontinuar (A)
+     foi recusado: o cliente DEVE dar feedback imediato de formato,
+     especialmente com a fila offline (28), onde o 422 chegaria horas
+     depois. Invariante que continua: a API sempre revalida (47, 110) —
+     validação de cliente é conforto, nunca segurança.
+
+154. **A verdade da regra de formato é o Zod inline do DTO da API; o
+     teste do app cita o DTO espelhado** — fecha o item 2 (opção ii).
+     Enquanto não existir `api/src/shared/validation`, cada validador do
+     app leva comentário `// mirrors <arquivo>.dto.ts <schema>` e um teste
+     por borda (mínimo, máximo, dígito verificador) que prova que a regra
+     do app é IDÊNTICA à do DTO. Divergência descoberta → invariante 5
+     (emenda antes de divergir), nos dois lados no mesmo commit.
+
+155. **CPF/CNPJ com dígito verificador NOS DOIS LADOS** — fecha o item 3
+     (opção ii). A API endurece `taxId`/`payerTaxId` em `reward.dto.ts`
+     (hoje só tamanho 11–14) para validar os dígitos verificadores; o app
+     aplica a mesma regra. Motivo: regra idêntica (154) e não mandar
+     documento inválido ao PSP (Asaas) — rejeição do PSP custa round-trip
+     e mensagem opaca. Máscara/normalização: o app envia só dígitos
+     (`unmask`), a API aceita só dígitos.
+
+156. **Guard contra validação inline em tela NÃO entra agora** — fecha o
+     item 4 (opção iii). As três telas do admin com `length < N` inline
+     (`case_freeze_page`, `legal_rules_page`, `legal_capabilities_page`)
+     ficam como estão. Registrado em "Fora de escopo" para reabrir junto
+     com a opção B (153), quando o guard passa a fazer sentido por haver
+     mais de um consumidor. Enquanto isso, a regra é disciplina de
+     review (110): tela nova com campo de formato usa `vgr_validators`,
+     não `RegExp(` inline.
+
+157. **`TextInputFormatter` de máscara vive em `vgr_validators`;
+     `VgrTextField` ganha `mask: VgrMask?` e consome o formatter** —
+     fecha o item 5 (opção i). Divisão: validators = funções puras +
+     formatter (dependência só de `flutter/services`), sem widget e sem
+     tradução; widgets = sem regra de formato, só recebem o enum e montam
+     `inputFormatters`; tela = passa o enum, nunca toca `TextInputFormatter`
+     direto (133). Mensagem de erro continua da tela via `code` (83) — o
+     validador devolve um `code`, não texto.
+
+## Busca, moderação e estatísticas do painel (rodada 11 — abre a frente 142)
+
+Decidido em 2026-09-02 (Valdo respondeu "1 recomendado, 2i, 3i, 4i, 5i,
+6i, 7 recomendado, 8 aceito, 9i, 10i" às pendências de
+`plano-moderacao-painel.md` §8). Contexto: a frente da denúncia está
+completa, mas o painel só congela caso por id; não há busca, não há
+como tirar denúncia/mídia do ar (o status `blocked` da mídia existe e
+nenhum endpoint o escreve), não há agregação.
+
+158. **A frente entrega cinco fases, na ordem B1 → B2 → B4 → B3 → B5** —
+     fecha o item 1. B1 busca + detalhe do caso no plano do painel; B2
+     moderação; B4 estatísticas; B3 fila; B5 tela da trilha
+     `tb_admin_audit`. Estatísticas antes da fila porque a fila depende
+     de sinal que só existe a partir da 161; a trilha entra porque a 166
+     passa a auditar leituras — auditar sem ter como ler é metade da 116.
+     Cada fase com liberação própria (38), suíte verde, feature doc e
+     commit.
+
+159. **No painel a posição do caso é DEGRADADA por padrão; a exata sai só
+     com grant próprio, sem bootstrap, e cada leitura é auditada** — fecha
+     o item 2 (opção i). O detalhe serve a posição pela mesma grade do
+     feed (`shared/geo/degrade`, 135). A interface kind 'R'
+     `report_exact_position` (VIEW) não recebe bootstrap — como o
+     `media_original` (130): ninguém a tem até um humano conceder — e a
+     leitura exata grava `tb_admin_audit` (action `read`, entity
+     `report_position`). É o "fluxo auditado" que a 135 previa.
+
+160. **Denúncia NÃO anônima mostra ao painel só o id opaco da conta e o
+     displayName; nunca e-mail** — fecha o item 3 (opção i). O operador
+     precisa reconhecer reincidência, e o id basta para isso. Denúncia
+     anônima continua sem nenhuma identidade no painel: o
+     `reporter_account_id` interno e o accountability log seguem fora de
+     qualquer resposta (23/44/45/60); o reveal é o fluxo da 45, não desta
+     frente.
+
+161. **Fila de moderação proativa: casos abertos ainda não revisados,
+     priorizando tier alto e presença de mídia; revisar é marcar
+     `reviewed_at`/`reviewed_by`** — fecha o item 4 (opção i). Não existe
+     "sinalizar conteúdo" pelo usuário; construir isso é frente mobile
+     própria (capacidade nova, Legal Gate), registrada em "Fora de
+     escopo" e reaberta quando o produto tiver usuários para sinalizar.
+     Quando existir, o sinal entra na MESMA fila como prioridade acima do
+     tier.
+
+162. **Moderação = bloquear mídia, ocultar denúncia e reverter os dois;
+     cada ato é de UM humano, com motivo obrigatório e auditoria;
+     modelagem por coluna própria, não por `status`** — fecha o item 5
+     (opção i). Reverter não destrói nada, logo não pede dual-control —
+     esse padrão fica reservado ao que reabilita destruição (141d/107).
+     `tb_report` ganha `hidden CHAR(1)`, `hidden_reason_code`,
+     `hidden_note`, `hidden_at`, `hidden_by`; `tb_media.status` passa a
+     ser escrito (`available ↔ blocked`) por endpoint do painel, com as
+     mesmas colunas de motivo. Ocultar/bloquear NÃO altera retenção,
+     expiração nem purge (25/131): moderação não é apagamento. Caso
+     oculto some do feed, da busca pública e do detalhe de terceiros;
+     dono e participantes continuam vendo (com a marca da 167). Mídia
+     bloqueada some do plano do app e continua legível no painel (M3).
+
+163. **Motivo de moderação: catálogo fixo em código + nota livre
+     obrigatória quando `other`** — fecha o item 6 (opção i). Códigos
+     canônicos em inglês (17): `spam`, `abuse`, `illegal_content`,
+     `duplicate`, `personal_data`, `other`. É o código que as
+     estatísticas contam; catálogo administrável é evolução (mesma
+     trajetória do risk-config, 140d).
+
+164. **Estatísticas: contadores agregados por período × categoria ×
+     sujeito × status × tier, mais congelados/ocultos/expirados/purgados
+     e motivos de moderação; piso de agregação k = 5; sem mapa de calor
+     nesta rodada** — fecha o item 7. Qualquer célula com contagem menor
+     que 5 é servida como "<5", para que combinação rara não
+     reidentifique (mesma lógica da 41 aplicada a agregados). Mapa de
+     calor (só na grade `high`) reabre quando houver volume real.
+
+165. **Interfaces e privilégios da frente** — fecha o item 8: `reports`
+     (kind 'T', grupo "Operations"; VIEW = buscar/ver, UPDATE = moderar e
+     marcar revisado), `report_exact_position` (kind 'R', VIEW, sem
+     bootstrap — 159), `report_stats` (kind 'T', VIEW), `admin_audit`
+     (kind 'T', VIEW — B5). `case_freeze` e `media_evidence` ficam
+     intactos: o detalhe do caso embute o bloco de congelamento chamando
+     `/api/case-freeze` e habilita seus botões pelo grant de
+     `case_freeze`; a imagem continua servida por `/api/media` sob
+     `media_evidence`. Bootstrap de `reports`/`report_stats`/`admin_audit`:
+     de-facto admins (UPDATE em Users), padrão de 020/021/022.
+
+166. **Ler o detalhe de um caso no painel grava auditoria; ler a lista
+     não** — fecha o item 9 (opção i). Texto livre, campos de detalhe e
+     timeline são evidência da mesma natureza que a foto (130). Uma linha
+     por abertura de detalhe (action `read`, entity `report`); a lista
+     paginada não gera linha (auditar listagem afogaria a trilha, 116).
+     A tela da trilha (B5) entra nesta frente como última fase.
+
+167. **O dono vê a marca `hidden` no próprio detalhe, sem motivo e sem
+     evento de timeline** — fecha o item 10 (opção i). O caso some do
+     feed e o dono merece um estado explícito; o motivo é da auditoria,
+     não do denunciante (evita dar ao abusador o roteiro do que passou).
+     Participantes veem a mesma marca. Timeline continua append-only
+     sem esse evento — mesma escolha do congelamento (141), por razão
+     diferente.
+
+     **Rodada 11 ZERADA** (decisões 158–167).
+
+## Chat mascarado denunciante ↔ helper (rodada 12 — abre a decisão 54)
+
+Decidido em 2026-09-03 (Valdo respondeu "1 sim | 2i | 3i | 4i | 5ia | 6
+aceitar | 7i | 8i | 9 sim | 10 aceitar" às pendências de `plano-chat.md`
+§8). Contexto: a 54 colocou o chat no MVP e a spec tática desenhou
+`ChatThread`/`MaskedIdentity`, mas o laço denunciante ↔ helper termina
+hoje na oferta de ajuda; não há infra de push, SSE nem websocket; o
+helper que ofereceu ajuda SEM conta não tem identidade roteável no
+servidor (`helper_account_id` NULL).
+
+168. **Três fases, C1 API → C2 mobile → C3 painel, cada uma liberada por
+     "pode seguir"** — fecha o item 1. C3 é pequena e encaixa no detalhe
+     do caso da frente 142.
+
+169. **Só conversa quem tem identidade roteável: helper com conta (mesmo
+     tendo escolhido anonimato — a máscara cobre) e denunciante com conta
+     OU com `x-client-key`. Helper sem conta não tem chat e é avisado
+     ANTES de oferecer** — fecha o item 2 (opção i). Mesmo padrão do aviso
+     "sem conta não reivindica recompensa" (34). "A denúncia nunca espera"
+     (123) protege o denunciante; não obriga a plataforma a manter canal
+     com quem não pode ser encontrado. Quem quer conversar cria conta e
+     continua anônimo pela máscara. Nenhum segundo segredo portador.
+
+170. **Cada lado vê do outro exatamente o que a oferta já mostrava** —
+     fecha o item 3 (opção i). Rótulos fixos "Denunciante" / "Ajudante";
+     nome de exibição do helper só quando ele escolheu identificar-se E o
+     tier não é high (6/40/60); o denunciante nunca mostra nome no chat;
+     outros helpers nunca veem a thread (55). No payload, cada
+     participante é um token opaco por (thread, participante), nunca
+     reusado entre reports (spec `MaskedIdentity`). Nenhuma superfície
+     pode ser mais permissiva que a oferta.
+
+171. **Contato direto é BLOQUEADO no servidor, com espelho no app** —
+     fecha o item 4 (opção i). Telefone (≥ 8 dígitos com ou sem
+     máscara), e-mail, URL, `@handle` e apps de mensagem seguidos de
+     número são recusados com 422 e `code` próprio (`CONTACT_NOT_ALLOWED`),
+     apontando o trecho. A regra vive em `shared/` na API e é espelhada
+     em `vgr_validators` (154) para feedback antes do envio. 54 diz "sem
+     compartilhar", não "com aviso". Texto máximo 1000 caracteres.
+
+172. **Entrega por polling com cursor; mensagem entra na fila offline com
+     `clientKey`** — fecha o item 5 (opções i + a). `GET …/messages?after=<id>`
+     com intervalo curto só com a tela aberta, sem background; contagem
+     de não lidas ao abrir o detalhe do caso. Idempotência por chave
+     gerada no app, como a denúncia (137): replay devolve a mesma mensagem.
+     Push proativo continua visão (11); SSE/websocket ficam para quando
+     houver volume que justifique infra nova.
+
+173. **Ciclo de vida do chat segue o do caso** — fecha o item 6. Thread
+     nasce find-or-create na PRIMEIRA mensagem do helper com oferta (spec).
+     Caso resolvido: escrita fechada, leitura mantida até o purge (18/131).
+     Caso oculto (162): escrita fechada, leitura mantida. Caso congelado
+     (141): tudo segue, nada expira. Purge (131): texto das mensagens
+     zerado, esqueleto (contagens, timestamps) mantido para estatística —
+     mesma régua do `purgeReport`.
+
+174. **Timestamp de mensagem é degradado por tier para o outro lado; não
+     há recibo de leitura** — fecha o item 7 (opção i). `TIME_MS_BY_TIER`
+     (minuto / 15 min / hora, 41/135); ordem preservada pelo id. "Visto"
+     é sinal temporal a mais e fica fora do MVP.
+
+175. **Painel lê o chat de um caso sob grant próprio `chat_evidence` (kind
+     'R', VIEW, SEM bootstrap), cada leitura auditada; sem escrita; sem
+     ocultar mensagem individual nesta frente** — fecha o item 8 (opção
+     i). Mesmo padrão do `media_original` (130) e da posição exata (159):
+     ninguém tem o grant até um humano conceder. Ocultar o caso inteiro
+     (162) já fecha o canal; moderação por mensagem reabre com "sinalizar
+     conteúdo" (161).
+
+176. **`chat.masked` é capacidade do Legal Gate, nasce em `PENDING_WIRING`
+     e é cabeada na C1** — fecha o item 9. Chat entre anônimos tem risco
+     jurídico que varia por país tanto quanto mídia (138); bloqueado →
+     451 antes de qualquer escrita.
+
+177. **Limites fixos do MVP: 30 mensagens/min por thread, 1000 caracteres,
+     texto simples sem mídia, append-only (sem editar/apagar pelo
+     autor)** — fecha o item 10. Os números viram configuração de
+     ambiente (`CHAT_RATE_PER_MINUTE`, `CHAT_MAX_LENGTH`), não decisão.
+
+     **Rodada 12 ZERADA** (decisões 168–177).
+
+## Rating de helpers pelo denunciante (rodada 13 — abre a decisão 48)
+
+Decidido em 2026-09-03 (Valdo respondeu "1 sim | 2 i-a | 3 i | 4 i | 5 i |
+6 i | 7 i | 8 i | 9 i | 10 i-b | 11 i | 12 i" às pendências de
+`plano-rating.md` §8). Contexto: a 48 criou o rating do helper pelo
+denunciante "ao finalizar a denúncia", acumulando na identidade interna;
+a spec tática desenhou `HelperRating`/`RatingScore`/`RateHelper`. A
+rodada 0 achou que a API resolve a denúncia
+(`POST /app-reports/:id/resolve`) mas nenhuma tela do mobile chama esse
+endpoint; que `tb_help_offer` não tem status nem aceite; que helper com
+conta anônimo tem `helper_account_id` gravado (23/32) e helper sem conta
+não tem identidade interna nenhuma — o mesmo problema que a 169 fechou no
+chat.
+
+178. **Três fases, RT1 API → RT2 mobile → RT3 painel, cada uma liberada
+     por "pode seguir"** — fecha o item 1. RT3 é pequena e encaixa no
+     detalhe do caso da frente 142, no mesmo padrão da 168.
+
+179. **O encerramento da denúncia pelo app entra nesta frente (RT2), sem
+     campo de desfecho** — fecha o item 2 (opção i-a). Sem encerrar não
+     há "finalização" (48). Botão só para o dono (conta ou
+     `x-client-key`, 134), com confirmação, enviado pela fila offline
+     (28/137); a retenção de 90 dias já corre da resolução (131).
+     Desfecho (resolvido com ajuda / sem ajuda / desisti) em `tb_report`
+     fica registrado como visão — é decisão de produto à parte.
+
+180. **Só helper com conta é avaliável, mesmo tendo escolhido anonimato
+     — a máscara cobre; helper sem conta não recebe avaliação e é avisado
+     ANTES de oferecer** — fecha o item 3 (opção i). Mesma régua da 169:
+     a conta é gravada sempre que existe (23/32), então a reputação
+     acumula na identidade interna sem expor nada a ninguém (48/60).
+     Nenhum segundo segredo portador. O aviso da 169 passa a dizer "sem
+     conta não há chat nem reputação".
+
+181. **Avaliação só com o caso resolvido: no fluxo de encerramento e,
+     depois, no detalhe do caso, até o purge (131); avaliar nunca é
+     obrigatório para encerrar** — fecha o item 4 (opção i). "A denúncia
+     nunca espera" (123) vale para o fechamento também. Avaliar com o
+     caso aberto seria sinal de engajamento em tempo real (41) e
+     instrumento de pressão sobre o helper.
+
+182. **Nota inteira de 1 a 5, sem texto** — fecha o item 5 (opção i).
+     Spec `RatingScore`. Texto livre é canal de retaliação e de contato
+     (54/171) e exigiria filtro e leitura no painel; comentário curto
+     visível só ao painel fica como visão, se a moderação precisar de
+     evidência.
+
+183. **Uma avaliação por oferta, imutável** — fecha o item 6 (opção i).
+     Append-only como o chat (177): segunda tentativa → 409
+     `ALREADY_RATED`; replay do mesmo `clientKey` devolve a mesma
+     avaliação (137).
+
+184. **Helper vê só o próprio agregado (contagem e média), e a média só a
+     partir de 5 avaliações; nunca a nota por caso** — fecha o item 7
+     (opção i). Piso k=5 das 164/165: com poucas avaliações o agregado
+     revela a individual, e "o caso X me deu 1" aponta o denunciante e
+     alimenta retaliação (6/40).
+
+185. **Nenhum usuário vê reputação de outro no MVP** — fecha o item 8
+     (opção i). Spec 003: `RatingScore` "nunca num perfil público".
+     Reputação serve ao próprio helper (184) e, no futuro, ao peso da 27
+     (189). Faixa qualitativa ou média na oferta ficam como visão, para
+     quando houver volume — e nunca em tier high (41).
+
+186. **Painel vê a nota por oferta no detalhe do caso, sob a interface
+     `reports` já existente; sem tela de agregado por helper** — fecha o
+     item 9 (opção i). É conteúdo do caso, não identidade (o painel já
+     vê o `accountId` opaco do helper, 160). Distribuição de notas nas
+     estatísticas (164) fica como visão.
+
+187. **Rating sobrevive ao purge do caso; avaliação de caso oculto fica
+     fora do agregado enquanto o caso estiver oculto** — fecha o item 10
+     (opção i-b). Reputação não é evidência: a linha guarda ids e nota,
+     nada a zerar (mesma lógica do esqueleto do chat, 173). Caso oculto
+     (162) é suspeita de abuso, e o par denunciante/helper fraudulento é
+     o vetor óbvio de inflar reputação — sai do agregado na leitura e
+     volta ao reexibir. Congelamento (141) não muda nada.
+
+188. **`helper.rating` é capacidade do Legal Gate, nasce em
+     `PENDING_WIRING` e é cabeada na RT1** — fecha o item 11 (opção i).
+     Reputação é perfilamento de pessoa; o risco varia por jurisdição
+     tanto quanto o chat (176); bloqueado → 451 antes de qualquer escrita.
+
+189. **O peso de confiança da 27 fica fora desta frente; a RT1 só deixa
+     o agregado por identidade interna legível** — fecha o item 12
+     (opção i). A fórmula nasce na rodada de direction sightings, quando
+     houver consumidor — regra sem consumidor é regra sem teste.
+
+     **Rodada 13 ZERADA** (decisões 178–189).
+
+## Botão de pânico (rodada 14 — fecha a pendência 52, abre 62–65)
+
+Decidido em 2026-09-04 (Valdo respondeu "1 i | 2 i | 3 i | 4 i | 5 i | 6
+i | 7 i | 8 i | 9 i | 10 i" às pendências de `plano-panico.md` §8).
+Contexto: a 51 desenhou o pânico com um pool restrito de "respondedores
+autorizados" e deixou o critério de autorização pendente (52); as
+decisões 62–65 corrigiram o pânico pra fora do fluxo de denúncia, com
+dois níveis de acessibilidade e destinatário configurável em dois
+modos. A rodada 0 achou que o pool de respondedores já tem código
+(`api/src/modules/panic/responder-pool.*`, migração 012, tela admin em
+`apps/admin/.../panic-responders/`), mas o `PanicAlert` propriamente
+dito não tem nenhuma linha; achou também que o `POST` de pedido de
+autorização está montado no plano administrativo da API, inalcançável
+por um usuário do app — correção de posicionamento de plano (119),
+aplicada na construção, não decisão de negócio.
+
+190. **Critério de respondedor autorizado: julgamento humano livre, sem
+     regra codificada** — fecha a pendência 52. O pré-requisito já
+     construído (`criteria_notes` texto livre, decisão do administrador
+     caso a caso) é o desenho final, não um rascunho a substituir; a
+     tela de aprovação já existente continua funcionando sem mudança.
+
+191. **Um alerta é um tiro único: posição no acionamento, sem sessão
+     viva** — fecha o item 2. MVP menor, sem gateway de geolocalização em
+     stream; a "geolocalização contínua" do texto das decisões 62–65 fica
+     satisfeita pela posição capturada no momento do clique, sem
+     atualização automática enquanto o alerta segue ativo. Revisita a
+     linguagem original das 62–65 nesse ponto específico.
+
+192. **Entrega ao respondedor por uma tela própria de alertas, com
+     polling por cursor** — fecha o item 3. Mesmo padrão do chat
+     (decisão 172): `after=<id>`, intervalo curto só com a tela aberta,
+     sem background. Push proativo continua fora do MVP (11), mesma
+     aceitação já registrada no evento `PanicAlertTriggered` da spec.
+
+193. **Contato de confiança (64, segundo modo) fica fora desta rodada** —
+     fecha o item 4. Só o modo pool de respondedores sai agora; contato
+     pessoal — com ou sem conta VGR, com ou sem SMS — fica registrado
+     como visão futura, evitando depender do provedor comercial ainda
+     pendente (mesma família da decisão do OTP).
+
+194. **Modo ativado/em destaque (63) fica fora desta rodada** — fecha o
+     item 5, amarrado à 193: sem contato de confiança pra pré-configurar,
+     o valor do modo opt-in fica pequeno demais pra justificar construí-lo
+     agora. Só o botão padrão (uso a frio, decisão 65) sai nesta frente.
+
+195. **Distância mostrada ao respondedor reaproveita
+     `DISTANCE_STEP_BY_TIER`** — fecha o item 6. A régua já existe em
+     `shared/geo/degrade.ts`, distinta da degradação de posição bruta dos
+     reports, e já parece feita sob medida para exatamente isto.
+
+196. **Mensagem do alerta é um modelo fixo, sem texto livre do usuário** —
+     fecha o item 7. Consistente com a decisão 65 ("sem exigir mais
+     informação do usuário no momento do clique"); evita abrir uma
+     superfície nova de moderação/filtro de contato (171) só para o
+     pânico.
+
+197. **Só quem acionou o alerta pode resolvê-lo** — fecha o item 8. Um
+     respondedor não encerra um alerta que não é dele; "estou seguro
+     agora" é ato exclusivo de quem está em risco. Sem resolução por
+     tempo — o alerta não expira sozinho.
+
+198. **Anti-abuso: cooldown simples — não é possível abrir um novo alerta
+     enquanto o anterior do mesmo usuário segue ativo** — fecha o item 9.
+     Sem sistema de detecção de fraude nem limite por período nesta
+     frente; o cooldown evita só o clique duplicado/spam básico, sem
+     risco de bloquear uma emergência real subsequente (o alerta anterior
+     precisa estar resolvido primeiro, ato do próprio usuário, 197).
+
+199. **Fatiamento: PP1 API → PP2 mobile padrão → PP3 mobile avançado (se
+     houver) → PP4 painel (se houver)**, cada fase por "pode seguir" (38),
+     API sempre sem pendência antes da próxima fase — fecha o item 10.
+     PP3 e PP4 ficam condicionais: as 193/194 já tiram boa parte do
+     escopo avançado; PP4 provavelmente não terá conteúdo (a tela de
+     aprovação já existe e não muda).
+
+     **Rodada 14 ZERADA** (decisões 190–199).
+
+## Apontamentos de direção / Direction Sighting (rodada 15 — decisões 22, 26, 27)
+
+Decidido em 2026-09-04 (Valdo respondeu "1 i | 2 i | 3 i | 4 i | 5 i | 6
+i | 7 i | 8 i" às pendências de `plano-direction-sightings.md` §8).
+Contexto: as decisões 22/26/27 já fixaram processamento síncrono,
+reconciliação estatística ponderada com prior 50/50 e peso menor pro
+apontamento anônimo, mas nenhum código nunca existiu além da spec
+tática. A rodada 0 achou que a rota que a spec desenhava
+(`POST /api/direction-sightings`) tem o mesmo bug de plano já corrigido
+no pânico, e que a capacidade `location.tracking` do Legal Gate já
+existe, `PENDING_WIRING`, citando literalmente as decisões 7/22/26.
+
+200. **Qualquer pessoa que veja a denúncia aberta pode apontar uma
+     direção, anônima ou identificada — só o próprio denunciante fica de
+     fora** — fecha o item 1. Mesmo alcance de "coletivo pela comunidade"
+     do texto original, e mesmo raciocínio anti-fraude da decisão 20:
+     quem denunciou não deveria poder manipular a estimativa do próprio
+     caso.
+
+201. **Elegibilidade por categoria é fixa no código, mesmo padrão já
+     usado no raio dinâmico (`dynamic-radius.ts`)** — fecha o item 2.
+     Mais simples, sem tela de admin nova; a lista pode ser promovida a
+     configurável no futuro se precisar mudar com frequência, mas não há
+     evidência disso agora.
+
+202. **Piso mínimo de 5 apontamentos antes de expor qualquer direção,
+     configurável por variável de ambiente** — fecha o item 3. Formaliza
+     o "cuidado de design" original (agregar antes de expor, para não
+     alertar quem está sendo rastreado); o número é o mesmo já usado no
+     piso de k-anonimato das estatísticas do painel (164/165) por
+     consistência, embora o motivo aqui seja outro (contravigilância,
+     não anonimato estatístico).
+
+203. **Só a direção mais provável é exposta, nunca a distribuição de
+     probabilidade completa** — fecha o item 4. Menor informação
+     possível, mesmo princípio já aplicado em toda a degradação de
+     posição, distância e mascaramento do projeto.
+
+204. **A direção é exposta a todo mundo que vê a denúncia aberta,
+     incluindo o feed público, uma vez passado o piso da 202** — fecha o
+     item 5. Mantém o alcance de "mais gente ajuda a rastrear" do texto
+     original.
+
+205. **Peso do apontamento (identificado vs. anônimo, decisão 27) é
+     valor fixo no código com ajuste por variável de ambiente** — fecha
+     o item 6. Mesmo tratamento que os limites do chat (177) já
+     receberam: número operacional, não decisão travada.
+
+206. **O peso de confiança da reputação (rating, RT1–RT3) NÃO entra
+     nesta rodada** — fecha o item 7 e a promessa da decisão 189. A
+     fórmula do apontamento fica só identificado vs. anônimo (27, 205);
+     incorporar a média de avaliações do helper fica registrado como
+     refinamento futuro, quando houver evidência de que o peso simples
+     não basta — mesmo raciocínio que a 189 já usava: regra sem
+     consumidor validado é regra sem teste.
+
+207. **Fatiamento: DS1 API → DS2 mobile → DS3 painel (DS3 fica vazia,
+     dado que a 201 escolheu o padrão fixo no código, sem tela de
+     admin)**, cada fase por "pode seguir" (38), API sempre sem
+     pendência antes da próxima fase — fecha o item 8.
+
+     **Rodada 15 ZERADA** (decisões 200–207).
+
+## Oferta de ajuda com vários tipos (rodada 16 — revisa a leitura singular da decisão 10)
+
+Aberta e fechada em 2026-09-11, a partir do pedido de Valdo no primeiro
+teste com dois atores reais (2026-09-10): a tela de oferta usava
+checkboxes mas só aceitava um tipo. Plano executivo:
+[plano-oferta-multitipo.md](../plans/plano-oferta-multitipo.md).
+
+208. **Uma oferta por helper por denúncia, com um CONJUNTO de tipos de
+     ajuda (mínimo um, sem repetição).** A decisão 10 lista as frentes;
+     o helper pode atuar em várias ao mesmo tempo e o app não tem como
+     limitar isso. A oferta continua sendo o vínculo helper ↔ denúncia
+     (`uq_offer_helper` fica); chat (168–177), rating (178–189) e
+     recompensa (147) seguem pendurados na oferta, não no tipo. A
+     alternativa "várias ofertas, uma por tipo" foi descartada por
+     multiplicar rating/chat. Emenda a spec 003 (`submitHelpOffer`
+     recebe `HelpType[]`, evento `HelpOfferSubmitted { helpTypes }`) e
+     os cenários 004.
+
+209. **Persistência em tabela filha `tb_help_offer_type (tb_help_offer_id,
+     help_type)`**, chave primária composta, CHECK na lista da 10, FK com
+     cascata. Sem JSON (reservado ao `detail_fields`, validado por
+     schema) e sem bitmask.
+
+210. **A coluna `tb_help_offer.help_type` é REMOVIDA após o backfill**
+     (uma linha na filha por oferta existente). Uma única fonte de
+     verdade; "tipo principal" não existe.
+
+211. **O helper pode ALTERAR os tipos da sua oferta enquanto a denúncia
+     estiver aberta** — o usuário pode ter marcado errado. `PUT
+     /app-help-offers/:id/types { helpTypes }`, mesma validação do
+     envio, só pelo helper dono da oferta e só em denúncia aberta (18);
+     substitui o conjunto inteiro. Restrição estrutural: oferta ANÔNIMA
+     não tem identidade nem client key (032) — não há como provar que é
+     do mesmo aparelho —, logo só a oferta identificada é editável; a
+     anônima fica como está (mesma lógica da 169 para o chat).
+
+212. **Linha do tempo: um único item `help_offered` com `helpTypes: []`**;
+     a edição da 211 gera um item `help_offer_updated { helpTypes }`.
+     Um item por tipo não representa evento real.
+
+213. **Contrato da API só com `helpTypes: []`** (1..5 valores da lista,
+     sem repetição; 422 `VALIDATION` fora disso). `helpType` singular
+     deixa de existir — não há cliente fora deste repositório. Visões
+     dono/participante e detalhe do painel devolvem `helpTypes` por
+     oferta.
+
+214. **Fatiamento: HT1 API → HT2 mobile → HT3 painel**, cada fase por
+     "pode seguir" (38), API sem pendência antes da próxima (método
+     2026-09-04). Fora de escopo, registrado: oferta anônima na própria
+     denúncia é aceita (o veto da 20 só enxerga conta) — limitação
+     conhecida, coerente com a 23.
+
+     **Rodada 16 ZERADA** (decisões 208–214).
+
+## Painel admin no modelo do setes-app (rodada 17 — aplica a decisão 15 ao shell do painel)
+
+Aberta e fechada em 2026-09-21. Pedido de Valdo: analisar o
+`D:\Gestao2027\setes-app\apps\web` e replicar o modelo do painel no
+`apps/admin`. Análise de gap e plano executivo:
+[plano-painel-modelo-setes.md](../plans/plano-painel-modelo-setes.md).
+O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
+2FA, guarda 133, testes de wiring de rota, erro por código) fica.
+
+215. **Shell persistente com duas colunas, igual ao setes.** Após o
+     login, `HomeModule` desenha AppBar (título, seletor de idioma,
+     badge do usuário com **Sair**) e corpo `módulos (200) | interfaces
+     do módulo selecionado (240) | RouterOutlet`; abaixo de 850 px o
+     menu vira drawer com grupos expansíveis. Seleção por clique, nunca
+     hover. Páginas dentro do shell não desenham AppBar próprio
+     (`VgrPage` no lugar do `VgrScaffold`; este fica para login/2FA).
+     Logout limpa `LocalPrefs`, token do `ApiClient`, `SessionAccess`
+     e `IdentityBloc`, e volta a `/login`.
+
+216. **URLs das telas continuam na raiz** (`/reports`, `/users`…): o
+     shell é montado em `/` e as `ModuleRoute` passam a ser filhas do
+     `HomeModule`, sem `/home/...`. `interface_routes.dart`, bookmarks e
+     testes de rota não mudam. Rotas de autenticação ficam fora do shell.
+
+217. **CRUD simples alterna lista ↔ formulário por ESTADO do bloc**, numa
+     só `ChildRoute('/')` por módulo (modelo setes: estados *buildable*
+     `ListState`/`FormState` + *one-shot* `ActionSuccess`/`ActionFailure`).
+     **Exceção registrada**: `reports` (`/:id`, `/queue`) e `admin-audit`
+     (`/:id`) mantêm rota própria — deep link e leitura auditada por caso.
+
+218. **`RouterOutlet` (flutter_modular) e o helper de breakpoint
+     (`VgrResponsive`) são peças estruturais isentas da 133**, como
+     `Navigator`/`BlocBuilder`; o ADR do design system lista ambos. O
+     `vgr_widgets` não passa a depender de `flutter_modular`.
+
+219. **Os motores do ERP ficam FORA**: campos configuráveis por
+     instituição, configurações de interface e tema/logo por instituição
+     não têm onde se encaixar numa instalação por país single-schema (68)
+     com telas de governança. Registrado como visão futura, sem código.
+     Também fora: seleção de instituição, `TreeView` e lookup de FK (até
+     surgir a primeira tela que precise).
+
+220. **Paginação obrigatória nas listas do painel que crescem** (usuários,
+     privilégios, interfaces, módulos, Legal Gate, respondedores):
+     `page`/`pageSize` (padrão 20, máximo 100) + `filter` opcional na API,
+     envelope `{ items, page, pageSize, total }`; **sem `page` informado a
+     API devolve tudo como hoje** (compatível até a migração das telas).
+     Catálogos fixos (`risk-config` por categoria, `category-forms`)
+     ficam sem paginação, registrado. `PagedResult<T>` no `core`,
+     `VgrPagingBar` único no lugar dos controles duplicados.
+
+221. **Ponte única de feedback verificada por teste**: telas chamam só
+     `showSuccessFeedback`/`showFailureFeedback`/`showValidationFeedback`/
+     `askDecision` de `app/shared/feedback`; `showVgr*` direto em tela
+     passa a ser proibido pela mesma mecânica da 133 (teste que varre
+     `apps/admin/lib`). Severidade derivada do `Failure`, nunca escolhida
+     por tela.
+
+222. **Fatiamento: PS0 API (paginação) ‖ PS1 shell → PS2 fábrica
+     (`shared/register`, `shared/feedback`, `shared/session`,
+     `VgrFormShell`, piloto `privileges` + `users`) → PS3 migração dos
+     demais módulos → PS4 docs.** PS0 e PS1 em paralelo; PS2 só com as
+     duas limpas (método 2026-09-04); cada fase por "pode seguir" (38).
+
+     **Rodada 17 ZERADA** (decisões 215–222).
 
 ## Critérios de sucesso
 

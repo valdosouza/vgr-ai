@@ -2,7 +2,9 @@
 
 > Data: 2026-08-03 · Status: **rodada 8 ZERADA — decisões 134-142**;
 > **R1-R4 EXECUTADAS** (R1-R3 em 2026-08-03, R4 em 2026-08-04) — o lado
-> API da frente está completo; próximas: A1-A3 (app) e P1 (painel).
+> API da frente está completo; **A1 e A2 EXECUTADAS em 2026-08-04** (tela
+> de denunciar + feed/detalhe no mobile); **A3 e P1 EXECUTADAS em
+> 2026-08-19** — a frente está COMPLETA (R1-R4 + A1-A3 + P1).
 > Escopo: núcleo da denúncia — Report + taxonomia, SubmitReport (anônimo e
 > autenticado), feed por proximidade (raio dinâmico), HelpOffer,
 > edição/resolução/timeline, visibilidade, retenção e o M2 de imagens.
@@ -142,13 +144,62 @@ na spec antes do código ("Amended — frente denúncia"):
   reiniciado (141b/d); leitura do dono no /app-media aceita `pending`.
   Promoção E8: `shared/storage/media-object` (chave+decifra, 2º leitor).
   54 suítes / 356 testes. Docs: `api/docs/feature/reports.md` + `media.md`.
-- **A1 — app: denunciar** (formulário dinâmico por categoria + dois eixos
-  obrigatórios da 140 + fila offline com idempotência 137 + captura com a
-  escolha EXIF 130/139) · **A2 — app: feed + detalhe/timeline** (posição
-  degradada 135) · **A3 — app: oferecer ajuda**.
-- **P1 — painel: tela mínima do congelamento** (142): buscar caso por id +
-  congelar/descongelar com motivo. Única tela de painel desta frente;
-  busca completa/moderação/estatísticas viram frente própria depois do A3.
+- **A1 — app: denunciar — EXECUTADA em 2026-08-04** (commit 1415625 do
+  app): primeiro feature real do apps/mobile (era esqueleto) — bootstrap
+  EasyLocalization+Modular no padrão do admin; módulo report (Clean, spec
+  tasks 03-06/21 emendadas MA1-MA7 na spec mobile); dois eixos
+  obrigatórios (140, XOR na entidade); formulário dinâmico do catálogo
+  `category-forms` cacheado local com pré-validação offline (47);
+  `OfflineQueueService` no packages/core (task 16, decisão 28 — FIFO
+  persistida, retry para o flush, cadeia submit→upload→attach replay-safe
+  por clientKey 137 e header x-client-key 134); fotos em background nunca
+  travando a denúncia (123), escolha EXIF por foto com aviso v1 e versão
+  gravada (86/130/139), reforço no fluxo anônimo; posição obrigatória
+  atrás de LocationGateway (7/135); tudo Vgr* com guarda replicada (133 —
+  novos VgrPhotoThumb/VgrWrap). Suítes: core 31, admin 79, mobile 37.
+  Doc: `app/docs/feature/report-form.md`. Nota: HEIC→JPEG na captura é
+  pré-requisito de build iOS (porta documentada), MVP Android.
+- **A2 — app: feed + detalhe/timeline — EXECUTADA em 2026-08-04**: feed
+  virou a home (form em /new atrás de FAB — 123); GET /app-feed anônimo
+  com tudo degradado por tier (135), paginação por botão com dedupe
+  (21), ordenação recency|relevance; detalhe renderiza estritamente pelo
+  `access` do servidor (50) — summary só desfecho, public com posição
+  "aproximada", owner com timeline e ofertas mascaradas (40/41/60);
+  mídia por `VgrNetworkImage` com variante pelo tier (blur-only público
+  em high — 128) e header x-client-key; `MyReportsStore` persiste
+  reportId→clientKey nos DOIS caminhos de submit (134 — fecha o loop do
+  A1). Suítes: core 31, admin 79, mobile 60. Doc:
+  `app/docs/feature/report-feed.md`.
+- **A3 — app: oferecer ajuda — EXECUTADA em 2026-08-19**: módulo
+  `help_offer` próprio (Clean, spec tasks 09/10/19 emendadas MA8-MA10);
+  `POST /app-help-offers` com `{reportId, helpType, anonymous}` — enum
+  fechado da decisão 10, sem fila offline (oferta responde a caso vivo;
+  falha de transporte = OFFLINE e o usuário tenta de novo); guarda de
+  self-dealing (20) DUPLA pela posse do clientKey (134, porta
+  `OwnsReport`): bloc desabilita o form com mensagem (cobre deep link
+  forjado) e usecase corta antes da rede; botão "Oferecer ajuda" só em
+  `access == public && status == open` (dono vê ofertas — 20; resolvido
+  não aceita oferta nova — 18); aviso de inelegibilidade de recompensa
+  para TODO helper anônimo (34/35, MA9 — estreitar quando o domínio
+  Reward existir), nunca bloqueia o envio; 409 DUPLICATE traduzido por
+  código (80/83); detalhe recarrega após oferta (timeline
+  `help_offered` sem identidade). Suítes: core 31, admin 79, mobile 79.
+  Doc: `app/docs/feature/help-offer.md`.
+- **P1 — painel: tela mínima do congelamento — EXECUTADA em 2026-08-19**
+  (commits 7337c73 da API e 7f8935b do app): migração 034 promove a
+  interface `case_freeze` de kind 'R' (escolha da R3, quando só existia
+  API) para 'T' — mesma linha, mesmos grants, agora visível no menu
+  dinâmico; módulo `case-freeze` no apps/admin em `/case-freeze`
+  (`interface_routes` + AdminSessionGuard): busca por id e UMA ação por
+  vez decidida ESTRITAMENTE pelo estado do servidor (bloc re-busca após
+  cada mutação — a tela nunca adivinha transição): congelar com motivo
+  obrigatório (141, mínimo de 3 espelhado do DTO), solicitar
+  descongelamento (passo 1) e aprovar (passo 2 — usuário DISTINTO e
+  relógio reiniciado são juízo do servidor; o 422 de mesmo usuário
+  renderiza verbatim); botões UPDATE desabilitados sem grant (72).
+  Busca completa/moderação/estatísticas seguem como frente própria
+  (142). Suítes: core 31, admin 93, mobile 79; API 54/357. Doc:
+  `app/docs/feature/case-freeze.md`.
 
 Cada fase fecha com suíte verde, feature doc e commit — padrão das
 frentes anteriores.

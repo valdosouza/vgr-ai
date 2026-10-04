@@ -8,9 +8,16 @@
 >
 > Data: 2026-08-03 · Status: **L0+L1 IMPLEMENTADAS** em 2026-08-03 (decisões
 > 76–79 e 103–109; migração 022; 26 suítes / 151 testes verdes). Revisa a
-> decisão 24. Feature doc: `api\docs\feature\legal-gate.md`. Restam L2
-> (pipeline de avaliação por IA) e L3 (telas admin); a L4 foi removida pela
-> decisão 105.
+> decisão 24. Feature doc: `api\docs\feature\legal-gate.md`.
+> **L3 (telas admin) EXECUTADA em 2026-08-19** (commit 00e41be do app):
+> Jurisdições (kill switch 107 com pendência de afrouxamento e confirm
+> por guardas em camadas), Capacidades (veredito por jurisdição,
+> `unreviewed` rotulado como bloqueio), Regras (propor com motivo
+> tipificado condicional 78, histórico versionado filtrável,
+> aprovar/rejeitar com recusas do servidor verbatim); a tela de
+> Avaliações fica com a L2. Doc: `app\docs\feature\legal-policy.md`.
+> Resta a L2 (pipeline de avaliação por IA — depende de escolher o
+> provedor); a L4 foi removida pela decisão 105.
 
 ---
 

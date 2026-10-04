@@ -60,3 +60,21 @@ recebe, nunca segura, nunca movimenta.
    compras: significa escolher entre não ter selo de reserva e revisar a
    decisão 84 — e essa escolha volta para o log de decisões, não para a
    negociação.
+
+## 5. Conector preparado (2026-08-20) — Asaas como candidato, não decisão
+
+Pesquisa de documentação pública encontrou a **Conta Escrow do Asaas** como
+único produto que retém valor com liberação condicional dentro da própria
+subconta do recebedor (bate com B1: quem fica titular é o recebedor, não o
+marketplace). Por instrução de Valdo, o port `PaymentRail` (decisão 96) e um
+adapter Asaas foram **codados como conector preparado**, antes da decisão 59
+fechar — ver `api/docs/feature/payment-rail.md` para o detalhe técnico
+completo, endpoints confirmados vs assumidos, e o que falta confirmar
+diretamente com o Asaas (B2, B3, B4, B5, D1). **Nada no código chama esse
+port ainda** — não existe módulo Reward. Não apontar para cobrança real
+antes de B2–B5/D1 serem confirmados com o Asaas.
+
+> Atualização 2026-08-21: o módulo Reward (R0) existe e chama o port; o
+> roteiro de perguntas para confirmar B2–B5/D1 com o Asaas está pronto em
+> [roteiro-perguntas-asaas.md](roteiro-perguntas-asaas.md) — falta o envio,
+> que é ato comercial de Valdo.
