@@ -17,8 +17,15 @@
 > `pageSize`/`filter` opcionais em privilégios, interfaces, módulos,
 > usuários, Legal Gate e fila de respondedores; sem `page` a resposta é
 > idêntica à anterior; helper único `shared/http/paged-query.ts`; 1204
-> testes verdes). **PS2 fábrica aguarda "pode seguir".** Execução fase a
-> fase (38).
+> testes verdes). **PS2 liberada em 2026-10-04** ("pode seguir").
+> **PS2 fábrica EXECUTADA em 2026-10-04** (app `f7ebbd7`: `PagedResult`/
+> `PagedQuery` no core; `VgrFormShell`/`VgrPagingBar`/`VgrSearchBar`/
+> `VgrEmptyState` + `showVgrAlert`/`showVgrChoice`; `shared/register`
+> com `RegisterBloc<T, D>` genérico, `shared/feedback` e
+> `shared/session/current_interface.dart`; piloto `privileges` + `users`;
+> guarda da 221 com `interfaces`/`system-modules` na lista de pendência
+> da PS3; admin 359 testes verdes — notas de execução no §7). **PS3
+> migração aguarda "pode seguir".** Execução fase a fase (38).
 
 ---
 
@@ -247,7 +254,7 @@ frente.
 |---|---|---|
 | **PS0 API** | paginação nas listas do painel (compatível), spec 004 | rodada 17 | ✅ 2026-09-21 (`cecc1e0`) |
 | **PS1 shell** | HomeModule shell + RouterOutlet + colunas + drawer + Sair + `VgrPage` em todas as páginas + MenuBloc com seleção + testes | rodada 17 | ✅ 2026-09-21 |
-| **PS2 fábrica** | `PagedResult`, `VgrFormShell`/`VgrPagingBar`/`VgrSearchBar`/`VgrEmptyState`, `shared/register`, `shared/feedback`, `shared/session`; piloto `privileges` + `users` | PS0, PS1 |
+| **PS2 fábrica** | `PagedResult`, `VgrFormShell`/`VgrPagingBar`/`VgrSearchBar`/`VgrEmptyState`, `shared/register`, `shared/feedback`, `shared/session`; piloto `privileges` + `users` | PS0, PS1 | ✅ 2026-10-04 (`f7ebbd7`) |
 | **PS3 migração** | demais módulos na fábrica/ponte, dedupe de paginação | PS2 |
 | **PS4 docs** | ADRs, feature doc, checklist, resumo | PS3 |
 
@@ -294,6 +301,51 @@ trocam `VgrScaffold` por `VgrPage`.
    em tela, como a 133 proíbe widget cru)? *Recomendação*: sim.
 8. **Ordem**: PS0 (API) e PS1 (shell) em paralelo, PS2 depois de ambas?
    *Recomendação*: sim.
+
+## 7. Notas de execução da PS2 (2026-10-04)
+
+Escolhas de implementação dentro das decisões 215–222 — nenhuma decisão
+nova; registradas para a PS3/PS4 não as redescobrirem.
+
+1. **Bloc genérico em vez de um bloc à mão por módulo.** `RegisterBloc<T, D>`
+   (entidade, rascunho) faz o ciclo lista ↔ formulário da 217 uma vez; o
+   módulo declara o seu como alias (`typedef PrivilegeBloc =
+   RegisterBloc<PrivilegeEntity, PrivilegeDraft>`) e implementa
+   `RegisterRepository<T, D>` (lista paginada + criar/alterar/excluir). A
+   tela é `RegisterScreen<T, D>` + configuração. Setes tem um bloc por
+   módulo; aqui a PS3 migra ~6 CRUDs sem repetir os estados.
+2. **`CurrentInterface` por chave, não global.** No setes a navegação
+   grava a interface corrente num global; no VGR o `MenuBloc` do shell já
+   guarda a seleção (PS1) e um global ficaria velho num F5 ou deep link.
+   Cada tela passa a sua `i18n_key`; a resposta vem do `SessionAccess`.
+3. **Título NÃO viaja como `arguments`** (§3.1 previa): cada página
+   mantém a sua chave de tradução — mesma informação, sem depender de ter
+   chegado pelo menu.
+4. **Severidade da ponte (221)**: sem status (sem resposta) ou 5xx →
+   dialog; 4xx → mensagem transitória, sempre traduzida por código. A API
+   não devolve código de suporte (`supportRef`), então o dialog técnico
+   mostra só o texto traduzido.
+5. **Guarda da 221 com catraca**: `interfaces` e `system-modules` (as duas
+   telas que ainda chamam `showVgr*`) ficam numa lista de pendência que
+   só encolhe — um segundo teste falha se um arquivo listado deixar de
+   ofender. A PS3 esvazia a lista; `change_password_page` e
+   `user_privileges_page` já passaram para a ponte nesta fase.
+6. **Exclusão mora no formulário** (como `SetesFormShell`), não mais num
+   ícone por linha; sem UPDATE a linha abre o formulário só leitura, para
+   o registro continuar consultável.
+7. **Validadores novos** (espelhos da 154): `upperSnakeCase`
+   (`privilegeSaveDto`), `newPassword` (só o comprimento de
+   `newPasswordSchema`, sem trim; o refine "senha previsível" fica só na
+   API e volta como 422 no campo `password`, ancorado pelo formulário) e
+   `optional(rule)`.
+8. **Achado — `locale` apagado ao editar usuário**: a API grava `locale`
+   em todo `PUT /api/users/:id` e trata ausente como `null`; o painel
+   nunca enviava, então editar o nome de alguém zerava o idioma salvo.
+   Corrigido no app (o update reenvia o `locale` atual). **Pendente de
+   decisão de Valdo**: se a API deve passar a preservar o valor quando o
+   campo não vem (hoje o DTO não distingue ausente de `null`).
+9. **Tamanho de página não é persistido** (o setes persiste): vale durante
+   a vida da tela. Entra se fizer falta no uso.
 
 ## Fora de escopo (registrado, não some)
 - Convite de equipe por e-mail (75), refresh token do painel (73).
