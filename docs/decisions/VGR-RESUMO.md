@@ -92,6 +92,7 @@ Estes são os invariantes — violar qualquer um exige decisão nova registrada:
 | Duplo controle de verdade (corrige a implementação da 45) | 223–229 | **Rodada 18 fechada em 2026-10-04**; **DC1 API executada em 2026-10-04** (api `ea3184f`: migração 050 — solicitante e aprovador da sessão, pedido + 1 aprovação de OUTRA pessoa, CHECK de duas pessoas no banco, solicitações antigas anuladas `void`, auditoria, 404 na entrada inexistente, lista paginada com nomes; validada em MySQL 8.0 e MariaDB 10.11); **DC2 painel executada em 2026-10-04** (app `eb9d8f1`: lista paginada + formulário de pedido + aprovar na linha, desabilitado no próprio pedido, nomes nunca e-mail); **FRENTE COMPLETA**. Revelação (decifrar) fora: rodada própria após revisão jurídica (228) | [plano-dual-control.md](../plans/plano-dual-control.md), [dual-control-access.md (API)](../../api/docs/feature/dual-control-access.md) |
 | Pendências do painel: edição de usuário, motor do banco, datas | 230–233 | **Rodada 19 fechada e executada em 2026-10-04** — R1 API (api `4102afa`: `active`/`locale` ausentes mantidos; docs MariaDB) e R2 app (app `5f0ea26`: formatador de data local no `core` para painel e mobile; testes independentes de fuso); **FRENTE COMPLETA** | [plano-rodada-19-pendencias.md](../plans/plano-rodada-19-pendencias.md) |
 | Teste do painel no navegador: mediação no menu, filtros de data locais | 234–236 | **Rodada 20 fechada e executada em 2026-10-04** — M1 API (api `e825bf1`: migração 051, `reward_mediation` vira tela do menu) e M2 painel (app `6ff4a61`: o dia digitado nos filtros de auditoria e busca é o dia local, enviado como instantes UTC); **FRENTE COMPLETA**. Fica aberto: baldes das estatísticas em UTC | [plano-rodada-20-painel.md](../plans/plano-rodada-20-painel.md) |
+| Identificação do helper: escolha explícita, oculto por padrão | 237–239 | **Rodada 21 fechada e executada em 2026-10-05**: H1 API (api `4b6d658`: `anonymous` ausente = oculto) e H2 mobile (app `fd2513f`: caixa "Mostrar meu nome a quem denunciou" desmarcada, com aviso, em risco baixo/médio; em risco alto só o aviso); conferido no navegador nos três níveis. **FRENTE COMPLETA**. Fica aberto: ofertas gravadas identificadas antes da rodada (hoje só dados de teste) | [plano-rodada-21-identificacao-helper.md](../plans/plano-rodada-21-identificacao-helper.md) |
 | Denúncia (Report) | 134–142 | **Entregue** (R1–R4 na API + A1–A3 no mobile + P1 no painel); busca/moderação/estatísticas do painel = frente própria (142) | [plano-denuncia.md](../plans/plano-denuncia.md), [handoff-A1-app-denunciar.md](../plans/handoff-A1-app-denunciar.md) |
 
 Especificação DDD vinculante: `api/docs/specs/vgr/` (tactical design + cenários
@@ -187,7 +188,10 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     denunciou sem ele escolher; tier high continua sem nome). → **Rodada 21
     (237–239)**: escolha explícita, oculto por padrão; o nome passa pela
     análise da categoria de risco, como o denunciante (238: em risco alto a
-    opção nem aparece); H1/H2 aguardam "pode seguir".
+    opção nem aparece) — [plano-rodada-21-identificacao-helper.md](../plans/plano-rodada-21-identificacao-helper.md).
+    **Executados em 2026-10-05** (api `4b6d658`, app `fd2513f`), conferidos
+    no navegador: risco baixo sem marcar → "Helper anônimo"; risco médio
+    marcado → nome; risco alto → sem opção, "Helper anônimo".
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa
