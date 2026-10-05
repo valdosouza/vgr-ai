@@ -3194,8 +3194,15 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
      pela plataforma (60) e uma oferta oculta com conta continua podendo
      receber recompensa.
 
-238. **Em categoria de risco alto o nome nunca aparece, mesmo marcado**
-     (40/60 — o servidor já aplica); a opção diz isso ao helper.
+238. **O nome passa pela análise da categoria de risco, como o
+     denunciante.** Valdo, ao esclarecer a rodada: "passar por análise
+     seria avaliar a categoria de risco, como é feito com o denunciante".
+     Em categoria de risco alto o nome nunca aparece, mesmo que o helper
+     queira (40/60 — o servidor já aplica e continua sendo a garantia). O
+     app avalia o nível da denúncia antes de oferecer a escolha: em risco
+     alto a opção nem aparece, só o aviso de que neste caso o nome nunca é
+     mostrado; nos demais níveis aparece desmarcada (237). Nenhum
+     administrador libera nome caso a caso.
 
 239. **Fatiamento: H1 API (padrão oculto) → H2 mobile (a escolha no
      formulário)**, cada fase por "pode seguir" (38).

@@ -185,8 +185,9 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     quando ele escolheu identificar-se", mas a escolha nunca foi construída —
     helper com conta oferece SEMPRE identificado (o nome vai para quem
     denunciou sem ele escolher; tier high continua sem nome). → **Rodada 21
-    (237–239)**: escolha explícita, oculto por padrão; H1/H2 aguardam
-    "pode seguir".
+    (237–239)**: escolha explícita, oculto por padrão; o nome passa pela
+    análise da categoria de risco, como o denunciante (238: em risco alto a
+    opção nem aparece); H1/H2 aguardam "pode seguir".
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa
