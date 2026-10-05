@@ -172,6 +172,19 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     **Executados em 2026-10-04** (api `e825bf1`, app `6ff4a61`). Fica aberto:
     os baldes das estatísticas de denúncias são cortados em UTC pela API
     (mostrar no dia local pediria parâmetro de fuso — não decidido).
+5i. **Teste do app mobile no navegador (2026-10-05)** — primeiro desde
+    2026-09-06: denúncia anônima, feed e detalhe com datas locais, cadastro,
+    oferta com dois tipos, chat mascarado nos dois sentidos (telefone
+    bloqueado), encerrar e avaliar, pedido de respondente aprovado no
+    painel, alerta de pânico chegando à caixa do respondente e resolvido,
+    apontamento de direção, aparelho em inglês — tudo funcionou. Corrigidos
+    (app `06aaf00`): estrelas da avaliação anunciadas em inglês ("Rate N
+    stars") na interface em português; bússola lida como "Direction Norte
+    Norte"; campo do chat sem nome para leitor de tela; "1 avistamentos".
+    **Um ponto pede decisão**: a 170 diz que o nome do helper aparece "só
+    quando ele escolheu identificar-se", mas a escolha nunca foi construída —
+    helper com conta oferece SEMPRE identificado (o nome vai para quem
+    denunciou sem ele escolher; tier high continua sem nome).
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa
