@@ -63,7 +63,7 @@ Estes são os invariantes — violar qualquer um exige decisão nova registrada:
 - API primeiro quando o app depende de endpoint inexistente (66).
 - Stack (15–17): Flutter workspace (`flutter_modular` + `bloc` + `dartz`),
   packages próprios `core`/`vgr_widgets`/`vgr_validators`; API Express/TS
-  modular, MySQL `tb_` + soft delete; código/comentários/docs técnicas em
+  modular, MariaDB (231) `tb_` + soft delete; código/comentários/docs técnicas em
   inglês; docs de decisão em português. Estrutura espelha setes-app/setes-api
   (`D:\Gestao2027`), sem reaproveitar pacotes.
 - Repositórios: `D:\ProjetoVGR\app` (mobile + admin no mesmo workspace) e
@@ -90,6 +90,7 @@ Estes são os invariantes — violar qualquer um exige decisão nova registrada:
 | Oferta de ajuda com vários tipos | 208–214 | **Rodada 16 fechada em 2026-09-11**; **HT1 API executada em 2026-09-11** (migração 049: tabela filha `tb_help_offer_type`, coluna antiga removida; `helpTypes: []` no POST e nas visões; `PUT /app-help-offers/:id/types` para o helper trocar o conjunto em denúncia aberta); **HT2 mobile executada em 2026-09-19** (bloc com conjunto, checkboxes múltiplos, "Alterar tipos de ajuda" no detalhe do participante; adendo HT1 na API: facet `myOffer` na visão de participante); **HT3 painel executada em 2026-09-19** (entidade e linha da oferta com `helpTypes`); **FRENTE COMPLETA** | [plano-oferta-multitipo.md](../plans/plano-oferta-multitipo.md) |
 | Painel admin no modelo setes (shell, fábrica CRUD, paginação) | 215–222 | **Rodada 17 fechada em 2026-09-21**; **PS1 shell executada em 2026-09-21** (HomeModule com RouterOutlet, duas colunas, drawer, Sair, `VgrPage`); **PS0 API executada em 2026-09-21** (api `cecc1e0`: paginação opcional e compatível nas listas que crescem); **PS2 fábrica executada em 2026-10-04** (app `f7ebbd7`: `RegisterBloc<T, D>` genérico + `RegisterScreen`, ponte de feedback guardada por teste, `PagedResult` no core, piloto `privileges` + `users`; corrigido de passagem o `locale` apagado ao editar usuário); **PS3 migração executada em 2026-10-04** (app `80cf51d`…`86fe644`: todas as telas na fábrica ou na ponte, Legal Gate e respondedores paginados, um pager só, guarda da 221 estrita; achados e corrigidos 4 telas que caíam em erro ao recusar uma ação e o dual-control que perdia a solicitação em andamento); **PS4 docs executada em 2026-10-04** (app `1314904`: checklist `ADMIN-SCREENS.md`, `ARCHITECTURE.md` § ADMIN PANEL, inventário em `admin-panel.md`); **FRENTE COMPLETA** — 2 pendências de decisão no §9 do plano (⚠️ dual-control com aprovador digitado; `locale` na API) | [plano-painel-modelo-setes.md](../plans/plano-painel-modelo-setes.md), [ADMIN-SCREENS.md](../../app/docs/adr/ADMIN-SCREENS.md) |
 | Duplo controle de verdade (corrige a implementação da 45) | 223–229 | **Rodada 18 fechada em 2026-10-04**; **DC1 API executada em 2026-10-04** (api `ea3184f`: migração 050 — solicitante e aprovador da sessão, pedido + 1 aprovação de OUTRA pessoa, CHECK de duas pessoas no banco, solicitações antigas anuladas `void`, auditoria, 404 na entrada inexistente, lista paginada com nomes; validada em MySQL 8.0 e MariaDB 10.11); **DC2 painel executada em 2026-10-04** (app `eb9d8f1`: lista paginada + formulário de pedido + aprovar na linha, desabilitado no próprio pedido, nomes nunca e-mail); **FRENTE COMPLETA**. Revelação (decifrar) fora: rodada própria após revisão jurídica (228) | [plano-dual-control.md](../plans/plano-dual-control.md), [dual-control-access.md (API)](../../api/docs/feature/dual-control-access.md) |
+| Pendências do painel: edição de usuário, motor do banco, datas | 230–233 | **Rodada 19 fechada e executada em 2026-10-04** — R1 API (api `4102afa`: `active`/`locale` ausentes mantidos; docs MariaDB) e R2 app (app `5f0ea26`: formatador de data local no `core` para painel e mobile; testes independentes de fuso); **FRENTE COMPLETA** | [plano-rodada-19-pendencias.md](../plans/plano-rodada-19-pendencias.md) |
 | Denúncia (Report) | 134–142 | **Entregue** (R1–R4 na API + A1–A3 no mobile + P1 no painel); busca/moderação/estatísticas do painel = frente própria (142) | [plano-denuncia.md](../plans/plano-denuncia.md), [handoff-A1-app-denunciar.md](../plans/handoff-A1-app-denunciar.md) |
 
 Especificação DDD vinculante: `api/docs/specs/vgr/` (tactical design + cenários
@@ -147,18 +148,26 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     (223–229): DC1 API (api `ea3184f`) + DC2 painel (app `eb9d8f1`). Fica
     para rodada própria a revelação (228, ⚠️ advogado). Detalhe:
     [plano-dual-control.md](../plans/plano-dual-control.md).
-5e. **`locale` no update de usuário (API)**: ausente vira `null`; o painel
-    já contorna reenviando — decidir se a API preserva.
-5f. **Migração 049 só roda em MariaDB (achado em 2026-10-04, DC1)**:
-    `DROP CONSTRAINT IF EXISTS` / `DROP COLUMN IF EXISTS` não existem no
-    MySQL 8.0 — lá a 049 falha e trava as seguintes. O dev é MariaDB (a
-    cadeia 001–050 roda inteira em MariaDB 10.11), mas a stack diz "MySQL".
-    Decidir o motor de produção; se for MySQL, a 049 precisa de forma
-    portável (sem `IF EXISTS`).
-5g. **Datas do painel em UTC sem rótulo (observado em 2026-10-04, DC2)**:
-    as telas mostram o ISO da API cortado (`2026-10-04 21:38`), que é UTC —
-    para quem está no Brasil, 3 h adiantado. Convenção de 8 telas; decidir
-    se o painel converte para o fuso local ou rotula "UTC".
+5e–5g. ~~`locale` apagado na edição de usuário; migração 049 só em MariaDB;
+    datas em UTC sem rótulo~~ — **resolvidos** pela rodada 19 (230–233):
+    edição mantém `active`/`locale` ausentes; produção em MariaDB; datas no
+    fuso local no painel e no mobile. Detalhe:
+    [plano-rodada-19-pendencias.md](../plans/plano-rodada-19-pendencias.md).
+5h. **Teste do painel no navegador (2026-10-04)** — primeiro desde a frente
+    PS: Chromium no build web de release, MariaDB 10.11 + API, dois admins
+    com TOTP. Login/2FA, menu, cadastros com paginação e filtro, duplo
+    controle entre duas pessoas, trilha de auditoria, sair, drawer e idioma
+    funcionaram. Corrigidos no caminho (app `fdf8e34`, cada um com teste que
+    falha sem a correção): o menu inteiro sumia da árvore de acessibilidade
+    (leitor de tela não chegava nele); trocar o idioma não repintava a tela
+    aberta; o paginador dizia "1 registros". **Dois pontos pedem decisão**:
+    (a) a tela de mediação de recompensa só abre pela URL — `reward_mediation`
+    é recurso kind 'R' (migração 035), fora do menu, e nenhuma tela linka
+    para ela; (b) os filtros de data (auditoria, busca de denúncias) vão
+    como dia UTC, enquanto as datas na tela são locais desde a 232 — perto
+    da meia-noite uma linha pode cair fora do dia digitado. → **Decididos na
+    rodada 20 (234–236)**: mediação entra no menu; o painel converte o dia
+    local para UTC — [plano-rodada-20-painel.md](../plans/plano-rodada-20-painel.md).
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa
