@@ -3175,6 +3175,40 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
 
      **Rodada 20 ZERADA** (decisões 234–236).
 
+## Identificação do helper: escolha explícita, oculto por padrão (rodada 21)
+
+> Aberta e fechada em 2026-10-05, a partir do teste do app mobile no
+> navegador (VGR-RESUMO §6, 5i): helper com conta oferecia ajuda sempre
+> identificado — a escolha da 170 nunca foi construída. Valdo: "imagine um
+> traficante criando uma denúncia falsa, tentando identificar algum helper
+> que está ajudando para intimidá-lo… temos que garantir a segurança de
+> quem denuncia e de quem ajuda para casos críticos". Implementa o que 6,
+> 40, 41, 55, 60 e 170 já decidiram; o que muda é o padrão.
+
+237. **Identificar-se é escolha EXPLÍCITA do helper e o padrão é oculto.**
+     A oferta ganha "Mostrar meu nome a quem denunciou", desmarcada, com o
+     aviso do risco (uma denúncia pode ser falsa, feita para descobrir quem
+     ajuda). Sem marcar, o helper é só "Ajudante" na oferta e no chat
+     (170). A API trata `anonymous` AUSENTE como oculto — privacidade por
+     padrão também para clientes antigos. O helper continua identificável
+     pela plataforma (60) e uma oferta oculta com conta continua podendo
+     receber recompensa.
+
+238. **O nome passa pela análise da categoria de risco, como o
+     denunciante.** Valdo, ao esclarecer a rodada: "passar por análise
+     seria avaliar a categoria de risco, como é feito com o denunciante".
+     Em categoria de risco alto o nome nunca aparece, mesmo que o helper
+     queira (40/60 — o servidor já aplica e continua sendo a garantia). O
+     app avalia o nível da denúncia antes de oferecer a escolha: em risco
+     alto a opção nem aparece, só o aviso de que neste caso o nome nunca é
+     mostrado; nos demais níveis aparece desmarcada (237). Nenhum
+     administrador libera nome caso a caso.
+
+239. **Fatiamento: H1 API (padrão oculto) → H2 mobile (a escolha no
+     formulário)**, cada fase por "pode seguir" (38).
+
+     **Rodada 21 ZERADA** (decisões 237–239).
+
 ## Critérios de sucesso
 
 1. Usuário consegue registrar uma denúncia escolhendo categoria + objeto/

@@ -2,7 +2,8 @@
 
 > **Rodada 20 — FECHADA em 2026-10-04** (aberta e zerada no mesmo dia).
 > Decisões **234–236** no [VGR-plano.md](../decisions/VGR-plano.md).
-> **M1 e M2 aguardam "pode seguir".**
+> M1 e M2 liberadas juntas ("pode seguir") e **executadas em 2026-10-04**
+> (api `e825bf1`, app `6ff4a61`) — **FRENTE COMPLETA** (§5).
 
 ---
 
@@ -29,11 +30,37 @@ dois pontos para decisão:
 
 | Fase | Conteúdo | Estado |
 |---|---|---|
-| **M1 API** | migração 051 (`reward_mediation` kind 'T'); teste da árvore do menu; docs (reward, access-control, admin-audit/menu) | aguarda "pode seguir" |
-| **M2 painel** | função de intervalo local → UTC no `core` + testes em mais de um fuso; auditoria e busca de denúncias passam a usá-la; inventário do painel (mediação no menu); docs | aguarda "pode seguir" |
+| **M1 API** | migração 051 (`reward_mediation` kind 'T'); menu conferido na API; docs (reward, access-control) | **executada** (api `e825bf1`) |
+| **M2 painel** | função de intervalo local → UTC no `core` + testes em mais de um fuso; auditoria e busca de denúncias passam a usá-la; inventário do painel (mediação no menu); docs | **executada** (app `6ff4a61`) |
 
 ## 4. Fica registrado
 
 - **Estatísticas de denúncias**: os baldes (dia/semana/mês) são cortados em
   UTC pela API. Mostrar baldes no dia local pediria um parâmetro de fuso na
   API — não decidido nesta rodada.
+
+## 5. Execução — 2026-10-04
+
+### M1 API (api `e825bf1`)
+- Migração 051: `UPDATE tb_interface SET kind = 'T'` em `reward_mediation`
+  — o mesmo movimento que a 034 fez para `case_freeze`. Mesma linha, mesmos
+  grants, mesmos guards.
+- Conferido em MariaDB: `GET /api/core/menus` de uma admin com todos os
+  grants lista `reward_mediation` em Operações, depois de
+  `monetization_config`. A 034 também não tinha spec (migração só de
+  dado); a prova é o menu real. Comentários de `privileges.ts` corrigidos
+  (`REWARD_MEDIATION` e `CASE_FREEZE` ainda diziam kind 'R').
+- Suíte da API 121/121, 1227 testes; `tsc` limpo.
+
+### M2 painel (app `6ff4a61`)
+- `core`: `localDayStartUtc` / `localDayEndUtc` — 00:00 e 23:59:59.999 do
+  dia LOCAL, em ISO UTC; o fim parte da próxima meia-noite local (dia com
+  horário de verão fecha certo); data impossível dá nulo. Testado em UTC,
+  São Paulo, Kolkata e Nova York.
+- Auditoria e busca de denúncias convertem na borda (`toQueryParameters`);
+  o formulário guarda o dia digitado. A API não mudou.
+- **Conferido no navegador** (fuso São Paulo): uma linha de auditoria
+  gravada às 00:00 UTC de 5/10 (21:00 local de 4/10) aparece ao filtrar o
+  dia local 2026-10-04 — com o dia "puro" ela ficaria de fora; e
+  "Mediação de Recompensa" aparece em Operações e abre a tela.
+- Testes: admin 392 em três fusos, core 71, mobile 428; analyzer limpo.

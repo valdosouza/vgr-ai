@@ -91,6 +91,9 @@ Estes são os invariantes — violar qualquer um exige decisão nova registrada:
 | Painel admin no modelo setes (shell, fábrica CRUD, paginação) | 215–222 | **Rodada 17 fechada em 2026-09-21**; **PS1 shell executada em 2026-09-21** (HomeModule com RouterOutlet, duas colunas, drawer, Sair, `VgrPage`); **PS0 API executada em 2026-09-21** (api `cecc1e0`: paginação opcional e compatível nas listas que crescem); **PS2 fábrica executada em 2026-10-04** (app `f7ebbd7`: `RegisterBloc<T, D>` genérico + `RegisterScreen`, ponte de feedback guardada por teste, `PagedResult` no core, piloto `privileges` + `users`; corrigido de passagem o `locale` apagado ao editar usuário); **PS3 migração executada em 2026-10-04** (app `80cf51d`…`86fe644`: todas as telas na fábrica ou na ponte, Legal Gate e respondedores paginados, um pager só, guarda da 221 estrita; achados e corrigidos 4 telas que caíam em erro ao recusar uma ação e o dual-control que perdia a solicitação em andamento); **PS4 docs executada em 2026-10-04** (app `1314904`: checklist `ADMIN-SCREENS.md`, `ARCHITECTURE.md` § ADMIN PANEL, inventário em `admin-panel.md`); **FRENTE COMPLETA** — 2 pendências de decisão no §9 do plano (⚠️ dual-control com aprovador digitado; `locale` na API) | [plano-painel-modelo-setes.md](../plans/plano-painel-modelo-setes.md), [ADMIN-SCREENS.md](../../app/docs/adr/ADMIN-SCREENS.md) |
 | Duplo controle de verdade (corrige a implementação da 45) | 223–229 | **Rodada 18 fechada em 2026-10-04**; **DC1 API executada em 2026-10-04** (api `ea3184f`: migração 050 — solicitante e aprovador da sessão, pedido + 1 aprovação de OUTRA pessoa, CHECK de duas pessoas no banco, solicitações antigas anuladas `void`, auditoria, 404 na entrada inexistente, lista paginada com nomes; validada em MySQL 8.0 e MariaDB 10.11); **DC2 painel executada em 2026-10-04** (app `eb9d8f1`: lista paginada + formulário de pedido + aprovar na linha, desabilitado no próprio pedido, nomes nunca e-mail); **FRENTE COMPLETA**. Revelação (decifrar) fora: rodada própria após revisão jurídica (228) | [plano-dual-control.md](../plans/plano-dual-control.md), [dual-control-access.md (API)](../../api/docs/feature/dual-control-access.md) |
 | Pendências do painel: edição de usuário, motor do banco, datas | 230–233 | **Rodada 19 fechada e executada em 2026-10-04** — R1 API (api `4102afa`: `active`/`locale` ausentes mantidos; docs MariaDB) e R2 app (app `5f0ea26`: formatador de data local no `core` para painel e mobile; testes independentes de fuso); **FRENTE COMPLETA** | [plano-rodada-19-pendencias.md](../plans/plano-rodada-19-pendencias.md) |
+| Teste do painel no navegador: mediação no menu, filtros de data locais | 234–236 | **Rodada 20 fechada e executada em 2026-10-04** — M1 API (api `e825bf1`: migração 051, `reward_mediation` vira tela do menu) e M2 painel (app `6ff4a61`: o dia digitado nos filtros de auditoria e busca é o dia local, enviado como instantes UTC); **FRENTE COMPLETA**. Fica aberto: baldes das estatísticas em UTC | [plano-rodada-20-painel.md](../plans/plano-rodada-20-painel.md) |
+| Identificação do helper: escolha explícita, oculto por padrão | 237–239 | **Rodada 21 fechada e executada em 2026-10-05**: H1 API (api `4b6d658`: `anonymous` ausente = oculto) e H2 mobile (app `fd2513f`: caixa "Mostrar meu nome a quem denunciou" desmarcada, com aviso, em risco baixo/médio; em risco alto só o aviso); conferido no navegador nos três níveis. **FRENTE COMPLETA**. Fica aberto: ofertas gravadas identificadas antes da rodada (hoje só dados de teste) | [plano-rodada-21-identificacao-helper.md](../plans/plano-rodada-21-identificacao-helper.md) |
+| Prontidão para produção | rodada 22 (aberta) | **Aberta em 2026-10-10** — levantamento achou que a API compilada não sobe (atalhos de import), que as migrações ficam fora do build (subiria sem criar o banco, sem avisar), painel com a API fixa em localhost e APK de release com chave de debug; 10 pendências (hospedagem, empacotamento, ambientes, domínio, segredos, backup, monitoramento, distribuição do app, o que abre antes das pendências externas, fatiamento) aguardando respostas | [plano-producao.md](../plans/plano-producao.md) |
 | Denúncia (Report) | 134–142 | **Entregue** (R1–R4 na API + A1–A3 no mobile + P1 no painel); busca/moderação/estatísticas do painel = frente própria (142) | [plano-denuncia.md](../plans/plano-denuncia.md), [handoff-A1-app-denunciar.md](../plans/handoff-A1-app-denunciar.md) |
 
 Especificação DDD vinculante: `api/docs/specs/vgr/` (tactical design + cenários
@@ -168,6 +171,38 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     da meia-noite uma linha pode cair fora do dia digitado. → **Decididos na
     rodada 20 (234–236)**: mediação entra no menu; o painel converte o dia
     local para UTC — [plano-rodada-20-painel.md](../plans/plano-rodada-20-painel.md).
+    **Executados em 2026-10-04** (api `e825bf1`, app `6ff4a61`). Fica aberto:
+    os baldes das estatísticas de denúncias são cortados em UTC pela API
+    (mostrar no dia local pediria parâmetro de fuso — não decidido).
+5i. **Teste do app mobile no navegador (2026-10-05)** — primeiro desde
+    2026-09-06: denúncia anônima, feed e detalhe com datas locais, cadastro,
+    oferta com dois tipos, chat mascarado nos dois sentidos (telefone
+    bloqueado), encerrar e avaliar, pedido de respondente aprovado no
+    painel, alerta de pânico chegando à caixa do respondente e resolvido,
+    apontamento de direção, aparelho em inglês — tudo funcionou. Corrigidos
+    (app `06aaf00`): estrelas da avaliação anunciadas em inglês ("Rate N
+    stars") na interface em português; bússola lida como "Direction Norte
+    Norte"; campo do chat sem nome para leitor de tela; "1 avistamentos".
+    **Um ponto pede decisão**: a 170 diz que o nome do helper aparece "só
+    quando ele escolheu identificar-se", mas a escolha nunca foi construída —
+    helper com conta oferece SEMPRE identificado (o nome vai para quem
+    denunciou sem ele escolher; tier high continua sem nome). → **Rodada 21
+    (237–239)**: escolha explícita, oculto por padrão; o nome passa pela
+    análise da categoria de risco, como o denunciante (238: em risco alto a
+    opção nem aparece) — [plano-rodada-21-identificacao-helper.md](../plans/plano-rodada-21-identificacao-helper.md).
+    **Executados em 2026-10-05** (api `4b6d658`, app `fd2513f`), conferidos
+    no navegador: risco baixo sem marcar → "Helper anônimo"; risco médio
+    marcado → nome; risco alto → sem opção, "Helper anônimo".
+5j. **Prontidão para produção (2026-10-10)** — a segurança da aplicação
+    está pronta, o caminho de implantação não existe: `npm run build` +
+    `npm start` quebra nos atalhos `@gateway/`/`@modules/`/`@shared/`; os
+    `.sql` das migrações não vão para o build e o runner, sem eles, diz
+    "Migrations completed" sem criar nada; o painel aponta fixo para
+    localhost; o APK de release usa a chave de debug. E dois riscos de
+    operação: o apagamento por crypto-shredding só é definitivo quando o
+    backup expira (a chave cifrada mora na linha do banco), e perder
+    `LEGAL_KEK`/`MEDIA_KEK` perde tudo o que é cifrado. → **Rodada 22
+    aberta**, 10 pendências — [plano-producao.md](../plans/plano-producao.md) §5.
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa
