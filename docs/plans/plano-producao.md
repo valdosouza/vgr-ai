@@ -143,7 +143,57 @@ Cada fase por "pode seguir" (38).
 
 | Fase | Conteúdo | Depende de | Estado |
 |---|---|---|---|
-| **P1** | B1–B6: build de produção da API que sobe e aplica migrações; scripts de migração e seed sem ferramenta de desenvolvimento; URL da API e client id do Google por ambiente no painel e no app; assinatura de release por chave externa | — | aguardando "pode seguir" |
-| **P2** | Dockerfile, compose (api, mariadb, minio, Caddy) para produção e homologação, backup e restauração (244), checagem de saúde e rotação de logs (245), roteiro de implantação | P1 | aguardando |
+| **P1** | B1–B6: build de produção da API que sobe e aplica migrações; scripts de migração e seed sem ferramenta de desenvolvimento; URL da API e client id do Google por ambiente no painel e no app; assinatura de release por chave externa | — | **executada em 2026-10-10** (api `4063846` + `622e99d`, app `3cab7a3`) — §7 |
+| **P2** | Dockerfile, compose (api, mariadb, minio, Caddy) para produção e homologação, backup e restauração (244), checagem de saúde e rotação de logs (245), roteiro de implantação | P1 | aguardando "pode seguir" |
 | **P3** | homologação no servidor escolhido (240) | P2 + domínio (item 4) + servidor | aguardando |
 | **P4** | primeira versão Android no teste interno (246) | P1 + conta Play Console | aguardando |
+
+## 7. Execução
+
+### P1 — 2026-10-10
+
+**API** (api `4063846` dependências, `622e99d` build):
+- `npm run build` agora compila `src/` sem os testes, reescreve os atalhos
+  `@gateway/`/`@modules/`/`@shared/` para caminhos relativos (`tsc-alias`)
+  e copia os `.sql` para `dist/migrations/sql` (B1, B2).
+- O runner **recusa subir** se não acha nenhuma migração, em vez de dizer
+  "Migrations completed" sobre um banco vazio. Testado com pasta real
+  vazia e ausente.
+- `run-migrations` e `seed-admin` foram para `src/cli` e rodam com Node
+  puro: `npm run db:migrate:prod`, `npm run seed:admin:prod` (B3).
+- O CI compila e roda um teste de fumaça do `dist/` (o app carrega com Node
+  puro e leva todas as migrações), e bloqueia vulnerabilidade alta ou
+  crítica nas dependências de produção — o portão que o `RELEASE.md`
+  (decisão 118) previa para quando houvesse CI.
+- **Achado no caminho**: `npm audit` acusava 12 vulnerabilidades nas
+  dependências de produção, 1 crítica e 6 altas. A crítica (`proxy-addr`)
+  permite forjar o IP atrás de proxy, e o accountability log (23) guarda
+  esse IP. Corrigidas todas as altas e a crítica; o `nodemailer` subiu de
+  versão maior (9 → 10) e um e-mail de verdade foi enviado a um servidor
+  SMTP local. Ficam 2 moderadas (`uuid` via `google-auth-library`), cuja
+  correção pede versão maior dessa biblioteca.
+- **Conferido de ponta a ponta** em MariaDB vazio, numa pasta só com as
+  dependências de produção: migração (40 arquivos, 45 tabelas), criação do
+  primeiro admin, `npm start`, `/health` 200, login do painel pedindo o
+  cadastro do 2FA. Sem a pasta de migrações, a API se recusa a subir.
+- Suíte 122/122, 1233 testes; `tsc` limpo.
+
+**App** (app `3cab7a3`):
+- Painel: a URL da API vem de `--dart-define=API_URL` (antes fixa em
+  localhost) (B4).
+- App: o client id do Google vem de `--dart-define=GOOGLE_SERVER_CLIENT_ID`
+  (B5).
+- Android: release assina com a chave de upload apontada por
+  `android/key.properties` (fora do repositório); sem ele, o build de
+  release **para** com instruções. Debug e profile não mudam (B6).
+- `docs/feature/release.md`: comandos por ambiente, chave de upload, o que
+  recusa.
+- Conferido: os builds web dos dois apps levam os valores passados e não os
+  padrões; analyze limpo; admin 392 e mobile 433 testes verdes. A regra do
+  Gradle rodou no Gradle 8.14 com tarefas de teste (debug/profile passam,
+  as duas de release param, ambas leem o `key.properties`). **O build
+  Android completo não rodou**: o SDK do Android não pôde ser baixado neste
+  ambiente (o proxy de rede bloqueia `dl.google.com`). O primeiro
+  `flutter build appbundle --release` com a chave de upload confirma o
+  resto (P4).
+
