@@ -1,8 +1,9 @@
 # Plano — Prontidão para produção (rodada 22)
 
-> **Rodada 22 — ABERTA em 2026-10-10.** Valdo escolheu esta frente ("vamos
-> de 2"). As pendências estão no §5; nada é construído antes das respostas e
-> do "pode seguir" de cada fase (38).
+> **Rodada 22 — aberta e respondida em 2026-10-10** ("1a, 2a, 3a, 5a, 6a,
+> 7a, 8a, 9a, 10 ok"). Decisões **240–248** no
+> [VGR-plano.md](../decisions/VGR-plano.md). Em aberto só o item 4
+> (domínio), necessário antes da P3. Cada fase por "pode seguir" (38) — §6.
 
 ---
 
@@ -54,6 +55,11 @@ revisão jurídica (228) continuam como estão. O item 9 só decide **o que
 pode abrir enquanto elas não fecham**.
 
 ## 5. Pendências (rodada 22 — prontidão para produção)
+
+**Respondidas em 2026-10-10**, todas na opção recomendada: 1a → 240,
+2a → 241, 3a → 242, 5a → 243, 6a → 244, 7a → 245, 8a → 246, 9a → 247,
+10 → 248. **Em aberto: item 4 (domínio)**, necessário antes da P3. O texto
+original das opções fica abaixo como registro.
 
 **1. Onde hospedar o MVP**
 - (a) **Um servidor (VPS) no Brasil** com API, MariaDB, MinIO e o proxy com
@@ -132,3 +138,12 @@ e recuperação não funcionam fora do desenvolvimento.
 - **P4**: primeira versão Android na faixa de teste interno.
 
 Cada fase por "pode seguir" (38).
+
+## 6. Fases
+
+| Fase | Conteúdo | Depende de | Estado |
+|---|---|---|---|
+| **P1** | B1–B6: build de produção da API que sobe e aplica migrações; scripts de migração e seed sem ferramenta de desenvolvimento; URL da API e client id do Google por ambiente no painel e no app; assinatura de release por chave externa | — | aguardando "pode seguir" |
+| **P2** | Dockerfile, compose (api, mariadb, minio, Caddy) para produção e homologação, backup e restauração (244), checagem de saúde e rotação de logs (245), roteiro de implantação | P1 | aguardando |
+| **P3** | homologação no servidor escolhido (240) | P2 + domínio (item 4) + servidor | aguardando |
+| **P4** | primeira versão Android no teste interno (246) | P1 + conta Play Console | aguardando |

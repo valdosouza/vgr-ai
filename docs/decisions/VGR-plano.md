@@ -3209,6 +3209,69 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
 
      **Rodada 21 ZERADA** (decisões 237–239).
 
+## Prontidão para produção (rodada 22)
+
+> Aberta em 2026-10-10 com o levantamento de `plano-producao.md`: a
+> segurança da aplicação está pronta, o caminho de implantação não existe
+> (a API compilada não sobe, as migrações ficam fora do build, o painel
+> aponta fixo para localhost, o APK de release usa a chave de debug).
+> Valdo respondeu no mesmo dia: "1a, 2a, 3a, 5a, 6a, 7a, 8a, 9a, 10 ok".
+> O item 4 (domínio) segue em aberto — só a fase P3 depende dele.
+
+240. **O MVP roda em um servidor (VPS) no Brasil** com API, MariaDB, MinIO
+     e o proxy com TLS — a 126 já supunha o MinIO no mesmo servidor da API.
+     O provedor do servidor é escolha comercial, como a 59. Com um servidor
+     e uma instância, as suposições de instância única da API (jobs dentro
+     do processo — 90 —, limite de requisições em memória, um proxy na
+     frente) valem como estão.
+
+241. **Empacotamento em Docker Compose descrito no repositório**: api,
+     mariadb, minio e Caddy (TLS automático). O servidor fica reproduzível e
+     a homologação é uma cópia da produção.
+
+242. **Dois ambientes no mesmo servidor: produção e homologação**, com
+     bancos, buckets e chaves separados. Migração e versão nova do app
+     passam primeiro por homologação.
+
+243. **Segredos no servidor único: arquivo de ambiente fora do repositório,
+     legível só pelo serviço; as duas chaves-mestras (`LEGAL_KEK`,
+     `MEDIA_KEK`) com cópia num cofre offline, acesso de duas pessoas.**
+     Revisa, para o MVP, o "secret manager na implantação" da 111 e do plano
+     de segurança §6: gerenciador de segredos de nuvem quando a instalação
+     sair do servidor único. A cópia das chaves é obrigatória — perder uma
+     KEK perde tudo o que ela cifra (accountability log, imagens).
+
+244. **Backup diário: dump do MariaDB cifrado com chave própria + espelho do
+     MinIO, cópia fora do servidor, retenção de 30 dias, teste de
+     restauração antes de abrir.** Precisa a 131: o crypto-shredding apaga a
+     chave cifrada da imagem, mas essa chave mora na linha do banco, então
+     um backup anterior ainda a tem. **Um dado apagado some por completo em
+     até 30 dias**, e o aviso de privacidade diz isso.
+
+245. **Monitoramento: checagem externa do `/health` a cada minuto com
+     alerta + logs com rotação de 14 dias no servidor** (a retenção curta do
+     plano de segurança §6). Observabilidade completa fica para depois.
+
+246. **Android primeiro** (Play Console: teste interno → produção), iOS
+     depois. A chave de assinatura de release fica fora do repositório
+     (Play App Signing). Depende da conta de desenvolvedor do Valdo.
+
+247. **Fase fechada primeiro**: homologação com convidados e recompensa em
+     dinheiro desligada; abertura ao público só depois da revisão jurídica
+     (228). Cadastro e recuperação de senha precisam de um remetente SMTP de
+     verdade — escolha comercial, como a 59.
+
+248. **Fatiamento: P1 correções sem decisão (build de produção da API que
+     sobe e aplica migrações, scripts sem ferramenta de desenvolvimento, URL
+     da API e client id do Google por ambiente, assinatura de release por
+     chave externa) → P2 kit de implantação no repositório (Dockerfile,
+     compose, Caddy, backup e restauração, roteiro) → P3 homologação no
+     servidor → P4 primeira versão Android no teste interno**, cada fase por
+     "pode seguir" (38).
+
+     **Rodada 22 fechada exceto o item 4** (domínio — necessário antes da
+     P3).
+
 ## Critérios de sucesso
 
 1. Usuário consegue registrar uma denúncia escolhendo categoria + objeto/
