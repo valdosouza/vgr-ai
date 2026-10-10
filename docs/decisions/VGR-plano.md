@@ -3272,6 +3272,20 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
      **Rodada 22 fechada exceto o item 4** (domínio — necessário antes da
      P3).
 
+249. **O armazenamento de imagens do MVP é o Garage, no mesmo servidor —
+     revisa a 126 e a 240, que diziam MinIO.** Achado ao montar a P2
+     (2026-10-10): o MinIO parou de publicar imagens Docker da edição
+     comunitária em outubro de 2025, arquivou o repositório em abril de
+     2026 e as imagens saíram do Docker Hub em setembro de 2026. Valdo
+     escolheu o Garage (recomendado) entre Garage, SeaweedFS, provedor S3
+     pago e disco do servidor. A intenção da 126 continua: o adaptador S3
+     da API roda em produção desde o primeiro dia, sem custo de licença, e
+     migrar para um provedor pago depois é copiar objetos e trocar a
+     configuração. A licença do Garage é AGPL; o VGR só o usa como
+     serviço, sem modificar. Conferido na P2: o adaptador S3 da própria API
+     grava, lê e apaga no Garage; a chave de um ambiente não acessa o
+     bucket do outro.
+
 ## Critérios de sucesso
 
 1. Usuário consegue registrar uma denúncia escolhendo categoria + objeto/

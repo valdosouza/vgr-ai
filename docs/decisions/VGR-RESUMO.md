@@ -93,7 +93,7 @@ Estes são os invariantes — violar qualquer um exige decisão nova registrada:
 | Pendências do painel: edição de usuário, motor do banco, datas | 230–233 | **Rodada 19 fechada e executada em 2026-10-04** — R1 API (api `4102afa`: `active`/`locale` ausentes mantidos; docs MariaDB) e R2 app (app `5f0ea26`: formatador de data local no `core` para painel e mobile; testes independentes de fuso); **FRENTE COMPLETA** | [plano-rodada-19-pendencias.md](../plans/plano-rodada-19-pendencias.md) |
 | Teste do painel no navegador: mediação no menu, filtros de data locais | 234–236 | **Rodada 20 fechada e executada em 2026-10-04** — M1 API (api `e825bf1`: migração 051, `reward_mediation` vira tela do menu) e M2 painel (app `6ff4a61`: o dia digitado nos filtros de auditoria e busca é o dia local, enviado como instantes UTC); **FRENTE COMPLETA**. Fica aberto: baldes das estatísticas em UTC | [plano-rodada-20-painel.md](../plans/plano-rodada-20-painel.md) |
 | Identificação do helper: escolha explícita, oculto por padrão | 237–239 | **Rodada 21 fechada e executada em 2026-10-05**: H1 API (api `4b6d658`: `anonymous` ausente = oculto) e H2 mobile (app `fd2513f`: caixa "Mostrar meu nome a quem denunciou" desmarcada, com aviso, em risco baixo/médio; em risco alto só o aviso); conferido no navegador nos três níveis. **FRENTE COMPLETA**. Fica aberto: ofertas gravadas identificadas antes da rodada (hoje só dados de teste) | [plano-rodada-21-identificacao-helper.md](../plans/plano-rodada-21-identificacao-helper.md) |
-| Prontidão para produção | 240–248 | **Rodada 22 aberta e respondida em 2026-10-10** — levantamento achou que a API compilada não sobe (atalhos de import), que as migrações ficam fora do build (subiria sem criar o banco, sem avisar), painel com a API fixa em localhost e APK de release com chave de debug. Decidido: um VPS no Brasil (240), Docker Compose (241), produção + homologação (242), segredos em arquivo + cópia offline das chaves-mestras (243), backup diário de 30 dias (244), checagem de saúde + logs de 14 dias (245), Android primeiro (246), fase fechada antes do público (247), P1→P4 (248). **P1 executada em 2026-10-10** (api `4063846` + `622e99d`, app `3cab7a3`). Em aberto: domínio (antes da P3) | [plano-producao.md](../plans/plano-producao.md) |
+| Prontidão para produção | 240–249 | **Rodada 22 aberta e respondida em 2026-10-10** — levantamento achou que a API compilada não sobe (atalhos de import), que as migrações ficam fora do build (subiria sem criar o banco, sem avisar), painel com a API fixa em localhost e APK de release com chave de debug. Decidido: um VPS no Brasil (240), Docker Compose (241), produção + homologação (242), segredos em arquivo + cópia offline das chaves-mestras (243), backup diário de 30 dias (244), checagem de saúde + logs de 14 dias (245), Android primeiro (246), fase fechada antes do público (247), P1→P4 (248). **P1 executada em 2026-10-10** (api `4063846` + `622e99d`, app `3cab7a3`); **P2 executada em 2026-10-10** (api `5f39112` + `7021e3e`, kit de implantação conferido com Docker); 249: Garage no lugar do MinIO. Em aberto antes da P3: domínio e a jurisdição da homologação | [plano-producao.md](../plans/plano-producao.md) |
 | Denúncia (Report) | 134–142 | **Entregue** (R1–R4 na API + A1–A3 no mobile + P1 no painel); busca/moderação/estatísticas do painel = frente própria (142) | [plano-denuncia.md](../plans/plano-denuncia.md), [handoff-A1-app-denunciar.md](../plans/handoff-A1-app-denunciar.md) |
 
 Especificação DDD vinculante: `api/docs/specs/vgr/` (tactical design + cenários
@@ -210,7 +210,13 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     12 vulnerabilidades de produção corrigidas (1 crítica, 6 altas); painel e
     app recebem a API e o Google por ambiente; release Android assina com
     chave externa e recusa sem ela (build Android completo não rodou aqui —
-    sem SDK). P2 aguarda "pode seguir".
+    sem SDK). **P2 executada em 2026-10-10** (api `5f39112` + `7021e3e`):
+    kit de implantação (imagem da API, compose com Caddy, MariaDB, Garage,
+    produção + homologação; backup cifrado com teste de restauração;
+    roteiro `DEPLOY.md`), tudo subido e conferido com Docker; `/health`
+    passou a ver o banco. **Decisão 249**: Garage no lugar do MinIO, que
+    deixou de publicar imagens. Em aberto antes da P3: domínio (item 4) e
+    a jurisdição da homologação com convidados (item 11).
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa

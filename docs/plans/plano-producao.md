@@ -4,6 +4,9 @@
 > 7a, 8a, 9a, 10 ok"). Decisões **240–248** no
 > [VGR-plano.md](../decisions/VGR-plano.md). Em aberto só o item 4
 > (domínio), necessário antes da P3. Cada fase por "pode seguir" (38) — §6.
+> **Decisão 249** (2026-10-10, durante a P2): Garage no lugar do MinIO,
+> que deixou de publicar imagens. **Item 11 em aberto** (§5): a
+> jurisdição da homologação com convidados.
 
 ---
 
@@ -58,8 +61,9 @@ pode abrir enquanto elas não fecham**.
 
 **Respondidas em 2026-10-10**, todas na opção recomendada: 1a → 240,
 2a → 241, 3a → 242, 5a → 243, 6a → 244, 7a → 245, 8a → 246, 9a → 247,
-10 → 248. **Em aberto: item 4 (domínio)**, necessário antes da P3. O texto
-original das opções fica abaixo como registro.
+10 → 248. **Em aberto: item 4 (domínio)**, necessário antes da P3, e o
+**item 11** (abaixo, surgiu na P2). O texto original das opções fica
+abaixo como registro.
 
 **1. Onde hospedar o MVP**
 - (a) **Um servidor (VPS) no Brasil** com API, MariaDB, MinIO e o proxy com
@@ -139,13 +143,28 @@ e recuperação não funcionam fora do desenvolvimento.
 
 Cada fase por "pode seguir" (38).
 
+**11. Jurisdição da homologação com convidados** (surgiu na P2)
+
+Com `LEGAL_JURISDICTION=BR`, toda funcionalidade com Legal Gate (denúncia
+anônima, chat, pânico, avaliação, apontamento de direção) responde 451 até
+existir uma regra ativa para ela, aprovada no painel (104, fail-closed).
+Essas regras são justamente o que a revisão jurídica (228) produz. A fase
+fechada da 247 roda na homologação, com pessoas reais.
+- (a) **Homologação em BR, como produção**: os convidados só usam o que
+  tiver regra aprovada; as primeiras regras são criadas no painel antes de
+  abrir. *(Recomendado: a fase fechada testa o produto como ele vai
+  funcionar, e nenhum dado de pessoa real passa por funcionalidade sem
+  regra.)*
+- (b) Homologação em SANDBOX (79, "onde as demos rodam"): tudo liberado
+  salvo bloqueio explícito, enquanto a revisão jurídica não sai.
+
 ## 6. Fases
 
 | Fase | Conteúdo | Depende de | Estado |
 |---|---|---|---|
 | **P1** | B1–B6: build de produção da API que sobe e aplica migrações; scripts de migração e seed sem ferramenta de desenvolvimento; URL da API e client id do Google por ambiente no painel e no app; assinatura de release por chave externa | — | **executada em 2026-10-10** (api `4063846` + `622e99d`, app `3cab7a3`) — §7 |
-| **P2** | Dockerfile, compose (api, mariadb, minio, Caddy) para produção e homologação, backup e restauração (244), checagem de saúde e rotação de logs (245), roteiro de implantação | P1 | aguardando "pode seguir" |
-| **P3** | homologação no servidor escolhido (240) | P2 + domínio (item 4) + servidor | aguardando |
+| **P2** | Dockerfile, compose (api, mariadb, Garage — 249, Caddy) para produção e homologação, backup e restauração (244), checagem de saúde e rotação de logs (245), roteiro de implantação | P1 | **executada em 2026-10-10** (api `5f39112` + `7021e3e`) — §7 |
+| **P3** | homologação no servidor escolhido (240) | P2 + domínio (item 4) + item 11 + servidor + contas (armazenamento externo do backup, SMTP, monitor) | aguardando |
 | **P4** | primeira versão Android no teste interno (246) | P1 + conta Play Console | aguardando |
 
 ## 7. Execução
@@ -196,4 +215,50 @@ Cada fase por "pode seguir" (38).
   ambiente (o proxy de rede bloqueia `dl.google.com`). O primeiro
   `flutter build appbundle --release` com a chave de upload confirma o
   resto (P4).
+
+### P2 — 2026-10-10
+
+**API** (api `5f39112` `/health`, `7021e3e` kit):
+- `/health` agora consulta o banco (`SELECT 1`, limite de 2 s) e responde
+  **503** quando ele não responde. Antes respondia 200 com o MariaDB fora:
+  a checagem externa da 245 não veria a queda.
+- **Imagem da API** (`Dockerfile`): etapa de build roda o build e o teste
+  de fumaça da P1; a imagem final só tem dependências de produção, roda
+  sem root e tem checagem de saúde.
+- **`deploy/compose.yaml`**: Caddy (TLS automático, HSTS, arquivos do
+  painel; único serviço com portas abertas), `api` (produção) e
+  `api-homolog` (construída no servidor e promovida para produção depois
+  de testada), MariaDB com um banco e um usuário por ambiente, Garage
+  (249) com um bucket e uma chave por ambiente. Banco e Garage ficam numa
+  rede interna, sem saída para a internet. Logs no journald, 14 dias.
+- **Segredos** só em `/etc/vgr`, com modelos em `deploy/env` (243).
+- **Backup** (244): dump de cada banco cifrado com `age` para uma chave
+  pública — a chave privada fica no cofre offline, então o servidor não
+  consegue ler os próprios backups; imagens espelhadas com `rclone`
+  (objeto apagado vai para `removed/<dia>`); tudo copiado para fora do
+  servidor; o que passa de 30 dias é apagado. `restore.sh` restaura num
+  banco de teste e recusa sobrescrever um banco em uso sem
+  `--into-live`. Timer diário às 03:30 de Brasília.
+- **Roteiro**: `api/docs/adr/DEPLOY.md`, do servidor vazio às
+  atualizações (homologação primeiro) e ao rollback.
+
+**Conferido subindo tudo com Docker neste ambiente:**
+- as duas APIs saudáveis e migradas;
+- TLS pelo Caddy (HTTP/2, HSTS, HTTP redireciona para HTTPS);
+- o painel aberto pelo Caddy, fazendo login até a tela obrigatória do 2FA;
+- o adaptador S3 da própria API no Garage; a chave da homologação
+  recusada no bucket de produção (403) e o usuário de banco da homologação
+  recusado no banco de produção;
+- backup; objeto apagado indo para `removed/<dia>`; pastas e dumps com
+  mais de 30 dias apagados aqui e fora do servidor;
+- restauração de teste igual ao banco em uso (45 tabelas, 40 migrações,
+  o usuário admin);
+- `/health` 503 com o MariaDB parado e 200 quando ele volta;
+- `shellcheck` limpo; suíte da API 122/122, 1235 testes.
+
+**Não conferido aqui**: os certificados públicos do Let's Encrypt (precisam
+do domínio e do servidor — P3), o journald de verdade (este ambiente não
+tem; o teste usou o log padrão do Docker), e o build da imagem sem o
+certificado do proxy deste ambiente (o teste usou uma cópia do Dockerfile
+que só acrescenta esse certificado).
 
