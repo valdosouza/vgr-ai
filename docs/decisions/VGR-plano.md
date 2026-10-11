@@ -3175,6 +3175,117 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
 
      **Rodada 20 ZERADA** (decisões 234–236).
 
+## Identificação do helper: escolha explícita, oculto por padrão (rodada 21)
+
+> Aberta e fechada em 2026-10-05, a partir do teste do app mobile no
+> navegador (VGR-RESUMO §6, 5i): helper com conta oferecia ajuda sempre
+> identificado — a escolha da 170 nunca foi construída. Valdo: "imagine um
+> traficante criando uma denúncia falsa, tentando identificar algum helper
+> que está ajudando para intimidá-lo… temos que garantir a segurança de
+> quem denuncia e de quem ajuda para casos críticos". Implementa o que 6,
+> 40, 41, 55, 60 e 170 já decidiram; o que muda é o padrão.
+
+237. **Identificar-se é escolha EXPLÍCITA do helper e o padrão é oculto.**
+     A oferta ganha "Mostrar meu nome a quem denunciou", desmarcada, com o
+     aviso do risco (uma denúncia pode ser falsa, feita para descobrir quem
+     ajuda). Sem marcar, o helper é só "Ajudante" na oferta e no chat
+     (170). A API trata `anonymous` AUSENTE como oculto — privacidade por
+     padrão também para clientes antigos. O helper continua identificável
+     pela plataforma (60) e uma oferta oculta com conta continua podendo
+     receber recompensa.
+
+238. **O nome passa pela análise da categoria de risco, como o
+     denunciante.** Valdo, ao esclarecer a rodada: "passar por análise
+     seria avaliar a categoria de risco, como é feito com o denunciante".
+     Em categoria de risco alto o nome nunca aparece, mesmo que o helper
+     queira (40/60 — o servidor já aplica e continua sendo a garantia). O
+     app avalia o nível da denúncia antes de oferecer a escolha: em risco
+     alto a opção nem aparece, só o aviso de que neste caso o nome nunca é
+     mostrado; nos demais níveis aparece desmarcada (237). Nenhum
+     administrador libera nome caso a caso.
+
+239. **Fatiamento: H1 API (padrão oculto) → H2 mobile (a escolha no
+     formulário)**, cada fase por "pode seguir" (38).
+
+     **Rodada 21 ZERADA** (decisões 237–239).
+
+## Prontidão para produção (rodada 22)
+
+> Aberta em 2026-10-10 com o levantamento de `plano-producao.md`: a
+> segurança da aplicação está pronta, o caminho de implantação não existe
+> (a API compilada não sobe, as migrações ficam fora do build, o painel
+> aponta fixo para localhost, o APK de release usa a chave de debug).
+> Valdo respondeu no mesmo dia: "1a, 2a, 3a, 5a, 6a, 7a, 8a, 9a, 10 ok".
+> O item 4 (domínio) segue em aberto — só a fase P3 depende dele.
+
+240. **O MVP roda em um servidor (VPS) no Brasil** com API, MariaDB, MinIO
+     e o proxy com TLS — a 126 já supunha o MinIO no mesmo servidor da API.
+     O provedor do servidor é escolha comercial, como a 59. Com um servidor
+     e uma instância, as suposições de instância única da API (jobs dentro
+     do processo — 90 —, limite de requisições em memória, um proxy na
+     frente) valem como estão.
+
+241. **Empacotamento em Docker Compose descrito no repositório**: api,
+     mariadb, minio e Caddy (TLS automático). O servidor fica reproduzível e
+     a homologação é uma cópia da produção.
+
+242. **Dois ambientes no mesmo servidor: produção e homologação**, com
+     bancos, buckets e chaves separados. Migração e versão nova do app
+     passam primeiro por homologação.
+
+243. **Segredos no servidor único: arquivo de ambiente fora do repositório,
+     legível só pelo serviço; as duas chaves-mestras (`LEGAL_KEK`,
+     `MEDIA_KEK`) com cópia num cofre offline, acesso de duas pessoas.**
+     Revisa, para o MVP, o "secret manager na implantação" da 111 e do plano
+     de segurança §6: gerenciador de segredos de nuvem quando a instalação
+     sair do servidor único. A cópia das chaves é obrigatória — perder uma
+     KEK perde tudo o que ela cifra (accountability log, imagens).
+
+244. **Backup diário: dump do MariaDB cifrado com chave própria + espelho do
+     MinIO, cópia fora do servidor, retenção de 30 dias, teste de
+     restauração antes de abrir.** Precisa a 131: o crypto-shredding apaga a
+     chave cifrada da imagem, mas essa chave mora na linha do banco, então
+     um backup anterior ainda a tem. **Um dado apagado some por completo em
+     até 30 dias**, e o aviso de privacidade diz isso.
+
+245. **Monitoramento: checagem externa do `/health` a cada minuto com
+     alerta + logs com rotação de 14 dias no servidor** (a retenção curta do
+     plano de segurança §6). Observabilidade completa fica para depois.
+
+246. **Android primeiro** (Play Console: teste interno → produção), iOS
+     depois. A chave de assinatura de release fica fora do repositório
+     (Play App Signing). Depende da conta de desenvolvedor do Valdo.
+
+247. **Fase fechada primeiro**: homologação com convidados e recompensa em
+     dinheiro desligada; abertura ao público só depois da revisão jurídica
+     (228). Cadastro e recuperação de senha precisam de um remetente SMTP de
+     verdade — escolha comercial, como a 59.
+
+248. **Fatiamento: P1 correções sem decisão (build de produção da API que
+     sobe e aplica migrações, scripts sem ferramenta de desenvolvimento, URL
+     da API e client id do Google por ambiente, assinatura de release por
+     chave externa) → P2 kit de implantação no repositório (Dockerfile,
+     compose, Caddy, backup e restauração, roteiro) → P3 homologação no
+     servidor → P4 primeira versão Android no teste interno**, cada fase por
+     "pode seguir" (38).
+
+     **Rodada 22 fechada exceto o item 4** (domínio — necessário antes da
+     P3).
+
+249. **O armazenamento de imagens do MVP é o Garage, no mesmo servidor —
+     revisa a 126 e a 240, que diziam MinIO.** Achado ao montar a P2
+     (2026-10-10): o MinIO parou de publicar imagens Docker da edição
+     comunitária em outubro de 2025, arquivou o repositório em abril de
+     2026 e as imagens saíram do Docker Hub em setembro de 2026. Valdo
+     escolheu o Garage (recomendado) entre Garage, SeaweedFS, provedor S3
+     pago e disco do servidor. A intenção da 126 continua: o adaptador S3
+     da API roda em produção desde o primeiro dia, sem custo de licença, e
+     migrar para um provedor pago depois é copiar objetos e trocar a
+     configuração. A licença do Garage é AGPL; o VGR só o usa como
+     serviço, sem modificar. Conferido na P2: o adaptador S3 da própria API
+     grava, lê e apaga no Garage; a chave de um ambiente não acessa o
+     bucket do outro.
+
 ## Critérios de sucesso
 
 1. Usuário consegue registrar uma denúncia escolhendo categoria + objeto/
