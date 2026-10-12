@@ -7,6 +7,9 @@
 > **Decisão 249** (2026-10-10, durante a P2): Garage no lugar do MinIO,
 > que deixou de publicar imagens. **Item 11 em aberto** (§5): a
 > jurisdição da homologação com convidados.
+> **2026-10-12**: a P3 e a P4 esperam a identidade visual (rodada 23,
+> [plano-identidade-visual.md](plano-identidade-visual.md)), aberta antes da
+> publicação; o domínio (item 4) segue o nome que ela definir.
 
 ---
 
@@ -164,8 +167,8 @@ fechada da 247 roda na homologação, com pessoas reais.
 |---|---|---|---|
 | **P1** | B1–B6: build de produção da API que sobe e aplica migrações; scripts de migração e seed sem ferramenta de desenvolvimento; URL da API e client id do Google por ambiente no painel e no app; assinatura de release por chave externa | — | **executada em 2026-10-10** (api `4063846` + `622e99d`, app `3cab7a3`) — §7 |
 | **P2** | Dockerfile, compose (api, mariadb, Garage — 249, Caddy) para produção e homologação, backup e restauração (244), checagem de saúde e rotação de logs (245), roteiro de implantação | P1 | **executada em 2026-10-10** (api `5f39112` + `7021e3e`) — §7 |
-| **P3** | homologação no servidor escolhido (240) | P2 + domínio (item 4) + item 11 + servidor + contas (armazenamento externo do backup, SMTP, monitor) | aguardando |
-| **P4** | primeira versão Android no teste interno (246) | P1 + conta Play Console | aguardando |
+| **P3** | homologação no servidor escolhido (240) | P2 + domínio (item 4) + item 11 + servidor + contas (armazenamento externo do backup, SMTP, monitor) + **identidade visual V2** (rodada 23) | aguardando |
+| **P4** | primeira versão Android no teste interno (246) | P1 + conta Play Console + **identidade visual V2/V3** (rodada 23) | aguardando |
 
 ## 7. Execução
 
