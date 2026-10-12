@@ -3286,6 +3286,68 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
      grava, lê e apaga no Garage; a chave de um ambiente não acessa o
      bucket do outro.
 
+## Identidade visual (rodada 23)
+
+> Aberta em 2026-10-12, antes da publicação, com o levantamento de
+> `plano-identidade-visual.md`: não existe identidade (o app aparece como
+> "vgr", com ícone e tema padrão do Flutter). Valdo respondeu no mesmo dia:
+> "1 (a) … 2 (a) … 9 (a), 10 ok", explicando o nome e pedindo que a
+> identidade represente tudo o que já foi decidido.
+
+250. **O nome público é VGR**, com três leituras, nas palavras de Valdo:
+     - em inglês, lido letra a letra (vi-gi-ar), soa como **"vigiar"**, e
+       vigiar em português é exatamente parte do que o produto faz;
+     - em português, **Vigilância e Recompensa**;
+     - em inglês, **Vigilant and Reward**.
+     O domínio (item 4 da rodada 22) segue este nome.
+
+251. **A identidade visual representa tudo o que já foi decidido.** Valdo:
+     "precisamos na criação da identidade visual algo que represente tudo o
+     que já conversamos — todas as decisões devem entrar no escopo". O
+     briefing da V1 parte do log de decisões inteiro (vínculo entre pessoas,
+     proximidade, escolha de como ajudar, recompensa opcional, proteção
+     contra retaliação, anonimato, risco por categoria, responsabilização,
+     duplo controle…) e cada proposta mostra quais decisões cada elemento
+     representa.
+
+252. **Discrição na tela do celular**: nome e ícone não anunciam
+     "denúncia" — nada de sirene, distintivo ou olho; sem modo disfarce no
+     MVP (um modo disfarce seria rodada própria, sujeito às regras das
+     lojas). Concilia com a 250: o "vigiar" do VGR é o de **velar por**
+     alguém, não o de espionar.
+
+253. **Personalidade confiável e acolhedora**: serena e protetora, cores
+     calmas e profundas, formas arredondadas.
+
+254. **Eu (Claude) produzo três direções completas** — logo vetorial,
+     paleta com contraste conferido, tipografia, ícone do app e três telas
+     reais aplicadas, em claro e escuro — numa página de apresentação;
+     Valdo escolhe uma e refinamos. Um designer pode finalizar depois.
+
+255. **Fonte de licença livre (OFL) embutida no app**, nunca baixada em
+     tempo de execução (baixar revelaria a terceiros que o app foi aberto, e
+     de qual IP).
+
+256. **Claro e escuro desde o início**, seguindo o aparelho.
+
+257. **WCAG AA como piso**: contraste 4,5:1 em texto e 3:1 em elementos
+     gráficos, alvos de toque de 48 dp, texto ampliável até 200% sem
+     quebrar.
+
+258. **O painel usa a mesma identidade, em versão sóbria.**
+
+259. **A frente entrega tudo o que aparece antes da publicação**: nome no
+     aparelho e na web, ícone (Android adaptativo, iOS, favicon), tela de
+     abertura, tema (tokens no `vgr_widgets`, claro e escuro), painel e o
+     material da Play Store (ícone 512, imagem de destaque, capturas).
+
+260. **Fatiamento: V1 propostas → V2 a direção escolhida aplicada no código
+     e conferida no navegador nos dois apps, claro e escuro → V3 material da
+     loja junto com a P4**, cada fase por "pode seguir" (38). A P3 e a P4 da
+     rodada 22 esperam a V2.
+
+     **Rodada 23 ZERADA** (decisões 250–260).
+
 ## Critérios de sucesso
 
 1. Usuário consegue registrar uma denúncia escolhendo categoria + objeto/

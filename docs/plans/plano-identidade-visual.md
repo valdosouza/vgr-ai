@@ -1,9 +1,11 @@
 # Plano — Identidade visual (rodada 23)
 
-> **Rodada 23 — ABERTA em 2026-10-12.** Valdo: "antes da publicação
-> precisamos comitar tudo que temos e abrir uma etapa de identidade visual,
-> atualmente não existe". As pendências estão no §4; nada é construído antes
-> das respostas e do "pode seguir" de cada fase (38).
+> **Rodada 23 — aberta e respondida em 2026-10-12.** Valdo: "antes da
+> publicação precisamos comitar tudo que temos e abrir uma etapa de
+> identidade visual, atualmente não existe". Respostas: todas na opção
+> recomendada, exceto o nome, que **fica VGR** (1a, com o significado).
+> Decisões **250–260** no [VGR-plano.md](../decisions/VGR-plano.md). Cada
+> fase por "pode seguir" (38) — §5.
 
 ---
 
@@ -48,6 +50,12 @@ Antes de abrir a frente, os três repositórios foram conferidos em
   fica dentro do app.
 
 ## 4. Pendências (rodada 23 — identidade visual)
+
+**Respondidas em 2026-10-12**: 1a → 250 (VGR: "vigiar" lido em inglês;
+Vigilância e Recompensa; Vigilant and Reward) e 251 (a identidade
+representa todas as decisões); 2a → 252; 3a → 253; 4a → 254; 5a → 255;
+6a → 256; 7a → 257; 8a → 258; 9a → 259; 10 → 260. O texto original das
+opções fica abaixo como registro.
 
 **1. Nome público do produto**
 - (a) "VGR" continua sendo o nome público (dizer o significado, se houver).
@@ -121,3 +129,12 @@ Antes de abrir a frente, os três repositórios foram conferidos em
 - **V3**: material da loja, junto com a P4.
 
 Cada fase por "pode seguir" (38). A P3 e a P4 da rodada 22 esperam a V2.
+
+
+## 5. Fases
+
+| Fase | Conteúdo | Estado |
+|---|---|---|
+| **V1** | briefing a partir do log de decisões (251) + três direções completas numa página de apresentação (254): logo, paleta claro/escuro com contraste conferido (257), fonte OFL (255), ícone do app, três telas reais | aguardando "pode seguir" |
+| **V2** | a direção escolhida aplicada no código: tokens no `vgr_widgets`, ícones, tela de abertura, nomes, painel (258), conferida no navegador nos dois apps, claro e escuro | aguardando |
+| **V3** | material da Play Store, junto com a P4 da rodada 22 | aguardando |

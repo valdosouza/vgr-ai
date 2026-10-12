@@ -94,7 +94,7 @@ Estes são os invariantes — violar qualquer um exige decisão nova registrada:
 | Teste do painel no navegador: mediação no menu, filtros de data locais | 234–236 | **Rodada 20 fechada e executada em 2026-10-04** — M1 API (api `e825bf1`: migração 051, `reward_mediation` vira tela do menu) e M2 painel (app `6ff4a61`: o dia digitado nos filtros de auditoria e busca é o dia local, enviado como instantes UTC); **FRENTE COMPLETA**. Fica aberto: baldes das estatísticas em UTC | [plano-rodada-20-painel.md](../plans/plano-rodada-20-painel.md) |
 | Identificação do helper: escolha explícita, oculto por padrão | 237–239 | **Rodada 21 fechada e executada em 2026-10-05**: H1 API (api `4b6d658`: `anonymous` ausente = oculto) e H2 mobile (app `fd2513f`: caixa "Mostrar meu nome a quem denunciou" desmarcada, com aviso, em risco baixo/médio; em risco alto só o aviso); conferido no navegador nos três níveis. **FRENTE COMPLETA**. Fica aberto: ofertas gravadas identificadas antes da rodada (hoje só dados de teste) | [plano-rodada-21-identificacao-helper.md](../plans/plano-rodada-21-identificacao-helper.md) |
 | Prontidão para produção | 240–249 | **Rodada 22 aberta e respondida em 2026-10-10** — levantamento achou que a API compilada não sobe (atalhos de import), que as migrações ficam fora do build (subiria sem criar o banco, sem avisar), painel com a API fixa em localhost e APK de release com chave de debug. Decidido: um VPS no Brasil (240), Docker Compose (241), produção + homologação (242), segredos em arquivo + cópia offline das chaves-mestras (243), backup diário de 30 dias (244), checagem de saúde + logs de 14 dias (245), Android primeiro (246), fase fechada antes do público (247), P1→P4 (248). **P1 executada em 2026-10-10** (api `4063846` + `622e99d`, app `3cab7a3`); **P2 executada em 2026-10-10** (api `5f39112` + `7021e3e`, kit de implantação conferido com Docker); 249: Garage no lugar do MinIO. Em aberto antes da P3: domínio e a jurisdição da homologação | [plano-producao.md](../plans/plano-producao.md) |
-| Identidade visual | rodada 23 (aberta) | **Aberta em 2026-10-12**, antes da publicação: hoje não existe identidade (nome "vgr" no aparelho, ícone e tema padrão do Flutter, nenhuma fonte). 10 pendências (nome, discrição na tela do celular, personalidade, quem cria, tipografia embutida, modo escuro, acessibilidade, painel, escopo, fatiamento V1→V3) aguardando respostas. A P3 e a P4 da rodada 22 esperam a V2; o domínio segue o nome | [plano-identidade-visual.md](../plans/plano-identidade-visual.md) |
+| Identidade visual | 250–260 | **Rodada 23 aberta e respondida em 2026-10-12**, antes da publicação (hoje não existe identidade). Nome **VGR** ("vigiar" lido em inglês; Vigilância e Recompensa; Vigilant and Reward); a identidade representa todas as decisões; discrição na tela (sem sirene, distintivo ou olho — vigiar como velar por); confiável e acolhedora; três direções feitas por Claude; fonte OFL embutida; claro e escuro; WCAG AA; painel sóbrio; escopo completo; V1→V3. V1 aguarda "pode seguir". A P3 e a P4 esperam a V2 | [plano-identidade-visual.md](../plans/plano-identidade-visual.md) |
 | Denúncia (Report) | 134–142 | **Entregue** (R1–R4 na API + A1–A3 no mobile + P1 no painel); busca/moderação/estatísticas do painel = frente própria (142) | [plano-denuncia.md](../plans/plano-denuncia.md), [handoff-A1-app-denunciar.md](../plans/handoff-A1-app-denunciar.md) |
 
 Especificação DDD vinculante: `api/docs/specs/vgr/` (tactical design + cenários
@@ -225,9 +225,12 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     Flutter. Pesa no desenho: o celular de quem denuncia pode ser visto por
     quem foi denunciado (ícone e nome não devem anunciar "denúncia"), e a
     fonte vai dentro do app (baixá-la revelaria a terceiros que o app foi
-    aberto). → **Rodada 23 aberta**, 10 pendências —
-    [plano-identidade-visual.md](../plans/plano-identidade-visual.md) §4. A
-    P3 e a P4 da rodada 22 esperam a V2.
+    aberto). → **Rodada 23 (250–260)**, respondida no mesmo dia: o nome
+    fica **VGR** — "vigiar" lido em inglês, Vigilância e Recompensa,
+    Vigilant and Reward — e a identidade tem de representar todas as
+    decisões do projeto —
+    [plano-identidade-visual.md](../plans/plano-identidade-visual.md). V1
+    aguarda "pode seguir"; a P3 e a P4 da rodada 22 esperam a V2.
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa
