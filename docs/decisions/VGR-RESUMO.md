@@ -34,9 +34,9 @@ escolha de Valdo** entre as três direções:
 **Estado do código**:
 - vgr-api `main` = `23e0113` e vgr-app `main` = `64799f2` — tudo integrado,
   nada pendente.
-- vgr-ai: os três commits da rodada 23 (`cf04d0a`, `b9bd117`, `e3729d7`)
-  estão no ramo `claude/stoic-turing-db1vmw`, **ainda não no `master`** —
-  abrir/integrar o PR antes de começar a V2, ou partir desse ramo.
+- vgr-ai: a rodada 23 inteira (abertura, decisões 250–260, V1 e este ponto
+  de retomada) está no `master` pelo PR valdosouza/vgr-ai#4. Nada pendente
+  nos três repositórios: a próxima sessão parte dos ramos principais.
 
 ---
 
