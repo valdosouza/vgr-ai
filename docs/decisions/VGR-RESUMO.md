@@ -8,6 +8,36 @@
 > **Atualizado em**: 2026-10-12. Se a data estiver distante, confirme o estado
 > das frentes no log de decisões antes de confiar nas seções de status.
 
+## 0. Ponto de retomada (sessão de 2026-10-12)
+
+**Onde paramos**: rodada 23 (identidade visual), **V1 entregue e aguardando a
+escolha de Valdo** entre as três direções:
+- página de apresentação: https://claude.ai/artifact/UAnfesX3oMWRfUtQfdbJFz
+- fonte da página, SVGs e gerador: `docs/identidade-visual/v1/`; briefing:
+  `docs/identidade-visual/briefing.md`; plano:
+  [plano-identidade-visual.md](../plans/plano-identidade-visual.md) (§5–§6).
+- A · Vigília (recomendada), B · Vínculo, C · Assinatura. A resposta esperada
+  é a letra mais ajustes (pode combinar partes).
+
+**Próximos passos, em ordem**:
+1. Valdo escolhe a direção → registrar como decisão (próxima é a **261**).
+2. **V2** (por "pode seguir"): aplicar a direção no código — tokens no
+   `vgr_widgets` a partir de `v1/gerador/palettes.py`, fonte OFL embutida,
+   ícones (Android adaptativo, iOS, favicon), tela de abertura, nomes no
+   aparelho e na web, painel sóbrio; conferir no navegador, claro e escuro.
+3. Rodada 22 (produção), retomada depois da V2:
+   - **P3** precisa de: domínio (item 4), jurisdição da homologação (item
+     11 — recomendado BR), VPS no Brasil, armazenamento externo do backup,
+     SMTP, monitor de disponibilidade, e quem executa o `DEPLOY.md`.
+   - **P4** precisa de: conta Play Console e a V3 (material da loja).
+
+**Estado do código**:
+- vgr-api `main` = `23e0113` e vgr-app `main` = `64799f2` — tudo integrado,
+  nada pendente.
+- vgr-ai: os três commits da rodada 23 (`cf04d0a`, `b9bd117`, `e3729d7`)
+  estão no ramo `claude/stoic-turing-db1vmw`, **ainda não no `master`** —
+  abrir/integrar o PR antes de começar a V2, ou partir desse ramo.
+
 ---
 
 ## 1. O que é o produto
