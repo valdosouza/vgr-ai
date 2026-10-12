@@ -135,6 +135,43 @@ Cada fase por "pode seguir" (38). A P3 e a P4 da rodada 22 esperam a V2.
 
 | Fase | Conteúdo | Estado |
 |---|---|---|
-| **V1** | briefing a partir do log de decisões (251) + três direções completas numa página de apresentação (254): logo, paleta claro/escuro com contraste conferido (257), fonte OFL (255), ícone do app, três telas reais | aguardando "pode seguir" |
+| **V1** | briefing a partir do log de decisões (251) + três direções completas numa página de apresentação (254): logo, paleta claro/escuro com contraste conferido (257), fonte OFL (255), ícone do app, três telas reais | **executada em 2026-10-12** — §6; aguardando a escolha |
 | **V2** | a direção escolhida aplicada no código: tokens no `vgr_widgets`, ícones, tela de abertura, nomes, painel (258), conferida no navegador nos dois apps, claro e escuro | aguardando |
 | **V3** | material da Play Store, junto com a P4 da rodada 22 | aguardando |
+
+## 6. Execução
+
+### V1 — 2026-10-12
+
+- **Briefing**: [identidade-visual/briefing.md](../identidade-visual/briefing.md)
+  — doze princípios, cada um com as decisões de onde vem (251).
+- **Página de apresentação**: https://claude.ai/artifact/UAnfesX3oMWRfUtQfdbJFz
+  (privada; fonte em `docs/identidade-visual/v1/index.html`).
+- **Três direções**, cada uma com logo (símbolo + VGR + "Vigilância e
+  Recompensa"), ícone (máscaras do iPhone e do Android, e numa tela inicial
+  ao lado de outros apps), paleta clara e escura, fonte, três telas reais
+  com os textos do app (Por perto, Denúncia, Oferecer ajuda com a caixa da
+  237) no claro e no escuro, e o quadro "elemento → decisões":
+  - **A · Vigília** — um arco que cobre um ponto aceso: velar por alguém.
+    Azul noturno e luz âmbar. Fonte Atkinson Hyperlegible Next, feita para
+    baixa visão. **Recomendada.**
+  - **B · Vínculo** — duas pessoas se aproximam de uma terceira e formam o V.
+    Verde-petróleo e damasco. Fonte Figtree.
+  - **C · Assinatura** — o próprio nome; o G guarda um ponto dentro. Índigo
+    e menta. Fonte Lexend.
+- **Contraste calculado, não estimado**: dez pares por tema em cada direção
+  (texto, texto secundário, botão, destaque, erro, bordas de controle,
+  gráficos), todos no piso AA da 257. A conta mostrou que o tom claro do
+  destaque não passa 3:1 como gráfico sobre o branco nas três direções. Por
+  isso cada paleta ganhou um `accentGraphic` mais escuro para o modo claro,
+  e o tom claro ficou só como fundo de texto escuro.
+- **Fontes OFL reais** (Atkinson Hyperlegible Next, Figtree, Lexend): os
+  logos e ícones em SVG têm as letras convertidas em contorno, então abrem
+  sem a fonte instalada.
+- **Arquivos** por direção em `docs/identidade-visual/v1/<direção>/`:
+  `simbolo.svg`, `logo-claro.svg`, `logo-escuro.svg`, `icone.svg`. O
+  gerador (`v1/gerador/`) refaz tudo a partir de `palettes.py`, que é a
+  fonte dos tokens que a V2 leva para o `vgr_widgets`.
+- Conferido no Chromium: as três fontes carregam e não há rolagem lateral
+  em 1280 px nem em 400 px.
+
