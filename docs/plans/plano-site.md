@@ -1,6 +1,11 @@
 # Plano — Site do VGR (rodada 25)
 
-> **Rodada 25 — aberta em 2026-10-13.** Valdo: "antes vamos criar um
+> **Rodada 25 — aberta e respondida em 2026-10-13** ("1a, 2a, 3a, 4a, 5a,
+> 7a, 8a, 9a, 10 ok") → decisões **267–275** no
+> [VGR-plano.md](../decisions/VGR-plano.md). **Em aberto: item 6** (quem
+> responde pelos dados); os textos levam campos marcados até lá.
+>
+> Valdo: "antes vamos criar um
 > website multi-language português e inglês para que todos possam ter todas
 > as informações sobre o aplicativo, assim podemos publicar o site, o
 > backend, o aplicativo e o painel admin". O site entra antes da produção.
@@ -49,6 +54,10 @@ painel: o lugar onde qualquer pessoa entende o que é o VGR.
   sem JavaScript.
 
 ## 4. Pendências (rodada 25 — site)
+
+**Respondidas em 2026-10-13**: 1a → 267; 2a → 268; 3a → 269; 4a → 270;
+5a → 271; 7a → 272; 8a → 273; 9a → 274; 10 → 275. **Em aberto: 6.** O
+texto original das opções fica abaixo como registro.
 
 **1. Conteúdo**
 - (a) **Início · Como funciona** (denunciar; as cinco formas de ajudar;
@@ -136,6 +145,6 @@ política de privacidade e no rodapé.
 
 | Fase | Conteúdo | Estado |
 |---|---|---|
-| **S1** | textos pt/en, inclusive termos e política, numa página de revisão | aguardando a rodada 25 |
+| **S1** | textos pt/en, inclusive termos e política, numa página de revisão | aguardando "pode seguir" |
 | **S2** | site estático no `vgr-site`, conferido no navegador | aguardando |
 | **S3** | publicação com a P3 | aguardando |
