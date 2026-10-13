@@ -3348,6 +3348,75 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
 
      **Rodada 23 ZERADA** (decisões 250–260).
 
+## Identidade visual — escolha da direção (rodada 24)
+
+> Em 2026-10-13 Valdo trouxe uma prancha própria, juntando partes das três
+> direções da V1 ("fiz uma junção e criei essa opção"), guardada em
+> `docs/identidade-visual/v1b/prancha-valdo.webp`. A análise de Claude
+> conferiu a prancha contra o briefing e as decisões e calculou o contraste
+> de cada cor: a base cumpre o briefing; cinco elementos contrariavam
+> decisões já tomadas, quatro pares ficavam abaixo do piso da 257, e
+> faltavam o modo escuro e o painel. Valdo respondeu no mesmo dia: "1a, 2a,
+> 3a, 4a, 5a, 6a".
+
+261. **A direção da identidade é a composição de Valdo**: o símbolo da
+     direção A (um arco que cobre um ponto aceso — velar por alguém),
+     azul-marinho `#203B70` como cor da marca, o verde-petróleo `#1B7168` da
+     direção B como cor de ação (botões), dourado `#D8A34D` como destaque,
+     cinza-claro `#F4F6F8` de fundo, fonte Atkinson Hyperlegible Next (255) e
+     o slogan **"Pessoas cuidando de pessoas. Comunidades mais seguras."**
+     Entram também as variações do logo (horizontal, vertical,
+     monocromática, negativa) e o padrão de arcos. Com três ajustes:
+     - **contraste no piso da 257**: o dourado como gráfico no modo claro
+       passa a `#BB8329` (o `#D8A34D` medido sobre branco dava 2,27:1; ele
+       fica como preenchimento e sobre o azul, onde dá 4,82:1); texto
+       secundário `#627289` (o `#64748B` dava 4,39:1 sobre o fundo);
+       vermelho `#D23535` (o `#D64545` dava 4,38:1); e sai a variação verde
+       do ícone (ponto dourado sobre verde, 2,57:1);
+     - **modo escuro (256) derivado** dos escuros já conferidos da A e da B:
+       fundo `#0A1120`, azul `#93B6FF`, verde `#5CCDBB`; o dourado
+       `#D8A34D` serve sem ajuste (8,3:1);
+     - **logo redesenhado em vetor** nas proporções da prancha, com "VGR" em
+       Atkinson Hyperlegible Next convertida em contorno (a prancha é
+       imagem, e as letras dela não são da fonte escolhida).
+     As telas da prancha são ilustrativas: a V2 veste as telas reais do app
+     (Por perto, Denunciar com as categorias e o risco vindos da API,
+     Oferecer ajuda, Pânico). "Pedir ajuda", "Informação" e uma aba "Mapa"
+     seriam funções novas, com rodada própria.
+
+262. **Sem troféu e sem pontos.** A recompensa aparece na identidade só no
+     selo "recompensa garantida" (101), em dourado — a mesma luz do
+     símbolo. Não existe sistema de pontos: a recompensa é uma promessa de
+     quem denuncia a quem ajuda (30), opcional e nunca o motivo (1). Pontos
+     por enviar denúncia premiariam o ato de denunciar e incentivariam a
+     denúncia falsa que a rodada 21 quis evitar. Na fase fechada a
+     recompensa em dinheiro segue desligada (247). Mantém o princípio 6 do
+     briefing.
+
+263. **O arco do símbolo substitui o escudo** como sinal de proteção e
+     segurança. Nada de distintivo nem aparência policial (252; princípios
+     1 e 7 do briefing).
+
+264. **A tela inicial do app não mostra foto, nem "Olá, nome", nem "área
+     segura".** A identidade não depende de rosto, nome ou foto (6, 40, 41;
+     princípio 5 do briefing), e o celular pode ser visto por quem foi
+     denunciado (238). O app não avalia a segurança de uma área: dizer que
+     avalia seria promessa falsa, que pode fazer alguém baixar a guarda, e
+     risco jurídico.
+
+265. **Aplicações da marca fora do app (rua, cartões, brindes) ficam para
+     uma rodada futura de divulgação**, fora desta frente (259). Essa rodada
+     pesa a tensão com a 252: quanto mais a marca é divulgada como "app de
+     denúncia", mais o ícone revela o propósito no celular de quem usa.
+
+266. **Antes da V2, a página de apresentação ganha a direção consolidada
+     (V1b)**: logo em vetor e variações, ícone, paleta clara e escura com o
+     contraste calculado, fonte, e as telas reais do app no claro e no
+     escuro, já sem os elementos que a 262–264 tiraram. A V2 começa depois
+     da aprovação de Valdo, por "pode seguir" (38).
+
+     **Rodada 24 ZERADA** (decisões 261–266).
+
 ## Critérios de sucesso
 
 1. Usuário consegue registrar uma denúncia escolhendo categoria + objeto/

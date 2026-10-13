@@ -6,6 +6,11 @@
 > recomendada, exceto o nome, que **fica VGR** (1a, com o significado).
 > Decisões **250–260** no [VGR-plano.md](../decisions/VGR-plano.md). Cada
 > fase por "pode seguir" (38) — §5.
+>
+> **Rodada 24 — escolha da direção, 2026-10-13.** Valdo trouxe uma prancha
+> própria juntando as direções da V1; respondida "1a, 2a, 3a, 4a, 5a, 6a" →
+> decisões **261–266** (§7). Próxima fase: **V1b**, a direção consolidada
+> na página de apresentação, por "pode seguir".
 
 ---
 
@@ -135,7 +140,8 @@ Cada fase por "pode seguir" (38). A P3 e a P4 da rodada 22 esperam a V2.
 
 | Fase | Conteúdo | Estado |
 |---|---|---|
-| **V1** | briefing a partir do log de decisões (251) + três direções completas numa página de apresentação (254): logo, paleta claro/escuro com contraste conferido (257), fonte OFL (255), ícone do app, três telas reais | **executada em 2026-10-12** — §6; aguardando a escolha |
+| **V1** | briefing a partir do log de decisões (251) + três direções completas numa página de apresentação (254): logo, paleta claro/escuro com contraste conferido (257), fonte OFL (255), ícone do app, três telas reais | **executada em 2026-10-12** — §6; escolha feita em 2026-10-13 (§7) |
+| **V1b** | a direção consolidada (261–264) na página de apresentação: logo em vetor e variações, ícone, paleta clara e escura com contraste calculado, fonte, telas reais do app no claro e no escuro (266) | aguardando "pode seguir" |
 | **V2** | a direção escolhida aplicada no código: tokens no `vgr_widgets`, ícones, tela de abertura, nomes, painel (258), conferida no navegador nos dois apps, claro e escuro | aguardando |
 | **V3** | material da Play Store, junto com a P4 da rodada 22 | aguardando |
 
@@ -175,3 +181,53 @@ Cada fase por "pode seguir" (38). A P3 e a P4 da rodada 22 esperam a V2.
 - Conferido no Chromium: as três fontes carregam e não há rolagem lateral
   em 1280 px nem em 400 px.
 
+## 7. Escolha da direção (rodada 24, 2026-10-13)
+
+Valdo trouxe uma prancha própria, "fiz uma junção e criei essa opção":
+[v1b/prancha-valdo.webp](../identidade-visual/v1b/prancha-valdo.webp).
+É a direção A (o arco com o ponto aceso, azul-marinho, dourado, Atkinson
+Hyperlegible Next) com o verde-petróleo da B como cor de ação, mais o
+slogan "Pessoas cuidando de pessoas. Comunidades mais seguras.", as
+variações do logo e o padrão de arcos.
+
+### Análise da prancha
+
+**Conflitos com decisões já tomadas** (resolvidos pela 262–265):
+
+| Na prancha | Conflito | Decisão |
+|---|---|---|
+| Troféu, "Você ganhou +10 pontos", aba "Recompensas" | princípio 6; recompensa opcional e nunca o motivo (1), promessa de quem denuncia a quem ajuda (30); pontos por denunciar incentivam denúncia falsa; dinheiro desligado na fase fechada (247) | 262 |
+| Escudo com check | sem distintivo nem aparência policial (252; princípios 1 e 7) | 263 |
+| "Olá, Ana" com foto | identidade não depende de rosto, nome ou foto (6, 40, 41); o celular pode ser visto pelo denunciado (238) | 264 |
+| "Você está em uma área segura" | o app não avalia a segurança de uma área: promessa falsa e risco jurídico | 264 |
+| Ponto de ônibus, cartões, garrafa, sacola | fora da frente (259); tensão com a discrição do ícone (252) | 265 |
+
+**Contraste** (piso da 257), calculado com `v1/gerador/palettes.py`:
+
+| Par | Medido | Mínimo | Correção (261) |
+|---|---|---|---|
+| dourado `#D8A34D` como gráfico sobre branco / `#F4F6F8` | 2,27 / 2,09 | 3 | `#BB8329` no claro (3,29 / 3,03); o `#D8A34D` fica como preenchimento e sobre o azul (4,82) |
+| ponto dourado no ícone verde | 2,57 | 3 | sai a variação verde do ícone |
+| cinza `#64748B` sobre `#F4F6F8` | 4,39 | 4,5 | `#627289` (4,52) |
+| vermelho `#D64545` como texto, e texto branco sobre ele | 4,38 | 4,5 | `#D23535` (4,88) |
+
+Passam como estão: azul-marinho sobre branco (10,93), texto branco no
+verde (5,82), azul-marinho sobre o dourado (4,82), arco branco no ícone
+verde (5,82).
+
+**O que faltava**: o modo escuro (256), derivado dos escuros já conferidos
+da A e da B — fundo `#0A1120`, azul `#93B6FF` (9,31), verde `#5CCDBB`
+(9,79), dourado `#D8A34D` (8,32); o painel sóbrio (258); e o logo em
+vetor, porque a prancha é imagem e o "VGR" dela não é a fonte escolhida.
+
+As telas da prancha são ilustrativas. A V2 veste as telas reais do app;
+"Pedir ajuda", "Informação" e a aba "Mapa" seriam funções novas, com rodada
+própria.
+
+### Respostas
+
+1a → 261 (a composição é a direção, com contraste corrigido, escuro
+derivado e logo em vetor); 2a → 262 (sem troféu e sem pontos); 3a → 263
+(o arco substitui o escudo); 4a → 264 (sem foto, nome ou "área segura" na
+tela inicial); 5a → 265 (aplicações fora do app em rodada futura); 6a →
+266 (V1b antes da V2).
