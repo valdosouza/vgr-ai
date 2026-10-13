@@ -145,8 +145,8 @@ política de privacidade e no rodapé.
 
 | Fase | Conteúdo | Estado |
 |---|---|---|
-| **S1** | textos pt/en, inclusive termos e política, numa página de revisão | **executada em 2026-10-13** — §6; aguardando a aprovação de Valdo |
-| **S2** | site estático no `vgr-site`, conferido no navegador | aguardando |
+| **S1** | textos pt/en, inclusive termos e política, numa página de revisão | **executada em 2026-10-13** — §6; aprovada por Valdo ("pode seguir") |
+| **S2** | site estático no `vgr-site`, conferido no navegador | **executada em 2026-10-13** — §6; o repositório `vgr-site` ainda precisa ser criado no GitHub por Valdo |
 | **S3** | publicação com a P3 | aguardando |
 
 ## 6. Execução
@@ -202,3 +202,44 @@ site não promete nada disso; pedem correção em rodada própria):
 - também registrado no levantamento: no risco alto a linha do tempo ainda
   mostra o horário exato de cada oferta ao dono e aos participantes (41,
   em parte); as mensagens do chat ficam em texto no banco, sem cifra.
+
+### S2 — 2026-10-13
+
+Por "pode seguir" de Valdo, que aprovou a S1 sem ajustes.
+
+- **Repositório**: a integração do GitHub não tem permissão para criar
+  repositórios (403). O site foi construído num repositório local
+  `vgr-site` (commit `8e23e83`) e uma cópia do histórico está em
+  `docs/site/vgr-site.bundle` até Valdo criar `valdosouza/vgr-site`
+  (privado, vazio) e liberar o app Claude para ele. Para restaurar:
+  `git clone docs/site/vgr-site.bundle vgr-site`. Depois do envio ao
+  repositório novo, o arquivo sai do vgr-ai.
+- **Gerador**: `build.py`, só com a biblioteca padrão do Python, lê
+  `content/{pt,en}/` (os textos aprovados na S1, agora com a fonte no
+  `vgr-site`) e gera `dist/`: nove páginas por idioma em `/pt/` e `/en/`,
+  a página raiz de escolha de idioma, a de não encontrada, `robots.txt` e,
+  com o domínio, `sitemap.xml`. `site.json` preenche os campos que faltam;
+  `build.py --release` recusa enquanto faltar algum.
+- **Desenho**: a identidade da rodada 24 — faixa azul na página inicial
+  com o símbolo, os três passos numerados, faixas calmas, logo e símbolo
+  em linha que seguem o claro e o escuro do aparelho, Atkinson Hyperlegible
+  Next servida pelo próprio site (WOFF, OFL), contraste AA conferido em
+  cada par novo. Páginas longas ganham um índice ao lado; as jurídicas
+  abrem com o aviso de versão para revisão.
+- **Privacidade (273)**: nenhum cookie, rastreador, formulário ou recurso
+  de terceiros; CSP `'self'` em toda página; o único script
+  (`assets/lang.js`, na raiz) só leva a primeira visita ao idioma do
+  navegador (268), e tudo funciona sem ele; menu do celular sem
+  JavaScript (`details`).
+- **Testes** (`tests/`, 9): os dois idiomas com as mesmas páginas e as
+  ligações `hreflang`; todo link interno e âncora existe; nenhum endereço
+  externo, formulário, cookie ou script além do da raiz; nenhuma
+  referência de decisão chega ao site; o build de publicação recusa campo
+  faltando e, com tudo preenchido, gera `mailto:` e `sitemap.xml`. CI no
+  GitHub Actions.
+- **Conferido no Chromium**: página inicial em português (claro, 1280 px)
+  e em inglês (escuro), como funciona, perguntas frequentes e política de
+  privacidade no celular (400 px, claro e escuro), menu do celular aberto,
+  e a raiz levando ao português num navegador em português. Sem rolagem
+  lateral, sem erro no console, fonte carregada do próprio site e **nenhuma
+  requisição para fora**.

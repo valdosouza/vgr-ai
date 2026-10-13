@@ -1,5 +1,9 @@
 # Textos do site (rodada 25, S1)
 
+> **A partir da S2 (2026-10-13), a fonte dos textos é o repositório
+> `vgr-site` (`content/`).** Esta pasta é o registro da versão aprovada por
+> Valdo na S1 e alimenta a página de revisão.
+
 Fonte dos textos do site do VGR, um arquivo por página e por idioma
 (decisões 267–275). A S2 gera o site a partir daqui.
 
