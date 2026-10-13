@@ -60,9 +60,14 @@ corrigiu isso. Registro em
 [plano-identidade-visual.md](../plans/plano-identidade-visual.md) §6.
 
 **Próximos passos, em ordem**:
-1. **Site (rodada 25)**: S1 (textos pt/en, inclusive termos e política,
-   numa página para aprovação) por "pode seguir" → S2 (site no
-   repositório novo `vgr-site`) → S3 (publicação com a P3).
+1. **Site (rodada 25)**: **S1 executada em 2026-10-13** — os textos das
+   nove páginas em português e inglês, inclusive termos e política, na
+   página de revisão https://claude.ai/artifact/FK25iVCpg2gmYYx867DMvR
+   (fonte em `docs/site/textos/`), aguardando a aprovação de Valdo. Ela
+   lista os campos que faltam, os pontos para decidir (idade mínima,
+   prazos de guarda, Marco Civil art. 15) e divergências achadas entre o
+   app e as decisões ([plano-site.md](../plans/plano-site.md) §6). Depois:
+   S2 (site no repositório novo `vgr-site`) → S3 (publicação com a P3).
 2. **Exclusão de conta pelo titular** (272): rodada própria logo depois do
    site; a P4 depende dela.
 3. **Rodada 26 (produção)**: domínio, jurisdição da homologação, contas,

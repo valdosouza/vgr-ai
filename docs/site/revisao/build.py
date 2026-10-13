@@ -101,6 +101,9 @@ h1 { font-size:clamp(28px,4.4vw,42px); line-height:1.08; font-weight:800; margin
 .note h2 { font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--soft); margin:0 0 8px; }
 .note ul { margin:0; padding-left:18px; }
 .note p { margin:0; }
+.note.wide { grid-column:1 / -1; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; }
+.note li + li { margin-top:4px; }
 .layout { display:grid; grid-template-columns:220px minmax(0,1fr); gap:28px; margin-top:28px; align-items:start; }
 nav.pages { position:sticky; top:calc(env(safe-area-inset-top, 0px) + 16px); display:flex; flex-direction:column; gap:2px; }
 nav.pages a { color:var(--ink); text-decoration:none; padding:7px 10px; border-radius:10px; font-size:15px; }
@@ -115,7 +118,7 @@ section.page { border-top:2px solid var(--ink); padding-top:14px; margin-bottom:
 .legal-banner { background:var(--legal-bg); border-radius:12px; padding:10px 14px; margin:12px 0 0; font-size:14px; }
 .cols { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; margin-top:16px; }
 .col { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:18px 22px; min-width:0; }
-.col .lang { font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--soft); text-transform:uppercase; }
+.col .lang { font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--soft); }
 .col .title { font-size:22px; font-weight:800; margin:4px 0 2px; line-height:1.2; }
 .col .desc { color:var(--soft); font-size:14px; margin:0 0 10px; }
 .col h3 { font-size:19px; margin:22px 0 6px; line-height:1.25; }
@@ -169,9 +172,20 @@ def main():
   <p class="lede">As {len(pt)} páginas do site em <b>português e inglês, lado a lado</b>. Ao fim de cada parágrafo, os números das decisões de onde ele vem.
   Os campos em <mark class="field">DESTAQUE</mark> ainda faltam. Leia, peça ajustes, e aprove para a S2 construir o site.</p>
   <div class="notes">
-    <div class="note"><h2>Faltam</h2><ul>{"".join(f"<li><mark class=field>{f}</mark></li>" for f in fields)}</ul></div>
-    <div class="note"><h2>Como ler</h2><p>O português vale juridicamente; o inglês é tradução (268). As páginas marcadas com § são jurídicas: rascunho para a revisão da 228.</p></div>
-    <div class="note"><h2>Tamanho</h2><p>{f"{words:,}".replace(",", ".")} palavras em português.</p></div>
+    <div class="note"><h2>Faltam</h2><div class="chips">{"".join(f"<mark class=field>{f}</mark>" for f in fields)}</div></div>
+    <div class="note"><h2>Como ler</h2><p>O português vale juridicamente; o inglês é tradução (268). As páginas marcadas com § são jurídicas: rascunho para a revisão da 228. {f"{words:,}".replace(",", ".")} palavras em português.</p></div>
+    <div class="note wide"><h2>Pontos para decidir e para a revisão jurídica</h2><ul>
+      <li><b>Idade mínima</b>: não há decisão. Os termos e a política levam <mark class="field">IDADE_MINIMA</mark>.</li>
+      <li><b>Prazos de guarda sem decisão</b>: conta, ofertas de ajuda, avaliações, indicações de direção, alertas de pânico, registro oculto e auditoria levam <mark class="field">PRAZO_A_DEFINIR</mark>. Entram na rodada da exclusão de conta (272).</li>
+      <li><b>Marco Civil da Internet, art. 15</b>: o provedor de aplicação deve guardar registros de acesso (IP, data e hora) por 6 meses. Hoje os registros técnicos duram 14 dias (245) e a API não registra IP (110). Para a revisão jurídica.</li>
+      <li><b>Propostas, não decisões</b>: as bases legais da LGPD (item 4 da política), o foro, o prazo de resposta de 15 dias e as regras de uso marcadas como <span class="ref prop">proposta</span>.</li>
+    </ul></div>
+    <div class="note wide"><h2>Divergências achadas no app (o site não promete nada disso)</h2><ul>
+      <li>O app diz que o pânico avisa os Respondentes "próximos"; o sistema avisa <b>todos</b> os aprovados, sem filtro de distância.</li>
+      <li>O app diz que confirmar o e-mail é "necessário só para oferecer ou receber recompensa"; essa exigência não está ligada (123, 151).</li>
+      <li>Uma conta que denunciou anonimamente consegue oferecer recompensa pela API (33 diz que não).</li>
+      <li>Não existem no app: recuperação de senha, o aviso de denúncia falsa antes de denunciar (57) e a guarda da sessão no armazenamento seguro do celular (117).</li>
+    </ul></div>
   </div>
   <div class="layout">
     <nav class="pages" aria-label="Páginas">{nav}</nav>

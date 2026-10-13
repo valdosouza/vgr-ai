@@ -145,6 +145,60 @@ política de privacidade e no rodapé.
 
 | Fase | Conteúdo | Estado |
 |---|---|---|
-| **S1** | textos pt/en, inclusive termos e política, numa página de revisão | aguardando "pode seguir" |
+| **S1** | textos pt/en, inclusive termos e política, numa página de revisão | **executada em 2026-10-13** — §6; aguardando a aprovação de Valdo |
 | **S2** | site estático no `vgr-site`, conferido no navegador | aguardando |
 | **S3** | publicação com a P3 | aguardando |
+
+## 6. Execução
+
+### S1 — 2026-10-13
+
+Por "pode seguir" de Valdo.
+
+- **Levantamento antes de escrever**: um agente leu o log de decisões
+  inteiro, o resumo, os planos e conferiu no código da API e do app o que
+  cada função faz de verdade (o que é guardado, quem vê, por quanto tempo,
+  o que está ligado, desligado na fase fechada ou só decidido). Os textos
+  descrevem só o que o sistema faz hoje.
+- **Textos** em `docs/site/textos/{pt,en}/`, um arquivo Markdown por página
+  (cabeçalho YAML), as nove páginas da 267. Cada parágrafo cita as
+  decisões de onde vem; o que é proposta de Claude, e não decisão (bases
+  legais da LGPD, foro, prazo de resposta, parte das regras de uso), vai
+  marcado como proposta para a revisão jurídica. Cerca de 5.500 palavras
+  em português; o inglês é tradução (268).
+- **Página de revisão**: https://claude.ai/artifact/FK25iVCpg2gmYYx867DMvR
+  (privada; gerada por `docs/site/revisao/build.py`), com as páginas em
+  português e inglês lado a lado, as decisões de cada parágrafo, os campos
+  que faltam e os pontos abaixo.
+- **Campos que faltam**: razão social, CNPJ, endereço e encarregado (item
+  6), domínio (rodada 26), data de vigência, idade mínima, provedores do
+  servidor, do backup e do e-mail, parceiro de pagamento, e os prazos de
+  guarda ainda sem decisão.
+
+**Pontos para decidir e para a revisão jurídica**, achados na redação:
+
+- **Idade mínima**: não há decisão.
+- **Prazos de guarda sem decisão**: conta, ofertas de ajuda, avaliações,
+  indicações de direção, alertas de pânico, registro oculto e auditoria.
+  Vão para a rodada da exclusão de conta (272).
+- **Marco Civil da Internet, art. 15**: o provedor de aplicação deve
+  guardar registros de acesso (IP, data e hora) por 6 meses; hoje os
+  registros técnicos duram 14 dias (245) e a API não registra IP (110).
+- **Propostas, não decisões**: bases legais, foro, prazo de resposta de 15
+  dias e as regras de uso marcadas.
+
+**Divergências entre o app e as decisões**, achadas no levantamento (o
+site não promete nada disso; pedem correção em rodada própria):
+
+- o app diz que o pânico avisa os Respondentes "próximos"; o sistema avisa
+  todos os aprovados, sem filtro de distância;
+- o app diz que confirmar o e-mail é "necessário só para oferecer ou
+  receber recompensa"; a exigência (123, 151) não está ligada;
+- uma conta que denunciou anonimamente consegue oferecer recompensa pela
+  API (33 diz que não);
+- não existem no app a recuperação de senha, o aviso de denúncia falsa
+  antes de denunciar (57) e a guarda da sessão no armazenamento seguro do
+  celular (117);
+- também registrado no levantamento: no risco alto a linha do tempo ainda
+  mostra o horário exato de cada oferta ao dono e aos participantes (41,
+  em parte); as mensagens do chat ficam em texto no banco, sem cifra.
