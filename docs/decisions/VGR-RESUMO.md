@@ -55,11 +55,10 @@ corrigiu isso. Registro em
    arquivos.
 
 **Estado do código**:
-- vgr-api `main` = `23e0113` — nada pendente.
-- vgr-app: a V2 (`7cda083`) está no ramo `claude/stoic-turing-db1vmw`, a partir do
-  `main` (`64799f2`).
-- vgr-ai: a rodada 24, a V1b e o registro da V2 estão no ramo
-  `claude/stoic-turing-db1vmw`, a partir do `master` (`b241aab`).
+- vgr-api `main` = `23e0113`, vgr-app `main` = `c6f8cf6` (a V2, pelo PR
+  valdosouza/vgr-app#4, com o CI verde) e vgr-ai `master` (a rodada 24, a
+  V1b e o registro da V2, pelo PR valdosouza/vgr-ai#5) — tudo integrado,
+  nada pendente nos três repositórios.
 - A próxima decisão é a **267**.
 
 ---
