@@ -11,7 +11,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(os.path.dirname(HERE), 'textos')
 LANGS = ('pt', 'en')
 
-REF = re.compile(r'\s*<!--\s*([0-9][0-9 ,–\-a-z.]*)\s*-->\s*$')
+REF = re.compile(r'\s*<!--\s*(.+?)\s*-->\s*$')
 FIELD = re.compile(r'\[\[([A-Z_]+)\]\]')
 
 def read(lang):
@@ -38,7 +38,9 @@ def split_ref(line):
     m = REF.search(line)
     if not m:
         return line, ''
-    return line[:m.start()], f'<span class="ref" title="Decisões">{html.escape(m.group(1).strip())}</span>'
+    refs = m.group(1).strip()
+    cls = 'ref prop' if ('proposta' in refs or 'decidir' in refs) else 'ref'
+    return line[:m.start()], f'<span class="{cls}" title="Decisões de origem">{html.escape(refs)}</span>'
 
 def render(md):
     """The Markdown subset the texts use: ##/###, paragraphs, - lists."""
@@ -120,6 +122,7 @@ section.page { border-top:2px solid var(--ink); padding-top:14px; margin-bottom:
 .col h4 { font-size:16px; margin:16px 0 4px; }
 .col p, .col li { max-width:68ch; }
 .col ul { padding-left:20px; }
+.ref.prop { border-color:var(--field-ink); color:var(--field-ink); }
 .ref { font-family:var(--mono); font-size:11px; color:var(--soft); border:1px solid var(--line); border-radius:6px; padding:0 5px; margin-left:6px; white-space:nowrap; vertical-align:1px; }
 mark.field { background:var(--field-bg); color:var(--field-ink); font-family:var(--mono); font-size:13px; border-radius:5px; padding:0 4px; }
 .toggle { display:none; }
