@@ -6,6 +6,12 @@
 > recomendada, exceto o nome, que **fica VGR** (1a, com o significado).
 > Decisões **250–260** no [VGR-plano.md](../decisions/VGR-plano.md). Cada
 > fase por "pode seguir" (38) — §5.
+>
+> **Rodada 24 — escolha da direção, 2026-10-13.** Valdo trouxe uma prancha
+> própria juntando as direções da V1; respondida "1a, 2a, 3a, 4a, 5a, 6a" →
+> decisões **261–266** (§7). **V1b e V2 executadas no mesmo dia** (§6): a
+> direção consolidada na página e, depois do "pode seguir", aplicada nos dois
+> apps. Falta a V3, junto com a P4.
 
 ---
 
@@ -135,8 +141,9 @@ Cada fase por "pode seguir" (38). A P3 e a P4 da rodada 22 esperam a V2.
 
 | Fase | Conteúdo | Estado |
 |---|---|---|
-| **V1** | briefing a partir do log de decisões (251) + três direções completas numa página de apresentação (254): logo, paleta claro/escuro com contraste conferido (257), fonte OFL (255), ícone do app, três telas reais | **executada em 2026-10-12** — §6; aguardando a escolha |
-| **V2** | a direção escolhida aplicada no código: tokens no `vgr_widgets`, ícones, tela de abertura, nomes, painel (258), conferida no navegador nos dois apps, claro e escuro | aguardando |
+| **V1** | briefing a partir do log de decisões (251) + três direções completas numa página de apresentação (254): logo, paleta claro/escuro com contraste conferido (257), fonte OFL (255), ícone do app, três telas reais | **executada em 2026-10-12** — §6; escolha feita em 2026-10-13 (§7) |
+| **V1b** | a direção consolidada (261–264) na página de apresentação: logo em vetor e variações, ícone, paleta clara e escura com contraste calculado, fonte, telas reais do app no claro e no escuro (266) | **executada em 2026-10-13** — §6; aprovada por Valdo ("pode seguir") |
+| **V2** | a direção escolhida aplicada no código: tokens no `vgr_widgets`, ícones, tela de abertura, nomes, painel (258), conferida no navegador nos dois apps, claro e escuro | **executada em 2026-10-13** — §6 |
 | **V3** | material da Play Store, junto com a P4 da rodada 22 | aguardando |
 
 ## 6. Execução
@@ -175,3 +182,173 @@ Cada fase por "pode seguir" (38). A P3 e a P4 da rodada 22 esperam a V2.
 - Conferido no Chromium: as três fontes carregam e não há rolagem lateral
   em 1280 px nem em 400 px.
 
+### V1b — 2026-10-13
+
+Por "pode seguir" de Valdo, a decisão 266 executada:
+
+- **Página de apresentação** atualizada no mesmo endereço:
+  https://claude.ai/artifact/UAnfesX3oMWRfUtQfdbJFz (fonte em
+  `docs/identidade-visual/v1b/index.html`; a V1 com as três direções
+  continua em `v1/index.html`).
+- **Gerador próprio** em `v1b/gerador/`:
+  - `tokens.py` — as cores por papel, no claro e no escuro: fundo, cartão,
+    texto, texto secundário, marca (azul), ação (verde-petróleo), dourado
+    como preenchimento, como gráfico e como texto, borda de controle,
+    pânico e erro, as duas colunas do painel e a abertura. É a fonte que a
+    V2 leva para o `vgr_widgets`. `python3 -B tokens.py` confere **36
+    pares** (17 por tema e 2 do ícone) contra o piso da 257 e sai com erro
+    se algum falhar. A primeira conta pegou um par que falhava (texto
+    secundário sobre a coluna clara do painel, 4,29:1); a coluna ficou mais
+    clara e passou (4,61:1).
+  - `mark.py` — o símbolo da A refeito nas proporções da prancha (arco
+    grosso cortado reto pouco abaixo do centro, ponto pendurado abaixo do
+    centro, cantos suavizados), e "VGR" em Atkinson Hyperlegible Next
+    ExtraBold convertida em contorno, com o descritor na largura exata da
+    palavra.
+  - `build.py` — gera os arquivos e a página. `fetch_fonts.sh` baixa a
+    fonte (não vai para o repositório).
+- **Arquivos em vetor** em `v1b/svg/`: símbolo (claro e negativo), logo
+  horizontal (claro, escuro, negativo e uma cor só), logo vertical (claro e
+  negativo), ícone (quadrado cheio para iPhone e loja), frente do ícone
+  adaptativo do Android (dentro do círculo seguro de 66 em 108), ícone
+  temático do Android 13 (uma cor) e favicon (símbolo maior, para 16 e 32
+  pixels).
+- **Na página**: logo e variações; ícone nas máscaras do iPhone e do
+  Android, no temático e numa tela inicial de dia e de noite; favicon numa
+  aba; as cores com as tabelas de contraste e o que mudou da prancha;
+  a fonte com as letras que não se confundem (Il1, O0, rn/m, B8); os
+  elementos (Denunciar, Ajuda próxima, o selo "Recompensa garantida" da
+  262, o arco como proteção da 263) e o padrão de arcos; cinco telas reais
+  do app no claro e no escuro (abertura, Por perto, Denunciar, Oferecer
+  ajuda com a caixa da 237, Pânico), com os textos de hoje do app; o
+  painel sóbrio no claro e no escuro; a tabela "o que mudou da sua
+  prancha"; e o quadro elemento → decisões.
+- **Escolhas de desenho dentro das decisões**: no claro o ponto do logo usa
+  o dourado escuro `#BB8329` (261); o ícone e o negativo usam o dourado da
+  prancha sobre o azul; a abertura é azul no claro e quase preta no
+  escuro, para chamar menos atenção à noite (256); o verde-petróleo é a
+  cor de agir (botão de denunciar e de enviar), o azul marca seleção e
+  identidade, e o vermelho só aparece no pânico (253); o selo de
+  recompensa fica fora das telas, porque a recompensa em dinheiro está
+  desligada na fase fechada (247).
+- Conferido no Chromium com a fonte carregada: 1280 px no claro e no
+  escuro e 400 px, sem rolagem lateral. A conferência mostrou o painel
+  cortado, o controle de ordenação quebrando linha e o padrão claro com o
+  fundo do tema escuro; os três foram corrigidos antes de publicar.
+
+### V2 — 2026-10-13
+
+Por "pode seguir" de Valdo, que aprovou a V1b sem ajustes. Tudo no
+vgr-app, ramo `claude/stoic-turing-db1vmw`:
+
+- **Tema no `vgr_widgets`** (133: uma mudança veste todas as telas dos dois
+  apps):
+  - `VgrColors` — as cores por papel, claro e escuro, iguais às de
+    `v1b/gerador/tokens.py`;
+  - `VgrTheme.light()` / `.dark()`, que os dois apps usam com
+    `ThemeMode.system` (256). O azul da marca é o `primary` do Material
+    (seleção, links, foco); o botão principal, o botão flutuante de
+    denunciar e as caixas de marcar são verde-petróleo (ação); o vermelho
+    é o `error`, só para pânico e erro (253). O dourado fica fora das
+    funções do dia a dia (262).
+  - `test/vgr_colors_test.dart` refaz a conta de contraste de todos os
+    pares das cores e de todas as funções do Material que o tema deriva,
+    nos dois temas: uma cor abaixo do piso da 257 quebra o build.
+- **Fonte embutida** (255): Atkinson Hyperlegible Next em quatro pesos
+  (400, 600, 700, 800) e Atkinson Hyperlegible Mono (400) para os textos
+  de largura fixa (segredo do 2FA, valores da auditoria), instâncias
+  estáticas das fontes variáveis oficiais do Google Fonts, com as
+  licenças OFL na página de licenças dos apps.
+- **Símbolo e logo**: `VgrSymbol` (desenhado com a mesma geometria dos
+  arquivos em vetor), `VgrLogo` e `VgrLogoHeader`. O símbolo aparece ao
+  lado do título só na tela inicial de cada app ("Por perto" no mobile e
+  o painel); o logo, no topo das telas de login.
+- **Pânico em vermelho**: o botão "Preciso de ajuda agora" e o ícone SOS da
+  barra do "Por perto". Nenhum outro elemento usa vermelho.
+- **Ícones, abertura e nomes**, gerados por
+  `v1b/gerador/plataformas.py` (com `raster.js`) a partir do mesmo vetor:
+  - Android: ícone adaptativo (fundo azul, frente com o símbolo dentro da
+    área segura), ícone temático do Android 13, ícones antigos em PNG,
+    abertura azul no claro e quase preta no escuro, antes e depois do
+    Android 12; nome "VGR";
+  - iOS: conjunto de ícones (sem transparência, como a Apple exige),
+    imagem e fundo de abertura no claro e no escuro; nome "VGR";
+  - web: favicon (SVG e PNG), ícones e ícones mascaráveis, manifesto,
+    título e o fundo da página antes de o Flutter desenhar, claro e
+    escuro. O painel passa a se chamar **"VGR · Painel"** (em inglês,
+    "VGR · Admin"), no lugar de "VGR Admin".
+- **Achado na conferência e corrigido**: o Flutter web baixava a fonte
+  Roboto de `fonts.gstatic.com` ao abrir, o que fere a 255 (revela ao
+  Google que o app foi aberto, e de qual IP). O `web/flutter_bootstrap.js`
+  dos dois apps agora aponta as fontes de reserva para o próprio
+  servidor, e todo texto usa as fontes embutidas. Depois da correção,
+  nenhuma fonte vem de fora.
+- **Conferido no Chromium** com a API local e um banco limpo, no claro e
+  no escuro: no mobile, "Por perto" com denúncias, Denunciar, Pânico,
+  detalhe, Oferecer ajuda e login; no painel, login, shell, lista e
+  detalhe de denúncias. Os desenhos vetoriais do Android foram
+  convertidos para SVG e conferidos dentro das áreas seguras.
+- **Verificação**: análise sem problemas nos cinco pacotes e 1.120 testes
+  passando — mobile 433, painel 392, core 71, validadores 102 e widgets
+  122 (os novos testes do tema e do símbolo entre eles).
+- **O que não deu para conferir aqui**: o build do Android e do iOS. O
+  ambiente não tem o SDK do Android (o proxy bloqueia `dl.google.com`) nem
+  Xcode. Os arquivos do Android passaram no `xmllint`, o `Info.plist` no
+  leitor de plist, e os vetores foram renderizados. O primeiro build
+  real (`flutter build apk` / `flutter build ios`) confirma; fica como
+  item da P4.
+- **Fora da identidade, anotado**: a versão web do app mobile carrega o
+  script do login com Google (`accounts.google.com/gsi/client`) ao abrir.
+  Só acontece na web (o app de verdade é Android/iOS) e vem do login com
+  Google, não da identidade.
+
+## 7. Escolha da direção (rodada 24, 2026-10-13)
+
+Valdo trouxe uma prancha própria, "fiz uma junção e criei essa opção":
+[v1b/prancha-valdo.webp](../identidade-visual/v1b/prancha-valdo.webp).
+É a direção A (o arco com o ponto aceso, azul-marinho, dourado, Atkinson
+Hyperlegible Next) com o verde-petróleo da B como cor de ação, mais o
+slogan "Pessoas cuidando de pessoas. Comunidades mais seguras.", as
+variações do logo e o padrão de arcos.
+
+### Análise da prancha
+
+**Conflitos com decisões já tomadas** (resolvidos pela 262–265):
+
+| Na prancha | Conflito | Decisão |
+|---|---|---|
+| Troféu, "Você ganhou +10 pontos", aba "Recompensas" | princípio 6; recompensa opcional e nunca o motivo (1), promessa de quem denuncia a quem ajuda (30); pontos por denunciar incentivam denúncia falsa; dinheiro desligado na fase fechada (247) | 262 |
+| Escudo com check | sem distintivo nem aparência policial (252; princípios 1 e 7) | 263 |
+| "Olá, Ana" com foto | identidade não depende de rosto, nome ou foto (6, 40, 41); o celular pode ser visto pelo denunciado (238) | 264 |
+| "Você está em uma área segura" | o app não avalia a segurança de uma área: promessa falsa e risco jurídico | 264 |
+| Ponto de ônibus, cartões, garrafa, sacola | fora da frente (259); tensão com a discrição do ícone (252) | 265 |
+
+**Contraste** (piso da 257), calculado com `v1/gerador/palettes.py`:
+
+| Par | Medido | Mínimo | Correção (261) |
+|---|---|---|---|
+| dourado `#D8A34D` como gráfico sobre branco / `#F4F6F8` | 2,27 / 2,09 | 3 | `#BB8329` no claro (3,29 / 3,03); o `#D8A34D` fica como preenchimento e sobre o azul (4,82) |
+| ponto dourado no ícone verde | 2,57 | 3 | sai a variação verde do ícone |
+| cinza `#64748B` sobre `#F4F6F8` | 4,39 | 4,5 | `#627289` (4,52) |
+| vermelho `#D64545` como texto, e texto branco sobre ele | 4,38 | 4,5 | `#D23535` (4,88) |
+
+Passam como estão: azul-marinho sobre branco (10,93), texto branco no
+verde (5,82), azul-marinho sobre o dourado (4,82), arco branco no ícone
+verde (5,82).
+
+**O que faltava**: o modo escuro (256), derivado dos escuros já conferidos
+da A e da B — fundo `#0A1120`, azul `#93B6FF` (9,31), verde `#5CCDBB`
+(9,79), dourado `#D8A34D` (8,32); o painel sóbrio (258); e o logo em
+vetor, porque a prancha é imagem e o "VGR" dela não é a fonte escolhida.
+
+As telas da prancha são ilustrativas. A V2 veste as telas reais do app;
+"Pedir ajuda", "Informação" e a aba "Mapa" seriam funções novas, com rodada
+própria.
+
+### Respostas
+
+1a → 261 (a composição é a direção, com contraste corrigido, escuro
+derivado e logo em vetor); 2a → 262 (sem troféu e sem pontos); 3a → 263
+(o arco substitui o escudo); 4a → 264 (sem foto, nome ou "área segura" na
+tela inicial); 5a → 265 (aplicações fora do app em rodada futura); 6a →
+266 (V1b antes da V2).
