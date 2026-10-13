@@ -9,8 +9,8 @@
 >
 > **Rodada 24 — escolha da direção, 2026-10-13.** Valdo trouxe uma prancha
 > própria juntando as direções da V1; respondida "1a, 2a, 3a, 4a, 5a, 6a" →
-> decisões **261–266** (§7). Próxima fase: **V1b**, a direção consolidada
-> na página de apresentação, por "pode seguir".
+> decisões **261–266** (§7). **V1b executada no mesmo dia** (§6): a direção
+> consolidada na página de apresentação, aguardando a aprovação de Valdo.
 
 ---
 
@@ -141,7 +141,7 @@ Cada fase por "pode seguir" (38). A P3 e a P4 da rodada 22 esperam a V2.
 | Fase | Conteúdo | Estado |
 |---|---|---|
 | **V1** | briefing a partir do log de decisões (251) + três direções completas numa página de apresentação (254): logo, paleta claro/escuro com contraste conferido (257), fonte OFL (255), ícone do app, três telas reais | **executada em 2026-10-12** — §6; escolha feita em 2026-10-13 (§7) |
-| **V1b** | a direção consolidada (261–264) na página de apresentação: logo em vetor e variações, ícone, paleta clara e escura com contraste calculado, fonte, telas reais do app no claro e no escuro (266) | aguardando "pode seguir" |
+| **V1b** | a direção consolidada (261–264) na página de apresentação: logo em vetor e variações, ícone, paleta clara e escura com contraste calculado, fonte, telas reais do app no claro e no escuro (266) | **executada em 2026-10-13** — §6; aguardando a aprovação de Valdo |
 | **V2** | a direção escolhida aplicada no código: tokens no `vgr_widgets`, ícones, tela de abertura, nomes, painel (258), conferida no navegador nos dois apps, claro e escuro | aguardando |
 | **V3** | material da Play Store, junto com a P4 da rodada 22 | aguardando |
 
@@ -180,6 +180,60 @@ Cada fase por "pode seguir" (38). A P3 e a P4 da rodada 22 esperam a V2.
   fonte dos tokens que a V2 leva para o `vgr_widgets`.
 - Conferido no Chromium: as três fontes carregam e não há rolagem lateral
   em 1280 px nem em 400 px.
+
+### V1b — 2026-10-13
+
+Por "pode seguir" de Valdo, a decisão 266 executada:
+
+- **Página de apresentação** atualizada no mesmo endereço:
+  https://claude.ai/artifact/UAnfesX3oMWRfUtQfdbJFz (fonte em
+  `docs/identidade-visual/v1b/index.html`; a V1 com as três direções
+  continua em `v1/index.html`).
+- **Gerador próprio** em `v1b/gerador/`:
+  - `tokens.py` — as cores por papel, no claro e no escuro: fundo, cartão,
+    texto, texto secundário, marca (azul), ação (verde-petróleo), dourado
+    como preenchimento, como gráfico e como texto, borda de controle,
+    pânico e erro, as duas colunas do painel e a abertura. É a fonte que a
+    V2 leva para o `vgr_widgets`. `python3 -B tokens.py` confere **36
+    pares** (17 por tema e 2 do ícone) contra o piso da 257 e sai com erro
+    se algum falhar. A primeira conta pegou um par que falhava (texto
+    secundário sobre a coluna clara do painel, 4,29:1); a coluna ficou mais
+    clara e passou (4,61:1).
+  - `mark.py` — o símbolo da A refeito nas proporções da prancha (arco
+    grosso cortado reto pouco abaixo do centro, ponto pendurado abaixo do
+    centro, cantos suavizados), e "VGR" em Atkinson Hyperlegible Next
+    ExtraBold convertida em contorno, com o descritor na largura exata da
+    palavra.
+  - `build.py` — gera os arquivos e a página. `fetch_fonts.sh` baixa a
+    fonte (não vai para o repositório).
+- **Arquivos em vetor** em `v1b/svg/`: símbolo (claro e negativo), logo
+  horizontal (claro, escuro, negativo e uma cor só), logo vertical (claro e
+  negativo), ícone (quadrado cheio para iPhone e loja), frente do ícone
+  adaptativo do Android (dentro do círculo seguro de 66 em 108), ícone
+  temático do Android 13 (uma cor) e favicon (símbolo maior, para 16 e 32
+  pixels).
+- **Na página**: logo e variações; ícone nas máscaras do iPhone e do
+  Android, no temático e numa tela inicial de dia e de noite; favicon numa
+  aba; as cores com as tabelas de contraste e o que mudou da prancha;
+  a fonte com as letras que não se confundem (Il1, O0, rn/m, B8); os
+  elementos (Denunciar, Ajuda próxima, o selo "Recompensa garantida" da
+  262, o arco como proteção da 263) e o padrão de arcos; cinco telas reais
+  do app no claro e no escuro (abertura, Por perto, Denunciar, Oferecer
+  ajuda com a caixa da 237, Pânico), com os textos de hoje do app; o
+  painel sóbrio no claro e no escuro; a tabela "o que mudou da sua
+  prancha"; e o quadro elemento → decisões.
+- **Escolhas de desenho dentro das decisões**: no claro o ponto do logo usa
+  o dourado escuro `#BB8329` (261); o ícone e o negativo usam o dourado da
+  prancha sobre o azul; a abertura é azul no claro e quase preta no
+  escuro, para chamar menos atenção à noite (256); o verde-petróleo é a
+  cor de agir (botão de denunciar e de enviar), o azul marca seleção e
+  identidade, e o vermelho só aparece no pânico (253); o selo de
+  recompensa fica fora das telas, porque a recompensa em dinheiro está
+  desligada na fase fechada (247).
+- Conferido no Chromium com a fonte carregada: 1280 px no claro e no
+  escuro e 400 px, sem rolagem lateral. A conferência mostrou o painel
+  cortado, o controle de ordenação quebrando linha e o padrão claro com o
+  fundo do tema escuro; os três foram corrigidos antes de publicar.
 
 ## 7. Escolha da direção (rodada 24, 2026-10-13)
 

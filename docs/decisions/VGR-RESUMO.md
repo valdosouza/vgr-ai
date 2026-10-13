@@ -21,18 +21,25 @@ corrigido, modo escuro derivado, logo em vetor (261); sem troféu nem pontos
 tela inicial (264); aplicações fora do app em rodada futura (265).
 - análise e tabelas de contraste:
   [plano-identidade-visual.md](../plans/plano-identidade-visual.md) §7;
-- página da V1: https://claude.ai/artifact/UAnfesX3oMWRfUtQfdbJFz; gerador
-  e SVGs em `docs/identidade-visual/v1/`.
+- as três direções da V1 continuam em `docs/identidade-visual/v1/`.
+
+**V1b executada em 2026-10-13** (266): a direção consolidada está na
+página de apresentação (mesmo endereço,
+https://claude.ai/artifact/UAnfesX3oMWRfUtQfdbJFz) — logo em vetor e
+variações, ícones (iPhone, Android adaptativo e temático, favicon), cores
+claras e escuras com 36 pares de contraste conferidos, fonte, cinco telas
+reais do app e o painel sóbrio, no claro e no escuro. Gerador e arquivos em
+`docs/identidade-visual/v1b/` (`gerador/tokens.py` é a fonte das cores para
+a V2); registro em
+[plano-identidade-visual.md](../plans/plano-identidade-visual.md) §6.
 
 **Próximos passos, em ordem**:
-1. **V1b** (por "pode seguir", 266): a direção consolidada na página de
-   apresentação — logo em vetor e variações, ícone, paleta clara e escura
-   com contraste calculado, fonte, telas reais do app no claro e no escuro.
-   Valdo aprova.
+1. Valdo aprova a V1b (ou pede ajustes).
 2. **V2** (por "pode seguir"): aplicar a direção no código — tokens no
-   `vgr_widgets`, fonte OFL embutida, ícones (Android adaptativo, iOS,
-   favicon), tela de abertura, nomes no aparelho e na web, painel sóbrio;
-   conferir no navegador, claro e escuro.
+   `vgr_widgets` a partir de `v1b/gerador/tokens.py`, fonte OFL embutida,
+   ícones (Android adaptativo e temático, iOS, favicon) a partir de
+   `v1b/svg/`, tela de abertura clara e escura, nomes no aparelho e na web,
+   painel sóbrio; conferir no navegador, claro e escuro.
 3. Rodada 22 (produção), retomada depois da V2:
    - **P3** precisa de: domínio (item 4), jurisdição da homologação (item
      11 — recomendado BR), VPS no Brasil, armazenamento externo do backup,
@@ -42,7 +49,7 @@ tela inicial (264); aplicações fora do app em rodada futura (265).
 **Estado do código**:
 - vgr-api `main` = `23e0113` e vgr-app `main` = `64799f2` — tudo integrado,
   nada pendente.
-- vgr-ai: a rodada 24 está no ramo `claude/stoic-turing-db1vmw`, a partir
+- vgr-ai: a rodada 24 e a V1b estão no ramo `claude/stoic-turing-db1vmw`, a partir
   do `master` (`b241aab`). A próxima decisão é a **267**.
 
 ---
@@ -131,7 +138,7 @@ Estes são os invariantes — violar qualquer um exige decisão nova registrada:
 | Teste do painel no navegador: mediação no menu, filtros de data locais | 234–236 | **Rodada 20 fechada e executada em 2026-10-04** — M1 API (api `e825bf1`: migração 051, `reward_mediation` vira tela do menu) e M2 painel (app `6ff4a61`: o dia digitado nos filtros de auditoria e busca é o dia local, enviado como instantes UTC); **FRENTE COMPLETA**. Fica aberto: baldes das estatísticas em UTC | [plano-rodada-20-painel.md](../plans/plano-rodada-20-painel.md) |
 | Identificação do helper: escolha explícita, oculto por padrão | 237–239 | **Rodada 21 fechada e executada em 2026-10-05**: H1 API (api `4b6d658`: `anonymous` ausente = oculto) e H2 mobile (app `fd2513f`: caixa "Mostrar meu nome a quem denunciou" desmarcada, com aviso, em risco baixo/médio; em risco alto só o aviso); conferido no navegador nos três níveis. **FRENTE COMPLETA**. Fica aberto: ofertas gravadas identificadas antes da rodada (hoje só dados de teste) | [plano-rodada-21-identificacao-helper.md](../plans/plano-rodada-21-identificacao-helper.md) |
 | Prontidão para produção | 240–249 | **Rodada 22 aberta e respondida em 2026-10-10** — levantamento achou que a API compilada não sobe (atalhos de import), que as migrações ficam fora do build (subiria sem criar o banco, sem avisar), painel com a API fixa em localhost e APK de release com chave de debug. Decidido: um VPS no Brasil (240), Docker Compose (241), produção + homologação (242), segredos em arquivo + cópia offline das chaves-mestras (243), backup diário de 30 dias (244), checagem de saúde + logs de 14 dias (245), Android primeiro (246), fase fechada antes do público (247), P1→P4 (248). **P1 executada em 2026-10-10** (api `4063846` + `622e99d`, app `3cab7a3`); **P2 executada em 2026-10-10** (api `5f39112` + `7021e3e`, kit de implantação conferido com Docker); 249: Garage no lugar do MinIO. Em aberto antes da P3: domínio e a jurisdição da homologação | [plano-producao.md](../plans/plano-producao.md) |
-| Identidade visual | 250–266 | **Rodada 23 aberta e respondida em 2026-10-12**, antes da publicação (hoje não existe identidade). Nome **VGR** ("vigiar" lido em inglês; Vigilância e Recompensa; Vigilant and Reward); a identidade representa todas as decisões; discrição na tela (sem sirene, distintivo ou olho — vigiar como velar por); confiável e acolhedora; três direções feitas por Claude; fonte OFL embutida; claro e escuro; WCAG AA; painel sóbrio; escopo completo; V1→V3. **V1 entregue em 2026-10-12**: três direções (A Vigília — recomendada, B Vínculo, C Assinatura) numa página com logo, ícone, paleta com contraste calculado, fonte e telas reais. **Rodada 24 (2026-10-13)**: a direção é a composição de Valdo — símbolo da A, azul-marinho, verde-petróleo da B para ação, dourado, Atkinson, slogan "Pessoas cuidando de pessoas. Comunidades mais seguras." — com contraste corrigido, escuro derivado e logo em vetor; sem troféu nem pontos; arco no lugar do escudo; sem foto, nome ou "área segura" na tela inicial; aplicações fora do app em rodada futura. Próxima fase: V1b (direção consolidada na página), depois V2. A P3 e a P4 esperam a V2 | [plano-identidade-visual.md](../plans/plano-identidade-visual.md) |
+| Identidade visual | 250–266 | **Rodada 23 aberta e respondida em 2026-10-12**, antes da publicação (hoje não existe identidade). Nome **VGR** ("vigiar" lido em inglês; Vigilância e Recompensa; Vigilant and Reward); a identidade representa todas as decisões; discrição na tela (sem sirene, distintivo ou olho — vigiar como velar por); confiável e acolhedora; três direções feitas por Claude; fonte OFL embutida; claro e escuro; WCAG AA; painel sóbrio; escopo completo; V1→V3. **V1 entregue em 2026-10-12**: três direções (A Vigília — recomendada, B Vínculo, C Assinatura) numa página com logo, ícone, paleta com contraste calculado, fonte e telas reais. **Rodada 24 (2026-10-13)**: a direção é a composição de Valdo — símbolo da A, azul-marinho, verde-petróleo da B para ação, dourado, Atkinson, slogan "Pessoas cuidando de pessoas. Comunidades mais seguras." — com contraste corrigido, escuro derivado e logo em vetor; sem troféu nem pontos; arco no lugar do escudo; sem foto, nome ou "área segura" na tela inicial; aplicações fora do app em rodada futura. **V1b executada em 2026-10-13**: a direção consolidada na página (logo em vetor, ícones, cores com 36 pares conferidos, telas reais e painel, claro e escuro); aguarda a aprovação de Valdo, depois V2. A P3 e a P4 esperam a V2 | [plano-identidade-visual.md](../plans/plano-identidade-visual.md) |
 | Denúncia (Report) | 134–142 | **Entregue** (R1–R4 na API + A1–A3 no mobile + P1 no painel); busca/moderação/estatísticas do painel = frente própria (142) | [plano-denuncia.md](../plans/plano-denuncia.md), [handoff-A1-app-denunciar.md](../plans/handoff-A1-app-denunciar.md) |
 
 Especificação DDD vinculante: `api/docs/specs/vgr/` (tactical design + cenários
@@ -274,8 +281,9 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     própria; a análise achou cinco elementos contra decisões (troféu e
     pontos, escudo, foto e nome na tela inicial, "área segura", peças de
     rua) e quatro pares abaixo do AA, e as respostas mantiveram a prancha
-    como direção com esses ajustes. Próxima fase: V1b, depois V2. A P3 e a
-    P4 da rodada 22 esperam a V2.
+    como direção com esses ajustes. **V1b executada no mesmo dia**: a direção
+    consolidada na página de apresentação, aguardando a aprovação; depois
+    V2. A P3 e a P4 da rodada 22 esperam a V2.
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa
