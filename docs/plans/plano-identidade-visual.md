@@ -9,8 +9,9 @@
 >
 > **Rodada 24 — escolha da direção, 2026-10-13.** Valdo trouxe uma prancha
 > própria juntando as direções da V1; respondida "1a, 2a, 3a, 4a, 5a, 6a" →
-> decisões **261–266** (§7). **V1b executada no mesmo dia** (§6): a direção
-> consolidada na página de apresentação, aguardando a aprovação de Valdo.
+> decisões **261–266** (§7). **V1b e V2 executadas no mesmo dia** (§6): a
+> direção consolidada na página e, depois do "pode seguir", aplicada nos dois
+> apps. Falta a V3, junto com a P4.
 
 ---
 
@@ -141,8 +142,8 @@ Cada fase por "pode seguir" (38). A P3 e a P4 da rodada 22 esperam a V2.
 | Fase | Conteúdo | Estado |
 |---|---|---|
 | **V1** | briefing a partir do log de decisões (251) + três direções completas numa página de apresentação (254): logo, paleta claro/escuro com contraste conferido (257), fonte OFL (255), ícone do app, três telas reais | **executada em 2026-10-12** — §6; escolha feita em 2026-10-13 (§7) |
-| **V1b** | a direção consolidada (261–264) na página de apresentação: logo em vetor e variações, ícone, paleta clara e escura com contraste calculado, fonte, telas reais do app no claro e no escuro (266) | **executada em 2026-10-13** — §6; aguardando a aprovação de Valdo |
-| **V2** | a direção escolhida aplicada no código: tokens no `vgr_widgets`, ícones, tela de abertura, nomes, painel (258), conferida no navegador nos dois apps, claro e escuro | aguardando |
+| **V1b** | a direção consolidada (261–264) na página de apresentação: logo em vetor e variações, ícone, paleta clara e escura com contraste calculado, fonte, telas reais do app no claro e no escuro (266) | **executada em 2026-10-13** — §6; aprovada por Valdo ("pode seguir") |
+| **V2** | a direção escolhida aplicada no código: tokens no `vgr_widgets`, ícones, tela de abertura, nomes, painel (258), conferida no navegador nos dois apps, claro e escuro | **executada em 2026-10-13** — §6 |
 | **V3** | material da Play Store, junto com a P4 da rodada 22 | aguardando |
 
 ## 6. Execução
@@ -234,6 +235,72 @@ Por "pode seguir" de Valdo, a decisão 266 executada:
   escuro e 400 px, sem rolagem lateral. A conferência mostrou o painel
   cortado, o controle de ordenação quebrando linha e o padrão claro com o
   fundo do tema escuro; os três foram corrigidos antes de publicar.
+
+### V2 — 2026-10-13
+
+Por "pode seguir" de Valdo, que aprovou a V1b sem ajustes. Tudo no
+vgr-app, ramo `claude/stoic-turing-db1vmw`:
+
+- **Tema no `vgr_widgets`** (133: uma mudança veste todas as telas dos dois
+  apps):
+  - `VgrColors` — as cores por papel, claro e escuro, iguais às de
+    `v1b/gerador/tokens.py`;
+  - `VgrTheme.light()` / `.dark()`, que os dois apps usam com
+    `ThemeMode.system` (256). O azul da marca é o `primary` do Material
+    (seleção, links, foco); o botão principal, o botão flutuante de
+    denunciar e as caixas de marcar são verde-petróleo (ação); o vermelho
+    é o `error`, só para pânico e erro (253). O dourado fica fora das
+    funções do dia a dia (262).
+  - `test/vgr_colors_test.dart` refaz a conta de contraste de todos os
+    pares das cores e de todas as funções do Material que o tema deriva,
+    nos dois temas: uma cor abaixo do piso da 257 quebra o build.
+- **Fonte embutida** (255): Atkinson Hyperlegible Next em quatro pesos
+  (400, 600, 700, 800) e Atkinson Hyperlegible Mono (400) para os textos
+  de largura fixa (segredo do 2FA, valores da auditoria), instâncias
+  estáticas das fontes variáveis oficiais do Google Fonts, com as
+  licenças OFL na página de licenças dos apps.
+- **Símbolo e logo**: `VgrSymbol` (desenhado com a mesma geometria dos
+  arquivos em vetor), `VgrLogo` e `VgrLogoHeader`. O símbolo aparece ao
+  lado do título só na tela inicial de cada app ("Por perto" no mobile e
+  o painel); o logo, no topo das telas de login.
+- **Pânico em vermelho**: o botão "Preciso de ajuda agora" e o ícone SOS da
+  barra do "Por perto". Nenhum outro elemento usa vermelho.
+- **Ícones, abertura e nomes**, gerados por
+  `v1b/gerador/plataformas.py` (com `raster.js`) a partir do mesmo vetor:
+  - Android: ícone adaptativo (fundo azul, frente com o símbolo dentro da
+    área segura), ícone temático do Android 13, ícones antigos em PNG,
+    abertura azul no claro e quase preta no escuro, antes e depois do
+    Android 12; nome "VGR";
+  - iOS: conjunto de ícones (sem transparência, como a Apple exige),
+    imagem e fundo de abertura no claro e no escuro; nome "VGR";
+  - web: favicon (SVG e PNG), ícones e ícones mascaráveis, manifesto,
+    título e o fundo da página antes de o Flutter desenhar, claro e
+    escuro. O painel passa a se chamar **"VGR · Painel"** (em inglês,
+    "VGR · Admin"), no lugar de "VGR Admin".
+- **Achado na conferência e corrigido**: o Flutter web baixava a fonte
+  Roboto de `fonts.gstatic.com` ao abrir, o que fere a 255 (revela ao
+  Google que o app foi aberto, e de qual IP). O `web/flutter_bootstrap.js`
+  dos dois apps agora aponta as fontes de reserva para o próprio
+  servidor, e todo texto usa as fontes embutidas. Depois da correção,
+  nenhuma fonte vem de fora.
+- **Conferido no Chromium** com a API local e um banco limpo, no claro e
+  no escuro: no mobile, "Por perto" com denúncias, Denunciar, Pânico,
+  detalhe, Oferecer ajuda e login; no painel, login, shell, lista e
+  detalhe de denúncias. Os desenhos vetoriais do Android foram
+  convertidos para SVG e conferidos dentro das áreas seguras.
+- **Verificação**: análise sem problemas nos cinco pacotes e 1.120 testes
+  passando — mobile 433, painel 392, core 71, validadores 102 e widgets
+  122 (os novos testes do tema e do símbolo entre eles).
+- **O que não deu para conferir aqui**: o build do Android e do iOS. O
+  ambiente não tem o SDK do Android (o proxy bloqueia `dl.google.com`) nem
+  Xcode. Os arquivos do Android passaram no `xmllint`, o `Info.plist` no
+  leitor de plist, e os vetores foram renderizados. O primeiro build
+  real (`flutter build apk` / `flutter build ios`) confirma; fica como
+  item da P4.
+- **Fora da identidade, anotado**: a versão web do app mobile carrega o
+  script do login com Google (`accounts.google.com/gsi/client`) ao abrir.
+  Só acontece na web (o app de verdade é Android/iOS) e vem do login com
+  Google, não da identidade.
 
 ## 7. Escolha da direção (rodada 24, 2026-10-13)
 

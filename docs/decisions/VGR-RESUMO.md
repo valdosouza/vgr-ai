@@ -10,8 +10,8 @@
 
 ## 0. Ponto de retomada (sessão de 2026-10-13)
 
-**Onde paramos**: identidade visual, **direção escolhida** (rodada 24,
-decisões 261–266). Valdo juntou as direções da V1 numa prancha própria
+**Onde paramos**: identidade visual **aplicada nos dois apps** (V2). A
+direção é a da rodada 24 (decisões 261–266): Valdo juntou as direções da V1 numa prancha própria
 (`docs/identidade-visual/v1b/prancha-valdo.webp`): o símbolo da A (arco que
 cobre um ponto aceso), azul-marinho `#203B70`, verde-petróleo `#1B7168` para
 ação, dourado `#D8A34D`, Atkinson Hyperlegible Next e o slogan "Pessoas
@@ -33,24 +33,34 @@ reais do app e o painel sóbrio, no claro e no escuro. Gerador e arquivos em
 a V2); registro em
 [plano-identidade-visual.md](../plans/plano-identidade-visual.md) §6.
 
-**Próximos passos, em ordem**:
-1. Valdo aprova a V1b (ou pede ajustes).
-2. **V2** (por "pode seguir"): aplicar a direção no código — tokens no
-   `vgr_widgets` a partir de `v1b/gerador/tokens.py`, fonte OFL embutida,
-   ícones (Android adaptativo e temático, iOS, favicon) a partir de
-   `v1b/svg/`, tela de abertura clara e escura, nomes no aparelho e na web,
-   painel sóbrio; conferir no navegador, claro e escuro.
-3. Rodada 22 (produção), retomada depois da V2:
-   - **P3** precisa de: domínio (item 4), jurisdição da homologação (item
-     11 — recomendado BR), VPS no Brasil, armazenamento externo do backup,
-     SMTP, monitor de disponibilidade, e quem executa o `DEPLOY.md`.
-   - **P4** precisa de: conta Play Console e a V3 (material da loja).
+**V2 executada em 2026-10-13** (por "pode seguir", V1b aprovada sem
+ajustes): a identidade está nos dois apps — tema claro e escuro no
+`vgr_widgets` (`VgrColors`, `VgrTheme`, com teste de contraste de todos os
+pares), fontes Atkinson embutidas (Next e Mono), símbolo e logo como
+widgets, pânico em vermelho, ícones, aberturas e nomes de Android, iOS e
+web (painel = "VGR · Painel"). A conferência achou o Flutter web baixando a
+Roboto do Google (fere a 255) e o `flutter_bootstrap.js` dos dois apps
+corrigiu isso. Registro em
+[plano-identidade-visual.md](../plans/plano-identidade-visual.md) §6.
+
+**Próximos passos, em ordem** (rodada 22, produção, retomada):
+1. **P3** (homologação no servidor) precisa de: domínio (item 4),
+   jurisdição da homologação (item 11 — recomendado BR), VPS no Brasil,
+   armazenamento externo do backup, SMTP, monitor de disponibilidade, e
+   quem executa o `DEPLOY.md`.
+2. **P4** (Android no teste interno) precisa de: conta Play Console, a
+   **V3** (material da loja: ícone 512, imagem de destaque, capturas) e o
+   primeiro build real do Android — este ambiente não tem o SDK do Android
+   nem Xcode, então os ícones e a abertura nativos só foram conferidos como
+   arquivos.
 
 **Estado do código**:
-- vgr-api `main` = `23e0113` e vgr-app `main` = `64799f2` — tudo integrado,
-  nada pendente.
-- vgr-ai: a rodada 24 e a V1b estão no ramo `claude/stoic-turing-db1vmw`, a partir
-  do `master` (`b241aab`). A próxima decisão é a **267**.
+- vgr-api `main` = `23e0113` — nada pendente.
+- vgr-app: a V2 (`7cda083`) está no ramo `claude/stoic-turing-db1vmw`, a partir do
+  `main` (`64799f2`).
+- vgr-ai: a rodada 24, a V1b e o registro da V2 estão no ramo
+  `claude/stoic-turing-db1vmw`, a partir do `master` (`b241aab`).
+- A próxima decisão é a **267**.
 
 ---
 
@@ -138,7 +148,7 @@ Estes são os invariantes — violar qualquer um exige decisão nova registrada:
 | Teste do painel no navegador: mediação no menu, filtros de data locais | 234–236 | **Rodada 20 fechada e executada em 2026-10-04** — M1 API (api `e825bf1`: migração 051, `reward_mediation` vira tela do menu) e M2 painel (app `6ff4a61`: o dia digitado nos filtros de auditoria e busca é o dia local, enviado como instantes UTC); **FRENTE COMPLETA**. Fica aberto: baldes das estatísticas em UTC | [plano-rodada-20-painel.md](../plans/plano-rodada-20-painel.md) |
 | Identificação do helper: escolha explícita, oculto por padrão | 237–239 | **Rodada 21 fechada e executada em 2026-10-05**: H1 API (api `4b6d658`: `anonymous` ausente = oculto) e H2 mobile (app `fd2513f`: caixa "Mostrar meu nome a quem denunciou" desmarcada, com aviso, em risco baixo/médio; em risco alto só o aviso); conferido no navegador nos três níveis. **FRENTE COMPLETA**. Fica aberto: ofertas gravadas identificadas antes da rodada (hoje só dados de teste) | [plano-rodada-21-identificacao-helper.md](../plans/plano-rodada-21-identificacao-helper.md) |
 | Prontidão para produção | 240–249 | **Rodada 22 aberta e respondida em 2026-10-10** — levantamento achou que a API compilada não sobe (atalhos de import), que as migrações ficam fora do build (subiria sem criar o banco, sem avisar), painel com a API fixa em localhost e APK de release com chave de debug. Decidido: um VPS no Brasil (240), Docker Compose (241), produção + homologação (242), segredos em arquivo + cópia offline das chaves-mestras (243), backup diário de 30 dias (244), checagem de saúde + logs de 14 dias (245), Android primeiro (246), fase fechada antes do público (247), P1→P4 (248). **P1 executada em 2026-10-10** (api `4063846` + `622e99d`, app `3cab7a3`); **P2 executada em 2026-10-10** (api `5f39112` + `7021e3e`, kit de implantação conferido com Docker); 249: Garage no lugar do MinIO. Em aberto antes da P3: domínio e a jurisdição da homologação | [plano-producao.md](../plans/plano-producao.md) |
-| Identidade visual | 250–266 | **Rodada 23 aberta e respondida em 2026-10-12**, antes da publicação (hoje não existe identidade). Nome **VGR** ("vigiar" lido em inglês; Vigilância e Recompensa; Vigilant and Reward); a identidade representa todas as decisões; discrição na tela (sem sirene, distintivo ou olho — vigiar como velar por); confiável e acolhedora; três direções feitas por Claude; fonte OFL embutida; claro e escuro; WCAG AA; painel sóbrio; escopo completo; V1→V3. **V1 entregue em 2026-10-12**: três direções (A Vigília — recomendada, B Vínculo, C Assinatura) numa página com logo, ícone, paleta com contraste calculado, fonte e telas reais. **Rodada 24 (2026-10-13)**: a direção é a composição de Valdo — símbolo da A, azul-marinho, verde-petróleo da B para ação, dourado, Atkinson, slogan "Pessoas cuidando de pessoas. Comunidades mais seguras." — com contraste corrigido, escuro derivado e logo em vetor; sem troféu nem pontos; arco no lugar do escudo; sem foto, nome ou "área segura" na tela inicial; aplicações fora do app em rodada futura. **V1b executada em 2026-10-13**: a direção consolidada na página (logo em vetor, ícones, cores com 36 pares conferidos, telas reais e painel, claro e escuro); aguarda a aprovação de Valdo, depois V2. A P3 e a P4 esperam a V2 | [plano-identidade-visual.md](../plans/plano-identidade-visual.md) |
+| Identidade visual | 250–266 | **Rodada 23 aberta e respondida em 2026-10-12**, antes da publicação (hoje não existe identidade). Nome **VGR** ("vigiar" lido em inglês; Vigilância e Recompensa; Vigilant and Reward); a identidade representa todas as decisões; discrição na tela (sem sirene, distintivo ou olho — vigiar como velar por); confiável e acolhedora; três direções feitas por Claude; fonte OFL embutida; claro e escuro; WCAG AA; painel sóbrio; escopo completo; V1→V3. **V1 entregue em 2026-10-12**: três direções (A Vigília — recomendada, B Vínculo, C Assinatura) numa página com logo, ícone, paleta com contraste calculado, fonte e telas reais. **Rodada 24 (2026-10-13)**: a direção é a composição de Valdo — símbolo da A, azul-marinho, verde-petróleo da B para ação, dourado, Atkinson, slogan "Pessoas cuidando de pessoas. Comunidades mais seguras." — com contraste corrigido, escuro derivado e logo em vetor; sem troféu nem pontos; arco no lugar do escudo; sem foto, nome ou "área segura" na tela inicial; aplicações fora do app em rodada futura. **V1b executada em 2026-10-13**: a direção consolidada na página (logo em vetor, ícones, cores com 36 pares conferidos, telas reais e painel, claro e escuro), aprovada. **V2 executada em 2026-10-13**: a identidade nos dois apps (tema claro e escuro no `vgr_widgets` com teste de contraste, fontes embutidas, símbolo e logo, ícones, aberturas e nomes de Android, iOS e web; nenhuma fonte baixada de fora). Falta a V3, junto com a P4 | [plano-identidade-visual.md](../plans/plano-identidade-visual.md) |
 | Denúncia (Report) | 134–142 | **Entregue** (R1–R4 na API + A1–A3 no mobile + P1 no painel); busca/moderação/estatísticas do painel = frente própria (142) | [plano-denuncia.md](../plans/plano-denuncia.md), [handoff-A1-app-denunciar.md](../plans/handoff-A1-app-denunciar.md) |
 
 Especificação DDD vinculante: `api/docs/specs/vgr/` (tactical design + cenários
@@ -281,9 +291,9 @@ por completo em 2026-08-19** (não repropor; ver memória `vgr-nostr-descartado`
     própria; a análise achou cinco elementos contra decisões (troféu e
     pontos, escudo, foto e nome na tela inicial, "área segura", peças de
     rua) e quatro pares abaixo do AA, e as respostas mantiveram a prancha
-    como direção com esses ajustes. **V1b executada no mesmo dia**: a direção
-    consolidada na página de apresentação, aguardando a aprovação; depois
-    V2. A P3 e a P4 da rodada 22 esperam a V2.
+    como direção com esses ajustes. **V1b e V2 executadas no mesmo dia**: a
+    direção consolidada na página e aplicada nos dois apps. A P3 e a P4 da
+    rodada 22 podem ser retomadas; a V3 vai junto com a P4.
 6. Frentes ainda não abertas: "sinalizar conteúdo" pelo usuário no app
    (161). Direction sightings (22/26/27) **aberto em 2026-09-04** (rodada
    15, decisões 200–207; DS1+DS2 entregues, DS3 vazia) — fecha a promessa
