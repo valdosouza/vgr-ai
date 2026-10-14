@@ -76,10 +76,10 @@ corrigiu isso. Registro em
 
 **Estado do código**:
 - vgr-api `main` = `23e0113`, vgr-app `main` = `c6f8cf6` (a V2, pelo PR
-  valdosouza/vgr-app#4, com o CI verde) e vgr-ai `master` (a rodada 24, a
-  V1b e o registro da V2, pelo PR valdosouza/vgr-ai#5) — integrados.
-- vgr-ai: a abertura e as decisões da rodada 25 estão no ramo
-  `claude/stoic-turing-db1vmw`, ainda sem PR.
+  valdosouza/vgr-app#4, com o CI verde) e vgr-site `main` = `8e23e83` (a
+  S2, com o CI verde) — integrados.
+- vgr-ai `master`: a rodada 24, a V1b e o registro da V2 (PR
+  valdosouza/vgr-ai#5); a rodada 25, a S1 e a S2 (PR valdosouza/vgr-ai#7).
 - A próxima decisão é a **276**.
 
 ---
