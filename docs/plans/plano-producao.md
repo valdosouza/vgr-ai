@@ -161,6 +161,28 @@ fechada da 247 roda na homologação, com pessoas reais.
 - (b) Homologação em SANDBOX (79, "onde as demos rodam"): tudo liberado
   salvo bloqueio explícito, enquanto a revisão jurídica não sai.
 
+**Rodada 26 — proposta em 2026-10-13, aguardando** (feita depois da V2 da
+identidade; vai para depois do site, rodada 25,
+[plano-site.md](plano-site.md)):
+
+1. **Domínio** (item 4): qual é. Se ainda não houver, levanto opções
+   `.com.br` livres com "vgr".
+2. **Jurisdição da homologação** (item 11): (a) BR, como produção
+   *(recomendado)*; (b) SANDBOX.
+3. **Contas da P3** (servidor no Brasil, backup externo, SMTP, monitor):
+   (a) eu comparo 2 ou 3 opções de cada, com preço e o que exigem, e Valdo
+   escolhe *(recomendado)*; (b) Valdo já tem os fornecedores.
+4. **Quem executa o `DEPLOY.md`**: (a) Valdo ou alguém da equipe, com
+   Claude acompanhando e corrigindo o repositório *(recomendado: daqui não
+   há SSH — a porta 22 é bloqueada no ambiente de Claude)*; (b) outra
+   pessoa, com o roteiro por escrito.
+5. **Build do Android no CI**: (a) agora, gerando o app Android a cada PR
+   para confirmar ícones e abertura antes da P4 *(recomendado)*; (b)
+   esperar uma máquina com o SDK.
+6. **V3, material da loja**: (a) em paralelo — ícone 512, imagem de
+   destaque 1024×500, capturas reais claro e escuro, rascunho do texto da
+   loja para aprovação *(recomendado)*; (b) só com a P4.
+
 ## 6. Fases
 
 | Fase | Conteúdo | Depende de | Estado |

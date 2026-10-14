@@ -3417,6 +3417,78 @@ O que o VGR já tem a mais (privilégio por botão + enforcement no backend,
 
      **Rodada 24 ZERADA** (decisões 261–266).
 
+## Site do VGR em português e inglês (rodada 25)
+
+> Aberta em 2026-10-13, depois da V2 da identidade e antes da produção.
+> Valdo: "antes vamos criar um website multi-language português e inglês
+> para que todos possam ter todas as informações sobre o aplicativo, assim
+> podemos publicar o site, o backend, o aplicativo e o painel admin". O
+> levantamento ([plano-site.md](../plans/plano-site.md)) achou que os termos
+> de uso que o cadastro manda aceitar não existem e que não há exclusão de
+> conta pelo titular. Valdo respondeu no mesmo dia: "1a, 2a, 3a, 4a, 5a,
+> 7a, 8a, 9a, 10 ok". O item 6 (quem responde pelos dados) segue em aberto.
+
+267. **O site tem estas páginas**: Início; Como funciona (denunciar, as
+     cinco formas de ajudar, recompensa opcional, pânico); Segurança e
+     privacidade (anonimato como padrão, o que fica guardado e por quanto
+     tempo); Perguntas frequentes; Baixar o app; Contato; Termos de uso;
+     Política de privacidade; Excluir conta e dados. O contato é por
+     e-mail exibido como texto (`contato@` e `privacidade@` no domínio),
+     sem formulário.
+
+268. **Português e inglês em endereços próprios** (`/pt/` e `/en/`), com
+     seletor em toda página; a primeira visita vai para a língua do
+     navegador. **O texto em português é o que vale juridicamente**; o
+     inglês é tradução.
+
+269. **O site diz com clareza o que o app faz** — avisar que algo está
+     acontecendo e receber ajuda de quem está perto —, no tom da
+     identidade ("Pessoas cuidando de pessoas"), sem imagem de crime,
+     polícia ou sirene (253). O ícone e o nome no celular continuam
+     discretos (252): a discrição é do aparelho, não da informação pública,
+     e a loja exige que a descrição diga a função real.
+
+270. **Na fase fechada (247) o site diz "em testes com convidados"** e dá o
+     e-mail de contato a quem quiser participar. Sem lista de espera: o
+     site não guarda dado de ninguém.
+
+271. **Termos de uso e política de privacidade redigidos por Claude a
+     partir das decisões** — o que é guardado e por quanto tempo,
+     anonimato e responsabilização (23), backup de 30 dias (244), logs de
+     14 dias (245), recompensa como promessa (30), Legal Gate (104),
+     pânico —, marcados como versão para revisão jurídica e entregues à
+     revisão da 228 antes da abertura ao público. Na fase fechada valem
+     como aviso aos convidados, que já aceitam os termos no cadastro.
+
+272. **Exclusão de conta pelo titular em rodada própria, logo depois do
+     site**: o que some, o que fica pelo prazo de responsabilização (23) e
+     os 30 dias de backup (244) pedem decisão; a P4 depende dela (o Google
+     Play exige exclusão no app e na web). Enquanto isso, a página "Excluir
+     conta e dados" recebe o pedido por e-mail em `privacidade@`, e o
+     aceite do cadastro do app passa a ligar aos termos publicados.
+
+273. **Repositório novo `vgr-site`**: site estático gerado a partir de um
+     texto por idioma, com a identidade da rodada 24 (cores, fonte
+     embutida, símbolo), claro e escuro, WCAG AA (257); **sem cookies, sem
+     rastreador, sem fonte ou script de terceiros, funcionando sem
+     JavaScript** — quem visita um site sobre denúncia pode estar em risco
+     (a mesma razão da 255).
+
+274. **O site fica no mesmo servidor (240)**, servido pelo Caddy em
+     `<domínio>` e `www.<domínio>`, e é publicado junto com a API, o app e o
+     painel na P3. Nenhuma métrica de visita além da contagem dos logs do
+     servidor, que duram 14 dias (245): nenhum terceiro vê quem visita.
+
+275. **Fatiamento: S1 textos em português e inglês (inclusive termos e
+     política) numa página de revisão → S2 o site no `vgr-site`, conferido
+     no navegador (claro e escuro, português e inglês, celular e
+     computador) → S3 publicação com a P3**, cada fase por "pode seguir"
+     (38).
+
+     **Em aberto da rodada 25**: o item 6 — razão social, CNPJ, endereço e
+     e-mail do encarregado de dados (LGPD). Até lá, os textos levam campos
+     marcados.
+
 ## Critérios de sucesso
 
 1. Usuário consegue registrar uma denúncia escolhendo categoria + objeto/
