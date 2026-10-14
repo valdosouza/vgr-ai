@@ -5,7 +5,7 @@
 > quando a frente em questão exigir. Evita reler as 2.200+ linhas do
 > [VGR-plano.md](VGR-plano.md) a cada sessão.
 >
-> **Atualizado em**: 2026-10-13. Se a data estiver distante, confirme o estado
+> **Atualizado em**: 2026-10-14. Se a data estiver distante, confirme o estado
 > das frentes no log de decisões antes de confiar nas seções de status.
 
 ## 0. Ponto de retomada (sessão de 2026-10-13)
@@ -61,12 +61,11 @@ corrigiu isso. Registro em
 
 **Próximos passos, em ordem**:
 1. **Site (rodada 25)**: S1 (textos) aprovada; **S2 executada em
-   2026-10-13** — o site estático pronto num repositório local `vgr-site`
-   (cópia em `docs/site/vgr-site.bundle`), conferido no navegador. **Falta
-   Valdo criar `valdosouza/vgr-site`** no GitHub (privado, vazio; a
-   integração não cria repositórios) para o envio. Faltam ainda os campos
-   do item 6 e da rodada 26 (domínio, fornecedores) para o build de
-   publicação. Depois: S3 (publicação com a P3).
+   2026-10-13** — o site estático, conferido no navegador, está em
+   `valdosouza/vgr-site` (`main` = `8e23e83`, enviado em 2026-10-14).
+   Faltam os campos do item 6 e da rodada 26 (domínio, fornecedores), a
+   idade mínima e os prazos de guarda para o build de publicação. Depois:
+   S3 (publicação com a P3).
    ([plano-site.md](../plans/plano-site.md) §6)
 2. **Exclusão de conta pelo titular** (272): rodada própria logo depois do
    site; a P4 depende dela.
@@ -170,7 +169,7 @@ Estes são os invariantes — violar qualquer um exige decisão nova registrada:
 | Identificação do helper: escolha explícita, oculto por padrão | 237–239 | **Rodada 21 fechada e executada em 2026-10-05**: H1 API (api `4b6d658`: `anonymous` ausente = oculto) e H2 mobile (app `fd2513f`: caixa "Mostrar meu nome a quem denunciou" desmarcada, com aviso, em risco baixo/médio; em risco alto só o aviso); conferido no navegador nos três níveis. **FRENTE COMPLETA**. Fica aberto: ofertas gravadas identificadas antes da rodada (hoje só dados de teste) | [plano-rodada-21-identificacao-helper.md](../plans/plano-rodada-21-identificacao-helper.md) |
 | Prontidão para produção | 240–249 | **Rodada 22 aberta e respondida em 2026-10-10** — levantamento achou que a API compilada não sobe (atalhos de import), que as migrações ficam fora do build (subiria sem criar o banco, sem avisar), painel com a API fixa em localhost e APK de release com chave de debug. Decidido: um VPS no Brasil (240), Docker Compose (241), produção + homologação (242), segredos em arquivo + cópia offline das chaves-mestras (243), backup diário de 30 dias (244), checagem de saúde + logs de 14 dias (245), Android primeiro (246), fase fechada antes do público (247), P1→P4 (248). **P1 executada em 2026-10-10** (api `4063846` + `622e99d`, app `3cab7a3`); **P2 executada em 2026-10-10** (api `5f39112` + `7021e3e`, kit de implantação conferido com Docker); 249: Garage no lugar do MinIO. Em aberto antes da P3: domínio e a jurisdição da homologação | [plano-producao.md](../plans/plano-producao.md) |
 | Identidade visual | 250–266 | **Rodada 23 aberta e respondida em 2026-10-12**, antes da publicação (hoje não existe identidade). Nome **VGR** ("vigiar" lido em inglês; Vigilância e Recompensa; Vigilant and Reward); a identidade representa todas as decisões; discrição na tela (sem sirene, distintivo ou olho — vigiar como velar por); confiável e acolhedora; três direções feitas por Claude; fonte OFL embutida; claro e escuro; WCAG AA; painel sóbrio; escopo completo; V1→V3. **V1 entregue em 2026-10-12**: três direções (A Vigília — recomendada, B Vínculo, C Assinatura) numa página com logo, ícone, paleta com contraste calculado, fonte e telas reais. **Rodada 24 (2026-10-13)**: a direção é a composição de Valdo — símbolo da A, azul-marinho, verde-petróleo da B para ação, dourado, Atkinson, slogan "Pessoas cuidando de pessoas. Comunidades mais seguras." — com contraste corrigido, escuro derivado e logo em vetor; sem troféu nem pontos; arco no lugar do escudo; sem foto, nome ou "área segura" na tela inicial; aplicações fora do app em rodada futura. **V1b executada em 2026-10-13**: a direção consolidada na página (logo em vetor, ícones, cores com 36 pares conferidos, telas reais e painel, claro e escuro), aprovada. **V2 executada em 2026-10-13**: a identidade nos dois apps (tema claro e escuro no `vgr_widgets` com teste de contraste, fontes embutidas, símbolo e logo, ícones, aberturas e nomes de Android, iOS e web; nenhuma fonte baixada de fora). Falta a V3, junto com a P4 | [plano-identidade-visual.md](../plans/plano-identidade-visual.md) |
-| Site (pt/en) | 267–275 | **Rodada 25 aberta e respondida em 2026-10-13**, antes da produção: site em português e inglês com tudo sobre o app, publicado junto com API, app e painel. Lacunas achadas: termos de uso inexistentes (o cadastro pede o aceite) e sem exclusão de conta pelo titular (Google Play, LGPD). Decisões: nove páginas; `/pt/` e `/en/`; diz o que o app faz; "em testes com convidados"; termos e política por Claude para revisão jurídica; exclusão de conta em rodada própria; `vgr-site` estático sem cookies nem terceiros, no mesmo servidor. Em aberto o item 6 (controlador dos dados). Próxima fase: S1 | [plano-site.md](../plans/plano-site.md) |
+| Site (pt/en) | 267–275 | **Rodada 25 aberta e respondida em 2026-10-13**, antes da produção: site em português e inglês com tudo sobre o app, publicado junto com API, app e painel. Lacunas achadas: termos de uso inexistentes (o cadastro pede o aceite) e sem exclusão de conta pelo titular (Google Play, LGPD). Decisões: nove páginas; `/pt/` e `/en/`; diz o que o app faz; "em testes com convidados"; termos e política por Claude para revisão jurídica; exclusão de conta em rodada própria; `vgr-site` estático sem cookies nem terceiros, no mesmo servidor. Em aberto o item 6 (controlador dos dados). S1 (textos) e S2 (site em `valdosouza/vgr-site`) executadas; falta a S3, com a P3 | [plano-site.md](../plans/plano-site.md) |
 | Denúncia (Report) | 134–142 | **Entregue** (R1–R4 na API + A1–A3 no mobile + P1 no painel); busca/moderação/estatísticas do painel = frente própria (142) | [plano-denuncia.md](../plans/plano-denuncia.md), [handoff-A1-app-denunciar.md](../plans/handoff-A1-app-denunciar.md) |
 
 Especificação DDD vinculante: `api/docs/specs/vgr/` (tactical design + cenários

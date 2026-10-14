@@ -146,7 +146,7 @@ política de privacidade e no rodapé.
 | Fase | Conteúdo | Estado |
 |---|---|---|
 | **S1** | textos pt/en, inclusive termos e política, numa página de revisão | **executada em 2026-10-13** — §6; aprovada por Valdo ("pode seguir") |
-| **S2** | site estático no `vgr-site`, conferido no navegador | **executada em 2026-10-13** — §6; o repositório `vgr-site` ainda precisa ser criado no GitHub por Valdo |
+| **S2** | site estático no `vgr-site`, conferido no navegador | **executada em 2026-10-13** — §6; enviada a `valdosouza/vgr-site` em 2026-10-14 |
 | **S3** | publicação com a P3 | aguardando |
 
 ## 6. Execução
@@ -208,12 +208,11 @@ site não promete nada disso; pedem correção em rodada própria):
 Por "pode seguir" de Valdo, que aprovou a S1 sem ajustes.
 
 - **Repositório**: a integração do GitHub não tem permissão para criar
-  repositórios (403). O site foi construído num repositório local
-  `vgr-site` (commit `8e23e83`) e uma cópia do histórico está em
-  `docs/site/vgr-site.bundle` até Valdo criar `valdosouza/vgr-site`
-  (privado, vazio) e liberar o app Claude para ele. Para restaurar:
-  `git clone docs/site/vgr-site.bundle vgr-site`. Depois do envio ao
-  repositório novo, o arquivo sai do vgr-ai.
+  repositórios (403). O site foi construído num repositório local e,
+  depois que Valdo criou `valdosouza/vgr-site` e liberou o app Claude para
+  ele, enviado em 2026-10-14 como o ramo `main` (commit `8e23e83`, CI
+  verde no primeiro envio). A cópia temporária do histórico
+  (`docs/site/vgr-site.bundle`) saiu do vgr-ai.
 - **Gerador**: `build.py`, só com a biblioteca padrão do Python, lê
   `content/{pt,en}/` (os textos aprovados na S1, agora com a fonte no
   `vgr-site`) e gera `dist/`: nove páginas por idioma em `/pt/` e `/en/`,
